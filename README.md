@@ -108,13 +108,13 @@ const replyMessage = ctx.replyBuilder
 ```json
 {
   "response": {
-    "buttons": [btn1, btn2],
+    "buttons": ["{...<btn1>}", "{...<btn2>}"],
     "end_session": false,
     "text": "Вы что, из Англии?",
     "tts": "Вы что, из Англии?"
   },
   "session": {
-     ...
+     "some": "session..."
   },
   "version": "1.0"
 }
