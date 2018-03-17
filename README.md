@@ -64,6 +64,7 @@ API очень простой и удобный.
 ## ReplyBuilder
 
 Генерирует ответ для сервера, какой вы захотите.
+Метод доступен из контекста. `ctx.replyBuilder`
 
 ### .text(str: string)
 Устанавливает текстовое сообщение в ответе
@@ -120,6 +121,10 @@ const replyMessage = ctx.replyBuilder
 }
 ```
 
+
+
+## ButtonBuilder
+Метод доступен из контекста. `ctx.buttonBuilder`
 
 
 Phil Romanov © MIT 2018

@@ -23,7 +23,8 @@ class Ctx {
     }
 
     /*
-     * Если @replyMessage — string, то заворачиваем в стандартную форму.
+     * Если @replyMessage — string,
+     * то заворачиваем в стандартную форму.
      */
     if (typeof replyMessage === 'string') {
       const reply = this.replyBuilder
@@ -33,7 +34,6 @@ class Ctx {
       return reply
     }
 
-    console.log('reply', replyMessage)
     return replyMessage
   }
 }
