@@ -4,10 +4,12 @@ const bodyParser = require('body-parser')
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
 
+const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
+
 class Alice {
   constructor() {
     this.commands = []
-    this.any = 
+    this.anyCallback = DEFAULT_ANY_CALLBACK
   }
 
   /* @TODO: Implement watchers (errors, messages) */
@@ -22,15 +24,29 @@ class Alice {
     })
   }
 
+  /*
+   * Если среди команд не нашлось той,
+   * которую запросил пользователь,
+   * вызывается этот коллбек
+   */
   any(callback) {
-
+    this.anyCallback = callback
   }
 
   async handleRequestBody(req) {
     const requestedCommandName = selectCommand(req)
+
+    /* @TODO: implement fuzzy-search */
     const requestedCommands = this.commands.filter(command =>
       command.name === requestedCommandName)
 
+
+    /*
+     * Инициализация контекста запроса
+     */
+     const ctx = new Ctx({
+      req: req
+     })
     /*
      * Command has been found in the list.
      * Lets run its handler
@@ -40,15 +56,14 @@ class Alice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
-      return await requestedCommand.callback.call(this, new Ctx({
-        req: req
-      }))
+      return await requestedCommand.callback.call(this, ctx)
     }
 
     /*
      * Такой команды не было зарегестрировано.
-     * Переходим в обработчик исключений.
+     * Переходим в обработчик исключений
      */
+    return await this.anyCallback.call(this, ctx)
     console.log(requestedCommands)
   }
 
