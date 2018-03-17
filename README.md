@@ -61,7 +61,7 @@ alice.command('купить слона', async (ctx) => {
 
 API очень простой и удобный.
 
-## ReplyBuilder
+# ReplyBuilder
 
 Генерирует ответ для сервера, какой вы захотите.
 Метод доступен из контекста. `ctx.replyBuilder`
@@ -123,45 +123,45 @@ const replyMessage = ctx.replyBuilder
 
 
 
-## ButtonBuilder
+# ButtonBuilder
 Метод доступен из контекста. `ctx.buttonBuilder`
 
 ### .text(text: string)
-
 Устанавливает текст кнопки
 
 
 ### .title(title: string)
-
 Тоже устанавливает текст кнопки
 > Используйте, какой больше нравится
 
 
 ### .url(url: string)
-
 Устанавливает URL, который откроется при нажатии на кнопку
 
 
 ### .url(url: string)
-
 Устанавливает URL, который откроется при нажатии на кнопку
 
 
 ### .shouldHide(flag: boolean)
-
-Нужно ли прятать кнопку после нажатия?
-
-
-### .shouldHide(flag: boolean)
-
 Нужно ли прятать кнопку после следующей реплики пользователя?
 
 
 ### .payload(payload: string | object)
-
 Произвольный JSON, который Яндекс.Диалоги должны отправить обработчику, если данная кнопка будет нажата. Максимум 4096 байт.
 
 ### .get()
 Получить результат выполнения фабрики. В конце всегда вызывайте этот метод.
+
+
+**Пример**
+```javascript
+const buyBtn = ctx.buttonBuilder
+  .text('Купить слона')
+  .url('example.com/buy')
+  .payload({buy: "slon"})
+  .shouldHide(true)
+  .get()
+```
 
 Phil Romanov © MIT 2018
