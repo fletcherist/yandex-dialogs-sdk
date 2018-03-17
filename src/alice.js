@@ -64,7 +64,6 @@ class Alice {
      * Переходим в обработчик исключений
      */
     return await this.anyCallback.call(this, ctx)
-    console.log(requestedCommands)
   }
 
   /*
