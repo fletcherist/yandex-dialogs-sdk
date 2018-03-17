@@ -1,1 +1,0 @@
-const Alice = require('./src')
