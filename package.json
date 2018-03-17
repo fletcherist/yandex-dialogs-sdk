@@ -1,6 +1,6 @@
 {
   "name": "yandex-dialogs-sdk",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Build your skill for Alice with ease.",
   "main": "src/index.js",
   "scripts": {
