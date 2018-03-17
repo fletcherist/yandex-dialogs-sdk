@@ -1,4 +1,4 @@
-const Alice = require('yandex-dialogs-sdk')
+const Alice = require('../src/index')
 const alice = new Alice()
 
 alice.command('дай совет', async (ctx) => {
@@ -9,4 +9,4 @@ alice.any(async (ctx) => {
   return ctx.reply('О чём это вы?')
 })
 
-alice.listen('/', 80)
+alice.listen('/', 8080)
