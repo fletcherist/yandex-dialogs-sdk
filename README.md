@@ -81,7 +81,7 @@ ctx.replyBuilder.addButton(btn1).addButton(btn2)
 ```
 ```json
 "response": {
-  "buttons": [btn1, btn2],
+  "buttons": ["<btn1>", "<btn2>"],
 },
 ```
 
@@ -108,7 +108,7 @@ const replyMessage = ctx.replyBuilder
 ```json
 {
   "response": {
-    "buttons": ["{...<btn1>}", "{...<btn2>}"],
+    "buttons": ["<btn1>", "<btn2>"],
     "end_session": false,
     "text": "Вы что, из Англии?",
     "tts": "Вы что, из Англии?"
