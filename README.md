@@ -2,7 +2,7 @@
 
 Создавать навыки для Алисы — это очень просто.
 
-<img height=300 src='https://setphone.ru/wp-content/uploads/2017/07/alisa-810x456.png'/ alt="на картинку-то у тебя прав нет!">
+<img height=300 src='https://camo.githubusercontent.com/0ad462b08ffb18f96ae1143f1365b60b918f4bbd/68747470733a2f2f73657470686f6e652e72752f77702d636f6e74656e742f75706c6f6164732f323031372f30372f616c6973612d383130783435362e706e67' />
 
 ### Установите SDK
 `npm i yandex-dialogs-sdk`
