@@ -22,6 +22,17 @@ class Ctx {
       throw new Error('Reply message could not be empty!')
     }
 
+    /*
+     * Если @replyMessage — string, то заворачиваем в стандартную форму.
+     */
+    if (typeof replyMessage === 'string') {
+      const reply = this.replyBuilder
+        .text(replyMessage)
+        .tts(replyMessage)
+        .get()
+      return reply
+    }
+
     console.log('reply', replyMessage)
     return replyMessage
   }
