@@ -20,7 +20,7 @@
     "yandex-dialogs-sdk"
   ],
   "devDependencies": {
-    "micro": "^9.1.4",
+    "micro": "^9.1.4"
   },
   "author": "Phil Romanov (@fletcherist)",
   "license": "MIT",
