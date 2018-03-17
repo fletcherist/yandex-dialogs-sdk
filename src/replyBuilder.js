@@ -4,7 +4,7 @@ class ReplyBuilder {
       response: {
         buttons: []
       },
-      session: {},
+      session: request.session,
       version: {}
     }
   }
@@ -25,6 +25,10 @@ class ReplyBuilder {
     }
     this.reply.response.buttons.push(button)
     return this
+  }
+
+  shouldEndSession(flag) {
+    this.reply.response.end_session = flag
   }
 
   get() {

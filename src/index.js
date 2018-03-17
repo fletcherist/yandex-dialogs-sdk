@@ -13,6 +13,10 @@ class Ctx {
     this.request = request
     this.replyBuilder = new ReplyBuilder(this.request)
     this.buttonBuilder = new ButtonBuilder()
+
+    this.sessionId = request.session.session_id
+    this.messageId = request.session.message_id
+    this.userId = request.session.user_id
   }
 
   async reply(replyMessage) {
