@@ -1,0 +1,31 @@
+{
+  "name": "yandex-dialogs-sdk",
+  "version": "1.0.0",
+  "description": "Build your skill for Alice with ease.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx babel src --out-dir lib",
+    "dev": "npx babel src --watch --out-dir lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fletcherist/yandex-dialogs-sdk.git"
+  },
+  "keywords": [
+    "Alice",
+    "yandex-dialogs",
+    "alice",
+    "skills",
+    "alice-sdk",
+    "alice-dialogs",
+    "yandex-dialogs-sdk"
+  ],
+  "devDependencies": {},
+  "author": "Phil Romanov (@fletcherist)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fletcherist/yandex-dialogs-sdk/issues"
+  },
+  "homepage": "https://github.com/fletcherist/yandex-dialogs-sdk#readme"
+}
