@@ -27,5 +27,10 @@
   "bugs": {
     "url": "https://github.com/fletcherist/yandex-dialogs-sdk/issues"
   },
-  "homepage": "https://github.com/fletcherist/yandex-dialogs-sdk#readme"
+  "homepage": "https://github.com/fletcherist/yandex-dialogs-sdk#readme",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3",
+    "node-fetch": "^2.1.1"
+  }
 }
