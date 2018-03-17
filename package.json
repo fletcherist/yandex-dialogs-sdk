@@ -4,9 +4,7 @@
   "description": "Build your skill for Alice with ease.",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx babel src --out-dir lib",
-    "dev": "npx babel src --watch --out-dir lib"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",

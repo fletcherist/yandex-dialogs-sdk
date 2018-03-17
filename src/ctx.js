@@ -10,6 +10,8 @@ class Ctx {
     this.sessionId = req.session.session_id
     this.messageId = req.session.message_id
     this.userId = req.session.user_id
+    this.payload = req.request.payload
+    this.messsage = req.request.original_utterance
 
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()
