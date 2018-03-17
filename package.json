@@ -19,7 +19,9 @@
     "alice-dialogs",
     "yandex-dialogs-sdk"
   ],
-  "devDependencies": {},
+  "devDependencies": {
+    "micro": "^9.1.4",
+  },
   "author": "Phil Romanov (@fletcherist)",
   "license": "MIT",
   "bugs": {
