@@ -11,17 +11,18 @@ const selectCommand = req => req.request.command
 class Ctx {
   constructor(request) {
     this.request = request
-    this.replyBuilder = new ReplyBuilder(this.request)
-    this.buttonBuilder = new ButtonBuilder()
 
     this.sessionId = request.session.session_id
     this.messageId = request.session.message_id
     this.userId = request.session.user_id
+
+    this.replyBuilder = new ReplyBuilder(this.request)
+    this.buttonBuilder = new ButtonBuilder()
   }
 
   async reply(replyMessage) {
     if (!replyMessage) {
-      throw new Error('Reply message could not be empty.')
+      throw new Error('Reply message could not be empty!')
     }
     console.log('reply', replyMessage)
   }
