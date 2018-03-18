@@ -1,6 +1,6 @@
 {
   "name": "yandex-dialogs-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Build your skill for Alice with ease.",
   "main": "src/index.js",
   "scripts": {
@@ -19,9 +19,6 @@
     "alice-dialogs",
     "yandex-dialogs-sdk"
   ],
-  "devDependencies": {
-    "micro": "^9.1.4"
-  },
   "author": "Phil Romanov (@fletcherist)",
   "license": "MIT",
   "bugs": {
