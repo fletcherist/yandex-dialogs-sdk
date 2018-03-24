@@ -1,16 +1,27 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const fuzzysearch = require('fuzzysearch')
+const Fuse = require('fuse.js')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
+// declaring possible command types 
+const TYPE_STRING = 'string'
+const TYPE_REGEXP = 'regexp'
+const TYPE_ARRAY  = 'array'
+
 class Alice {
-  constructor() {
+  constructor(config = {}) {
     this.commands = []
     this.anyCallback = DEFAULT_ANY_CALLBACK
+    this.fuseOptions = {
+      tokenize: true,
+      treshold: config.fuzzyTreshold || 0.2,
+      distance: config.fuzzyDistance || 10,
+      keys: ['name']
+    }
   }
 
   /* @TODO: Implement watchers (errors, messages) */
@@ -19,8 +30,23 @@ class Alice {
   }
 
   command(name, callback) {
+    let type
+
+    if (typeof name === 'string') {
+      type = TYPE_STRING
+      name = name.toLowerCase()
+    } else if (name instanceof RegExp) {
+      type = TYPE_REGEXP
+    } else if (Array.isArray(name)) {
+      name = name.map(el => typeof el === 'string' ? el.toLowerCase() : el)
+      type = TYPE_ARRAY
+    } else {
+      throw new Error('Unexpecto patronus')
+    }
+
     this.commands.push({
-      name: name.toLowerCase(),
+      name: name,
+      type: type,
       callback: callback
     })
   }
@@ -28,7 +54,7 @@ class Alice {
   /*
    * Если среди команд не нашлось той,
    * которую запросил пользователь,
-   * вызывается этот коллбек
+   * вызывается этот колбек
    */
   any(callback) {
     this.anyCallback = callback
@@ -36,11 +62,21 @@ class Alice {
 
   async handleRequestBody(req) {
     const requestedCommandName = selectCommand(req)
+    let requestedCommands = []
 
-    /* @TODO: implement fuzzy-search */
-    const requestedCommands = this.commands.filter(command =>
-      command.name === requestedCommandName)
+    const stringCommands = this.commands.filter(cmd => cmd.type !== TYPE_REGEXP)
+    const fuse = new Fuse(stringCommands, this.fuseOptions)
+    const fuzzyMatches = fuse.search(requestedCommandName)
 
+    const regexpCommands = this.commands.filter(cmd => cmd.type === TYPE_REGEXP)
+    // @TODO: include matches and captured groups
+    const regexpMatches = regexpCommands.filter(reg => requestedCommandName.match(reg))
+
+    if (fuzzyMatches.length > 0) {
+      requestedCommands = fuzzyMatches
+    } else if (regexpCommands.length > 0) {
+      requestedCommands = regexpMatches
+    }
 
     /*
      * Инициализация контекста запроса
@@ -49,9 +85,6 @@ class Alice {
       req: req
      })
     /*
-     * Command has been found in the list.
-     * Lets run its handler
-     *
      * Команда нашлась в списке.
      * Запускаем её обработчик.
      */
