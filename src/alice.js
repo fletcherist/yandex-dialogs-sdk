@@ -1,6 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const fuzzysearch = require('fuzzysearch')
+const Fuse = require('fuse.js')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
@@ -8,9 +8,16 @@ const selectCommand = req => req.request.command
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
 class Alice {
-  constructor() {
+  constructor(config = {}) {
     this.commands = []
     this.anyCallback = DEFAULT_ANY_CALLBACK
+    this.fuseOptions = {
+      shouldSort: true,
+      tokenize: true,
+      treshold: config.fuzzyTreshold || 0.2,
+      distance: config.fuzzyDistance || 10,
+      keys: ['name']
+    }
   }
 
   /* @TODO: Implement watchers (errors, messages) */
@@ -27,6 +34,7 @@ class Alice {
     } else if (name instanceof RegExp) {
       type = 'regexp'
     } else if (Array.isArray(name)) {
+      name = name.map(el => typeof el === 'string' ? el.toLowerCase() : el)
       type = 'array'
     } else {
       throw new Error('Unexpecto patronus')
@@ -51,8 +59,8 @@ class Alice {
   async handleRequestBody(req) {
     const requestedCommandName = selectCommand(req)
 
-    const requestedCommands = this.commands.filter(command =>
-      command.name === requestedCommandName)
+    const fuse = new Fuse(this.commands, this.fuseOptions)
+    const requestedCommands = fuse.search(requestedCommandName)
 
 
     /*
