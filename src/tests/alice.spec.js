@@ -18,12 +18,33 @@ const generateRequest = (commandText, utteranceText) => ({
   'version': '1.0'
 })
 
-test('common test for alice', async(done) => {
+// Test for matching all command types
+
+test('matching with string', async(done) => {
+  const alice = new Alice()
+
+  alice.command('привки', ctx => done())
+  alice.handleRequestBody(generateRequest('Привет, как дела?'))
+})
+
+test('matching with array', async(done) => {
   const alice = new Alice()
   
-  // register commands to match the request to
-  alice.command('привки', ctx => done())
-
-  // test matches
+  alice.command(['привки', 'как'], ctx => done())
   alice.handleRequestBody(generateRequest('Привет, как дела?'))
+})
+
+test('matching with regexp', async(done) => {
+  const alice = new Alice()
+  
+  alice.command(/[а-яё]+/i, ctx => done())
+  alice.handleRequestBody(generateRequest('Привет как дела'))
+})
+
+test('priority check, strings over regexps', async(done) => {
+  const alice = new Alice()
+  
+  alice.command(/[а-яё]+/i, ctx => new Error('cyka'))
+  alice.command('привет', ctx => done())
+  alice.handleRequestBody(generateRequest('Привет как дела'))
 })
