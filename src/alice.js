@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const fuzzysearch = require('fuzzysearch')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command

@@ -1,6 +1,24 @@
 class ButtonBuilder {
-  constructor() {
-    this.button = {}
+  constructor(buttonConstructor) {
+    /* No button object passed to the constructor */
+    if (!buttonConstructor) {
+      this.button = {}
+      return this
+    }
+
+    /* Object-constructor passed */
+    if (typeof buttonConstructor !== 'object') {
+      throw new Error('Invalid ButtonBuilder constructor type. Should be object')
+    }
+    const {
+      title, text, url, shouldHide, payload
+    } = buttonConstructor
+    if (!title && !text) {
+      throw new Error('Button [title] or [text] is required for ButtonBuilder constructor.')
+    }
+
+    this.button = Object.assign({}, buttonConstructor)
+    return this.button
   }
 
   _setTitle(title) {
