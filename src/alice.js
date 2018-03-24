@@ -19,8 +19,22 @@ class Alice {
   }
 
   command(name, callback) {
+    let type
+
+    if (typeof name === 'string') {
+      type = 'string'
+      name = name.toLowerCase()
+    } else if (name instanceof RegExp) {
+      type = 'regexp'
+    } else if (Array.isArray(name)) {
+      type = 'array'
+    } else {
+      throw new Error('Unexpecto patronus')
+    }
+
     this.commands.push({
-      name: name.toLowerCase(),
+      name: name,
+      type: type,
       callback: callback
     })
   }
@@ -37,7 +51,6 @@ class Alice {
   async handleRequestBody(req) {
     const requestedCommandName = selectCommand(req)
 
-    /* @TODO: implement fuzzy-search */
     const requestedCommands = this.commands.filter(command =>
       command.name === requestedCommandName)
 
