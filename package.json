@@ -31,7 +31,6 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "fuse.js": "^3.2.0",
-    "global": "^4.3.2",
     "node-fetch": "^2.1.1"
   },
   "devDependencies": {
