@@ -32,8 +32,7 @@
     "express": "^4.16.3",
     "fuse.js": "^3.2.0",
     "global": "^4.3.2",
-    "node-fetch": "^2.1.1",
-    "npm": "^5.8.0"
+    "node-fetch": "^2.1.1"
   },
   "devDependencies": {
     "eslint": "^4.19.0"
