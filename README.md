@@ -19,6 +19,12 @@ alice.command('дай совет', async (ctx) => {
   return ctx.reply('Make const not var')
 })
 
+alice.command(['билет в кино', 'что посмотреть', 'что показывают'], ctx => {
+  return ctx.reply('') 
+})
+
+alice.command(/(https?:\/\/[^\s]+)/g, ctx => ctx.reply('Matched a link!'))
+
 alice.any(async (ctx) => {
   return ctx.reply('О чём это вы?')
 })
