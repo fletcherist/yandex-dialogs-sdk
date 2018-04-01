@@ -1,33 +1,22 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const Fuse = require('fuse.js')
 const Commands = require('./commands')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
-
-const makeStringLower = str => typeof str === 'string' ? str.toLowerCase() : str
 const isFunction = fn => fn && typeof fn === 'function'
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
-// declaring possible command types
-const TYPE_STRING = 'string'
-const TYPE_REGEXP = 'regexp'
-const TYPE_ARRAY = 'array'
-
 class Alice {
   constructor(config = {}) {
     this.anyCallback = DEFAULT_ANY_CALLBACK
-    this.fuseOptions = {
-      tokenize: true,
-      treshold: config.fuzzyTreshold || 0.2,
-      distance: config.fuzzyDistance || 10,
-      keys: ['name']
-    }
-    this.commands = new Commands(this.fuseOptions)
+    this.commands = new Commands()
     this.middlewares = []
     this.currentScene = null
+
+    this._handleEnterScene = this._handleEnterScene.bind(this)
+    this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
 
   /* @TODO: Implement watchers (errors, messages) */
@@ -119,10 +108,22 @@ class Alice {
     })
   }
 
+  registerScene(scene) {
+    this.scenes.push(scene)
+  }
+
   stopListening() {
     if (this.server && this.server.close) {
       this.server.close()
     }
+  }
+
+  _handleEnterScene(sceneName) {
+    this.currentScene = sceneName
+  }
+  _handleLeaveScene(sceneName) {
+    console.log('leaving scene', sceneName)
+    this.currentScene = null
   }
 }
 

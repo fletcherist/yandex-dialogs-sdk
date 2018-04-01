@@ -1,6 +1,6 @@
-// declaring possible command types
 const Fuse = require('fuse.js')
 
+// declaring possible command types
 const TYPE_STRING = 'string'
 const TYPE_REGEXP = 'regexp'
 const TYPE_ARRAY = 'array'
@@ -65,6 +65,25 @@ class Commands {
   }
 
   add(name, callback) {
+    this.commands.push(new Command(name, callback))
+  }
+
+  flush() {
+    this.commands = []
+  }
+}
+
+class Command {
+  constructor(name, callback) {
+    if (!name) throw new Error('Command name is not specified')
+    this.name = name
+    this.callback = callback
+    this.type = this._defineCommandType(this.name)
+
+    return this
+  }
+
+  _defineCommandType(name) {
     let type
 
     if (typeof name === 'string') {
@@ -77,13 +96,9 @@ class Commands {
       throw new Error(`Command name is not of proper type.
         Could be only string, array of strings or regular expression`)
     }
-
-    this.commands.push({
-      name: name,
-      type: type,
-      callback: callback
-    })
+    return type
   }
 }
 
 module.exports = Commands
+module.exports.Command = Command

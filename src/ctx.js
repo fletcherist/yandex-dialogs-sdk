@@ -4,7 +4,10 @@ const ButtonBuilder = require('./ButtonBuilder')
 class Ctx {
   constructor({
     req,
-    sendResponse
+    sendResponse,
+
+    enterScene,
+    leaveScene
   }) {
     this.req = req
     this.sendResponse = sendResponse
@@ -17,6 +20,11 @@ class Ctx {
 
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()
+
+    if (enterScene && leaveScene) {
+      this.enterScene = enterScene
+      this.leaveScene = leaveScene
+    }
   }
 
   async reply(replyMessage) {

@@ -13,6 +13,4 @@ test('adding a command', () => {
     callback: cb,
     type: 'string'
   })
-
-  
 })
