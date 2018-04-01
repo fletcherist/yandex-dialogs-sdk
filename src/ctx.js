@@ -29,13 +29,15 @@ class Ctx {
      * то заворачиваем в стандартную форму.
      */
     if (typeof replyMessage === 'string') {
-      const reply = this.replyBuilder
+      replyMessage = this.replyBuilder
         .text(replyMessage)
         .tts(replyMessage)
         .get()
-      return reply
     }
+    return this._sendReply(replyMessage)
+  }
 
+  _sendReply(replyMessage) {
     /*
      * That fires when listening on port.
      */

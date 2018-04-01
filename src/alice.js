@@ -78,7 +78,7 @@ class Alice {
    * Match the request with action handler,
    * compose and return a reply.
    * @param {Object} req — JSON request from the client
-   * @param {Function} sendResponse — Express res.send function while listening on port.
+   * @param {Function} sendResponse — Express res function while listening on port.
    */
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
@@ -134,7 +134,8 @@ class Alice {
       const app = express()
       app.use(bodyParser.json())
       app.post(callbackUrl, async (req, res) => {
-        const replyMessage = await this.handleRequestBody(req.body, res.send)
+        const handleResponseCallback = response => res.send(response)
+        const replyMessage = await this.handleRequestBody(req.body, handleResponseCallback)
       })
       this.server = app.listen(port, () => {
         // Resolves with callback function
