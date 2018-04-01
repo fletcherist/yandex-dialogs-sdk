@@ -51,10 +51,16 @@ test('priority check, strings over regexps', async(done) => {
 
 test('listenining on port with callback', async(done) => {
   const alice = new Alice()
-  alice.listen('/', 3000, () => done())
+  alice.listen('/', 3000, () => {
+    alice.stopListening()
+    done()
+  })
 })
 
 test('listening on port with promise', async(done) => {
   const alice = new Alice()
-  alice.listen('/', 3001).then(() => done())
+  alice.listen('/', 3000).then(() => {
+    alice.stopListening()
+    done()
+  })
 })

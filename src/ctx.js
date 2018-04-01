@@ -4,8 +4,10 @@ const ButtonBuilder = require('./ButtonBuilder')
 class Ctx {
   constructor({
     req,
+    sendResponse
   }) {
     this.req = req
+    this.sendResponse = sendResponse
 
     this.sessionId = req.session.session_id
     this.messageId = req.session.message_id
@@ -32,6 +34,13 @@ class Ctx {
         .tts(replyMessage)
         .get()
       return reply
+    }
+
+    /*
+     * That fires when listening on port.
+     */
+    if (typeof this.sendResponse === 'function') {
+      return this.sendResponse(replyMessage)
     }
 
     return replyMessage

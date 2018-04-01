@@ -10,10 +10,10 @@ const isFunction = fn => fn && typeof fn === 'function'
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
-// declaring possible command types 
+// declaring possible command types
 const TYPE_STRING = 'string'
 const TYPE_REGEXP = 'regexp'
-const TYPE_ARRAY  = 'array'
+const TYPE_ARRAY = 'array'
 
 class Alice {
   constructor(config = {}) {
@@ -37,6 +37,11 @@ class Alice {
     this.middlewares.push(middleware)
   }
 
+  /*
+   * Set up the command
+   * @param {string | Array<string> | regex} name Trigger for the command
+   * @param {Function} callback Handler for the command
+   */
   command(name, callback) {
     let type
 
@@ -69,7 +74,13 @@ class Alice {
     this.anyCallback = callback
   }
 
-  async handleRequestBody(req) {
+  /*
+   * Match the request with action handler,
+   * compose and return a reply.
+   * @param {Object} req JSON request from the client
+   * @param {Function} sendResponse Express res.send function while listening on port.
+   */
+  async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
     let requestedCommands = []
 
@@ -90,9 +101,10 @@ class Alice {
     /*
      * Инициализация контекста запроса
      */
-     const ctx = new Ctx({
-      req: req
-     })
+    const ctx = new Ctx({
+      req: req,
+      sendResponse: sendResponse || null
+    })
     /*
      * Команда нашлась в списке.
      * Запускаем её обработчик.
@@ -123,21 +135,26 @@ class Alice {
       const app = express()
       app.use(bodyParser.json())
       app.post(callbackUrl, async (req, res) => {
-        const replyMessage = await this.handleRequestBody(req.body)
-        res.send(replyMessage)
+        const replyMessage = await this.handleRequestBody(req.body, res.send)
+        // res.send(replyMessage)
       })
-      app.listen(port, () => {
+      this.server = app.listen(port, () => {
         // Resolves with callback function
         if (isFunction(callback)) {
           return callback.call(this)
         }
-
 
         // If no callback specified, resolves as a promise.
         return Promise.resolve()
         // Resolves with promise if no callback set
       })
     })
+  }
+
+  stopListening() {
+    if (this.server) {
+      this.server.close()
+    }
   }
 }
 

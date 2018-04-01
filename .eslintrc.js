@@ -1,9 +1,7 @@
 module.exports = {
     "parser": "babel-eslint",
     "extends": "standard",
-    "plugins": [
-      "flowtype"
-    ],
+    "plugins": [],
     rules: {
       'no-return-await': 0,
       'space-before-function-paren': ["error", {
