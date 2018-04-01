@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const Fuse = require('fuse.js')
+const Commands = require('./commands')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
@@ -17,7 +18,6 @@ const TYPE_ARRAY = 'array'
 
 class Alice {
   constructor(config = {}) {
-    this.commands = []
     this.anyCallback = DEFAULT_ANY_CALLBACK
     this.fuseOptions = {
       tokenize: true,
@@ -25,7 +25,9 @@ class Alice {
       distance: config.fuzzyDistance || 10,
       keys: ['name']
     }
+    this.commands = new Commands(this.fuseOptions)
     this.middlewares = []
+    this.currentScene = null
   }
 
   /* @TODO: Implement watchers (errors, messages) */
@@ -43,26 +45,7 @@ class Alice {
    * @param {Function} callback — Handler for the command
    */
   command(name, callback) {
-    let type
-
-    if (typeof name === 'string') {
-      type = TYPE_STRING
-      name = name.toLowerCase()
-    } else if (name instanceof RegExp) {
-      type = TYPE_REGEXP
-    } else if (Array.isArray(name)) {
-      name = name.map(makeStringLower)
-      type = TYPE_ARRAY
-    } else {
-      throw new Error(`Command name is not of proper type.
-        Could be only string, array of strings or regular expression`)
-    }
-
-    this.commands.push({
-      name: name,
-      type: type,
-      callback: callback
-    })
+    this.commands.add(name, callback)
   }
 
   /*
@@ -82,21 +65,7 @@ class Alice {
    */
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
-    let requestedCommands = []
-
-    const stringCommands = this.commands.filter(cmd => cmd.type !== TYPE_REGEXP)
-    const fuse = new Fuse(stringCommands, this.fuseOptions)
-    const fuzzyMatches = fuse.search(requestedCommandName)
-
-    const regexpCommands = this.commands.filter(cmd => cmd.type === TYPE_REGEXP)
-    // @TODO: include matches and captured groups
-    const regexpMatches = regexpCommands.filter(reg => requestedCommandName.match(reg))
-
-    if (fuzzyMatches.length > 0) {
-      requestedCommands = fuzzyMatches
-    } else if (regexpCommands.length > 0) {
-      requestedCommands = regexpMatches
-    }
+    let requestedCommands = this.commands.search(requestedCommandName)
 
     /*
      * Инициализация контекста запроса
