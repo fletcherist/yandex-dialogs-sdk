@@ -35,6 +35,19 @@ alice.listen('/', 80)
 
 > Можно использовать как постоянно работающий сервер, так и serverless-платформы, такие как **AWS Lambda** или **Google Cloud Functions**. *Смотрите папку `/examples`*
 
+### Программируйте сложную логику
+
+```javascript
+const inBar = new Scene('in-the-bar')
+inBar.enter('Алиса, пойдём в бар!', ctx => ctx.reply('Пойдём.'))
+inBar.command('ты сейчас в баре?', ctx => ctx.reply('Да!'))
+inBar.leave('Пошли отсюда', ctx => ctx.reply('Уже ухожу.'))
+
+alice.registerScene(inBar)
+alice.command('ты сейчас в баре?', ctx => ctx.reply('Нет!'))
+
+```
+
 
 
 Создавайте сложные конструкции с кнопками и кастомизацией с помощью фабрик:
