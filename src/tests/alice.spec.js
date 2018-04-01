@@ -44,7 +44,17 @@ test('matching with regexp', async(done) => {
 test('priority check, strings over regexps', async(done) => {
   const alice = new Alice()
   
-  alice.command(/[а-яё]+/i, ctx => new Error('cyka'))
+  alice.command(/[а-яё]+/i, ctx => new Error('Error has occured'))
   alice.command('привет', ctx => done())
   alice.handleRequestBody(generateRequest('Привет как дела'))
+})
+
+test('listenining on port with callback', async(done) => {
+  const alice = new Alice()
+  alice.listen('/', 3000, () => done())
+})
+
+test('listening on port with promise', async(done) => {
+  const alice = new Alice()
+  alice.listen('/', 3001).then(() => done())
 })

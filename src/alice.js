@@ -5,6 +5,9 @@ const Fuse = require('fuse.js')
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
 
+const makeStringLower = str => typeof str === 'string' ? str.toLowerCase() : str
+const isFunction = fn => fn && typeof fn === 'function'
+
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
 // declaring possible command types 
@@ -22,11 +25,16 @@ class Alice {
       distance: config.fuzzyDistance || 10,
       keys: ['name']
     }
+    this.middlewares = []
   }
 
   /* @TODO: Implement watchers (errors, messages) */
   on() {
 
+  }
+
+  use(middleware) {
+    this.middlewares.push(middleware)
   }
 
   command(name, callback) {
@@ -38,10 +46,11 @@ class Alice {
     } else if (name instanceof RegExp) {
       type = TYPE_REGEXP
     } else if (Array.isArray(name)) {
-      name = name.map(el => typeof el === 'string' ? el.toLowerCase() : el)
+      name = name.map(makeStringLower)
       type = TYPE_ARRAY
     } else {
-      throw new Error('Unexpecto patronus')
+      throw new Error(`Command name is not of proper type.
+        Could be only string, array of strings or regular expression`)
     }
 
     this.commands.push({
@@ -108,14 +117,27 @@ class Alice {
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  listen(callbackUrl = '/', port = 80) {
-    const app = express()
-    app.use(bodyParser.json())
-    app.post(callbackUrl, async (req, res) => {
-      const replyMessage = await this.handleRequestBody(req.body)
-      res.send(replyMessage)
+  async listen(callbackUrl = '/', port = 80, callback) {
+    return new Promise(resolve => {
+      resolve()
+      const app = express()
+      app.use(bodyParser.json())
+      app.post(callbackUrl, async (req, res) => {
+        const replyMessage = await this.handleRequestBody(req.body)
+        res.send(replyMessage)
+      })
+      app.listen(port, () => {
+        // Resolves with callback function
+        if (isFunction(callback)) {
+          return callback.call(this)
+        }
+
+
+        // If no callback specified, resolves as a promise.
+        return Promise.resolve()
+        // Resolves with promise if no callback set
+      })
     })
-    app.listen(port, () => console.log(`Alice is listening on ${port} port`))
   }
 }
 
