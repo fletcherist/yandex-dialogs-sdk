@@ -5,14 +5,12 @@ const TYPE_STRING = 'string'
 const TYPE_REGEXP = 'regexp'
 const TYPE_ARRAY = 'array'
 
-// const makeStringLower = str => typeof str === 'string' ? str.toLowerCase() : str
-
 class Commands {
   constructor(config = {}) {
     this.commands = []
     this.fuseOptions = {
       tokenize: true,
-      treshold: config.fuzzyTreshold || 0.2,
+      treshold: config.fuzzyTreshold || 0.1,
       distance: config.fuzzyDistance || 10,
       keys: ['name']
     }

@@ -13,6 +13,7 @@ class Alice {
     this.anyCallback = DEFAULT_ANY_CALLBACK
     this.commands = new Commands()
     this.middlewares = []
+    this.scenes = []
     this.currentScene = null
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
@@ -54,6 +55,41 @@ class Alice {
    */
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
+    /* give control to the current scene */
+    if (this.currentScene !== null) {
+      /*
+       * Checking whether that's the leave scene
+       * activation trigger
+       */
+      if (this.currentScene.isLeaveCommand(requestedCommandName)) {
+        this.currentScene.handleRequest(req, sendResponse)
+        this.currentScene = null
+        return true
+      } else {
+        const sceneResponse = await this.currentScene.handleRequest(
+          req, sendResponse
+        )
+        if (sceneResponse) {
+          return true
+        }
+      }
+    } else {
+      /*
+       * Looking for scene's activational phrases
+       */
+      const matchedScene = this.scenes.find(scene =>
+        scene.isEnterCommand(requestedCommandName))
+      if (matchedScene) {
+        this.currentScene = matchedScene
+        const sceneResponse = await this.currentScene.handleRequest(
+          req, sendResponse
+        )
+        if (sceneResponse) {
+          return true
+        }
+      }
+    }
+
     let requestedCommands = this.commands.search(requestedCommandName)
 
     /*

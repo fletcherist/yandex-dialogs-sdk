@@ -4,15 +4,16 @@ const Ctx = require('./ctx')
 const Alice = require('./alice')
 
 const selectCommand = req => req.request.command
+
 class Scene extends Alice {
   constructor(name) {
     super()
     this.name = name
+    this.anyCallback = null
     this.commands = new Commands()
 
     this.enterCommand = null
     this.leaveCommand = null
-    console.log(this)
   }
   get title() {
     return this.name
@@ -28,6 +29,7 @@ class Scene extends Alice {
   enter(name, callback) {
     if (!name) throw new Error('Enter command name is not specified')
     this.enterCommand = new Command(name, callback)
+    this.commands.add(name, callback)
   }
 
   /*
@@ -36,54 +38,53 @@ class Scene extends Alice {
   leave(name, callback) {
     if (!name) throw new Error('Leave command name is not specified')
     this.leaveCommand = new Command(name, callback)
+    this.commands.add(name, callback)
   }
 
   command(name, callback) {
     this.commands.add(name, callback)
   }
 
-  async handleRequest(req) {
+  any(callback) {
+    this.anyCallback = callback
+  }
+
+  isEnterCommand(commandName) {
+    if (!this.enterCommand) return false
+    return this.enterCommand.name.toLowerCase() === commandName.toLowerCase()
+  }
+
+  isLeaveCommand(commandName) {
+    if (!this.leaveCommand) return false
+    return this.leaveCommand.name.toLowerCase() === commandName.toLowerCase()
+  }
+
+  async handleRequest(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
     const requestedCommands = this.commands.search(requestedCommandName)
 
+    if (this.isLeaveCommand(requestedCommandName)) {
+      this._handleLeaveScene()
+    }
+
     const ctx = new Ctx({
       req: req,
-      sendResponse: null,
-      leaveScene: this._handleLeaveScene.bind(this, this.name),
-      enterScene: this._handleEnterScene
+      sendResponse: sendResponse || null,
+      leaveScene: super._handleLeaveScene,
+      enterScene: super._handleEnterScene
     })
 
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
       return await requestedCommand.callback.call(this, ctx)
     }
+
+    if (this.anyCallback) {
+      return this.anyCallback.call(this, ctx)
+    }
+
+    return null
   }
 }
-
-const scene1 = new Scene('main_scene')
-scene1.command('привет', ctx => {
-  console.log(ctx)
-  ctx.leaveScene()
-})
-
-const generateRequest = (commandText, utteranceText) => ({
-  'meta': {
-    'client_id': 'Developer Console',
-    'locale': 'ru-RU',
-    'timezone': 'UTC'
-  },
-  'request': {
-    'command': commandText,
-    'original_utterance': utteranceText || commandText,
-    'type': 'SimpleUtterance'
-  },
-  'session': {
-    'message_id': 0,
-    'new': true
-  },
-  'version': '1.0'
-})
-
-scene1.handleRequest(generateRequest('привет'))
 
 module.exports = Scene
