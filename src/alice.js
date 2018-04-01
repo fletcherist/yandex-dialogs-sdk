@@ -39,8 +39,8 @@ class Alice {
 
   /*
    * Set up the command
-   * @param {string | Array<string> | regex} name Trigger for the command
-   * @param {Function} callback Handler for the command
+   * @param {string | Array<string> | regex} name — Trigger for the command
+   * @param {Function} callback — Handler for the command
    */
   command(name, callback) {
     let type
@@ -77,8 +77,8 @@ class Alice {
   /*
    * Match the request with action handler,
    * compose and return a reply.
-   * @param {Object} req JSON request from the client
-   * @param {Function} sendResponse Express res.send function while listening on port.
+   * @param {Object} req — JSON request from the client
+   * @param {Function} sendResponse — Express res.send function while listening on port.
    */
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
@@ -131,12 +131,10 @@ class Alice {
    */
   async listen(callbackUrl = '/', port = 80, callback) {
     return new Promise(resolve => {
-      resolve()
       const app = express()
       app.use(bodyParser.json())
       app.post(callbackUrl, async (req, res) => {
         const replyMessage = await this.handleRequestBody(req.body, res.send)
-        // res.send(replyMessage)
       })
       this.server = app.listen(port, () => {
         // Resolves with callback function
@@ -145,14 +143,14 @@ class Alice {
         }
 
         // If no callback specified, resolves as a promise.
-        return Promise.resolve()
+        return resolve()
         // Resolves with promise if no callback set
       })
     })
   }
 
   stopListening() {
-    if (this.server) {
+    if (this.server && this.server.close) {
       this.server.close()
     }
   }
