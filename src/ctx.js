@@ -5,6 +5,7 @@ class Ctx {
   constructor({
     req,
     sendResponse,
+    session,
 
     enterScene,
     leaveScene
@@ -17,6 +18,8 @@ class Ctx {
     this.userId = req.session.user_id
     this.payload = req.request.payload
     this.messsage = req.request.original_utterance
+
+    this.session = session
 
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()

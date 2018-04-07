@@ -11,7 +11,8 @@ const generateRequest = (commandText, utteranceText) => ({
   },
   'session': {
     'message_id': 0,
-    'new': true
+    'new': true,
+    'session_id': '6d0d2a2e-f14149b9-33febdb2-8037'
   },
   'version': '1.0'
 })

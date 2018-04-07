@@ -8,6 +8,7 @@ class Sessions {
   add(session) {
     const { sessionId } = session
     this.sessions[sessionId] = session
+    return this.sessions[sessionId]
   }
 
   find(session) {
@@ -20,6 +21,16 @@ class Sessions {
       return this.sessions[sessionId]
     }
     return null
+  }
+
+  findOrCreate(sessionId) {
+    if (this.findById(sessionId)) {
+      return this.findById(sessionId)
+    }
+
+    const session = new Session(sessionId)
+    this.add(session)
+    return session
   }
 
   get length() {
@@ -47,6 +58,14 @@ class Session {
     if (!sessionId) throw new Error('Cant create new session. Missed {sessionId}')
     this.sessionId = sessionId
     this.data = data
+  }
+
+  set currentScene(scene) {
+    this.data.currentScene = scene
+  }
+
+  get currentScene() {
+    return this.data.currentScene
   }
 
   get() {

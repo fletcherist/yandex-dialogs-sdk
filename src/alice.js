@@ -5,6 +5,9 @@ const { Sessions, Session } = require('./sessions')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
+const selectSession = req => req.session
+const selectSessionId = req => selectSession(req).session_id
+const selectUserId = req => selectSession(req).user_id
 const isFunction = fn => fn && typeof fn === 'function'
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
@@ -57,18 +60,28 @@ class Alice {
    */
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
+
+    /* initializing session */
+    const sessionId = selectSessionId(req)
+    const session = this.sessions.findOrCreate(sessionId)
+
+    /* check whether current scene is not defined */
+    if (!session.data.currentScene) {
+      session.update({currentScene: null})
+    }
+
     /* give control to the current scene */
-    if (this.currentScene !== null) {
+    if (session.currentScene !== null) {
       /*
        * Checking whether that's the leave scene
        * activation trigger
        */
-      if (this.currentScene.isLeaveCommand(requestedCommandName)) {
-        this.currentScene.handleRequest(req, sendResponse)
-        this.currentScene = null
+      if (session.currentScene.isLeaveCommand(requestedCommandName)) {
+        session.currentScene.handleRequest(req, sendResponse)
+        session.currentScene = null
         return true
       } else {
-        const sceneResponse = await this.currentScene.handleRequest(
+        const sceneResponse = await session.currentScene.handleRequest(
           req, sendResponse
         )
         if (sceneResponse) {
@@ -82,8 +95,8 @@ class Alice {
       const matchedScene = this.scenes.find(scene =>
         scene.isEnterCommand(requestedCommandName))
       if (matchedScene) {
-        this.currentScene = matchedScene
-        const sceneResponse = await this.currentScene.handleRequest(
+        session.currentScene = matchedScene
+        const sceneResponse = await session.currentScene.handleRequest(
           req, sendResponse
         )
         if (sceneResponse) {
@@ -99,6 +112,7 @@ class Alice {
      */
     const ctx = new Ctx({
       req: req,
+      session: session,
       sendResponse: sendResponse || null
     })
     /*
