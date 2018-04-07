@@ -38,8 +38,14 @@ function reversedInterpolation(template, string) {
 
 module.exports.reversedInterpolation = reversedInterpolation
 
-module.exports.selectCommand = req => req.request.command
-module.exports.selectSession = req => req.session
-module.exports.selectSessionId = req => selectSession(req).session_id
-module.exports.selectUserId = req => selectSession(req).user_id
-module.exports.isFunction = fn => fn && typeof fn === 'function'
+const selectCommand = req => req.request.command
+const selectSession = req => req.session
+const selectSessionId = req => selectSession(req).session_id
+const selectUserId = req => selectSession(req).user_id
+const isFunction = fn => fn && typeof fn === 'function'
+
+module.exports.selectCommand = selectCommand
+module.exports.selectSession = selectSession
+module.exports.selectSessionId = selectSessionId
+module.exports.selectUserId = selectUserId
+module.exports.isFunction = isFunction
