@@ -48,3 +48,21 @@ test('listening on port with promise', async (done) => {
     done()
   })
 })
+
+test('ctx body', async (done) => {
+  const alice = new Alice()
+  alice.command('забронируй встречу в ${where} на ${when}', ctx => {
+    /*
+     * Context body parses message and extract phrases
+     * in brackets!
+     */
+    expect(ctx.body).toEqual({
+      where: '7-холмов',
+      when: '18:00'
+    })
+    done()
+  })
+  alice.handleRequestBody(
+    generateRequest('забронируй встречу в 7-холмов на 18:00')
+  )
+})
