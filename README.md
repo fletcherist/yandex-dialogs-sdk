@@ -62,7 +62,7 @@ alice.handleRequestBody(
 )
 ```
 
-> Больше примеров в папке **(Examples)[https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples]**
+> Больше примеров в папке **(https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)[./examples]**
 
 
 
