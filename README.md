@@ -49,6 +49,22 @@ alice.command('ты сейчас в баре?', ctx => ctx.reply('Нет!'))
 ```
 
 
+### Больше не надо парсить ответы руками
+```javascript
+alice.command('забронируй встречу в ${where} на ${when}', ctx => {
+  const { where, when } = ctx.body
+  // where — '7-холмов'
+  // when — '18:00'
+  ctx.reply(`Готово. Встреча состоится в ${where}. Тебе напомнить?`)
+})
+alice.handleRequestBody(
+  generateRequest('забронируй встречу в 7-холмов на 18:00')
+)
+```
+
+> Больше примеров в папке **(Examples)[https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples]**
+
+
 
 Создавайте сложные конструкции с кнопками и кастомизацией с помощью фабрик:
 
