@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const Commands = require('./commands')
+const { Sessions, Session } = require('./sessions')
 
 const Ctx = require('./ctx')
 const selectCommand = req => req.request.command
@@ -15,6 +16,7 @@ class Alice {
     this.middlewares = []
     this.scenes = []
     this.currentScene = null
+    this.sessions = new Sessions()
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
