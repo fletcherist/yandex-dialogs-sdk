@@ -1,5 +1,14 @@
 const ReplyBuilder = require('./replyBuilder')
 const ButtonBuilder = require('./ButtonBuilder')
+const { reversedInterpolation } = require('./utils')
+
+const {
+  selectCommand,
+  selectSession,
+  selectSessionId,
+  selectUserId,
+  isFunction
+} = require('./utils')
 
 class Ctx {
   constructor({
@@ -8,7 +17,9 @@ class Ctx {
     session,
 
     enterScene,
-    leaveScene
+    leaveScene,
+
+    command
   }) {
     this.req = req
     this.sendResponse = sendResponse
@@ -28,6 +39,15 @@ class Ctx {
       this.enterScene = enterScene
       this.leaveScene = leaveScene
     }
+
+    if (command) {
+      this.command = command
+    }
+  }
+
+  get body() {
+    const requestText = selectCommand(this.req)
+    return reversedInterpolation(this.command.name, requestText)
   }
 
   async reply(replyMessage) {

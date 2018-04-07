@@ -2,13 +2,17 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const Commands = require('./commands')
 const { Sessions, Session } = require('./sessions')
+const { merge } = require('ramda')
 
 const Ctx = require('./ctx')
-const selectCommand = req => req.request.command
-const selectSession = req => req.session
-const selectSessionId = req => selectSession(req).session_id
-const selectUserId = req => selectSession(req).user_id
-const isFunction = fn => fn && typeof fn === 'function'
+
+const {
+  selectCommand,
+  selectSession,
+  selectSessionId,
+  selectUserId,
+  isFunction
+} = require('./utils')
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
@@ -110,17 +114,21 @@ class Alice {
     /*
      * Инициализация контекста запроса
      */
-    const ctx = new Ctx({
+    const ctxDefaultParams = {
       req: req,
       session: session,
       sendResponse: sendResponse || null
-    })
+    }
+    
     /*
      * Команда нашлась в списке.
      * Запускаем её обработчик.
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
+      const ctx = new Ctx(merge(ctxDefaultParams, {
+        command: requestedCommand
+      }))
       return await requestedCommand.callback.call(this, ctx)
     }
 
@@ -128,6 +136,7 @@ class Alice {
      * Такой команды не было зарегестрировано.
      * Переходим в обработчик исключений
      */
+    const ctx = new Ctx(ctxDefaultParams)
     return await this.anyCallback.call(this, ctx)
   }
 

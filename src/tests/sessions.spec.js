@@ -40,5 +40,4 @@ test('Creating session array', () => {
   expect(sessions.find(session)).toEqual(session)
   expect(sessions.find(session).data).toEqual(mockedUpdate)
 
-
 })
