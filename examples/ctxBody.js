@@ -12,9 +12,6 @@ alice.command('начни готовить ${what}', ctx => {
 })
 
 
-alice.handleRequestBody(
-  generateRequest('забронируй встречу в 7-холмов на 18:00')
-)
-
+alice.handleRequestBody(generateRequest('забронируй встречу в 7-холмов на 18:00'))
 alice.handleRequestBody(generateRequest('начни готовить завтрак'))
 alice.handleRequestBody(generateRequest('начни готовить ужин'))

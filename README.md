@@ -1,4 +1,5 @@
 # yandex-dialogs-sdk
+[![npm version](https://badge.fury.io/js/yandex-dialogs-sdk.svg)](https://badge.fury.io/js/yandex-dialogs-sdk)
 
 Создавать навыки для Алисы — это очень просто.
 
