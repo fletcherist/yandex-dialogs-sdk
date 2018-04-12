@@ -38,6 +38,8 @@ alice.listen('/', 80)
 ### Программируйте сложную логику
 
 ```javascript
+const Scene = require('yandex-dialogs-sdk').Scene
+
 const inBar = new Scene('in-the-bar')
 inBar.enter('Алиса, пойдём в бар!', ctx => ctx.reply('Пойдём.'))
 inBar.command('ты сейчас в баре?', ctx => ctx.reply('Да!'))
@@ -105,6 +107,7 @@ API очень простой и удобный.
 #### Свойства
 
 * **ctx.message** — Полное сообщение от пользователя.
+* **ctx.body** — объект с данными после парсина ([подробнее](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples/ctxBody.js))
 * **ctx.sessionId** — ID сессии.
 * **ctx.messageId** — ID сообщения.
 * **ctx.userId** — ID пользователя.
