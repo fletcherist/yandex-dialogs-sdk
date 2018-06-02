@@ -1,5 +1,5 @@
 const ReplyBuilder = require('./replyBuilder')
-const ButtonBuilder = require('./ButtonBuilder')
+const ButtonBuilder = require('./buttonBuilder')
 const { reversedInterpolation } = require('./utils')
 
 const {

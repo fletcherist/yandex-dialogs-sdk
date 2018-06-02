@@ -141,6 +141,13 @@ class Alice {
   }
 
   /*
+   * Same as handleRequestBody, but syntax shorter
+   */
+  async handleRequest(req, sendResponse) {
+    return this.handleRequestBody(req, sendResponse)
+  }
+
+  /*
    * Метод создаёт сервер, который слушает указанный порт.
    * Когда на указанный URL приходит POST запрос, управление
    * передаётся в @handleRequestBody
