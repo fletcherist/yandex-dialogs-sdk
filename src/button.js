@@ -2,7 +2,7 @@ const button = params => {
 	// Button has been created from string
 	if (typeof params === 'string') {
 		return {
-			text: params
+			title: params
 		}
 	}
 
@@ -21,7 +21,7 @@ const button = params => {
     }
 
     return {
-    	text: title || text,
+    	title: title || text,
     	tts,
     	url,
     	shouldHide,
