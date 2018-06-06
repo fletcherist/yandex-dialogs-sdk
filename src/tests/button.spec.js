@@ -11,7 +11,7 @@ test('create button with string constructor', () => {
 test('create button with object constructor', () => {
   const expected = {
     title: 'show messages',
-    payload: { test: 'test' }
+    payload: { test: 'test' },
     hide: true
   }
   const btn = button({
