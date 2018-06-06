@@ -12,7 +12,7 @@ const button = params => {
       text,
       tts,
       url,
-      shouldHide = false,
+      hide = false,
       payload
     } = params
 
@@ -24,7 +24,7 @@ const button = params => {
     	title: title || text,
     	tts,
     	url,
-    	shouldHide,
+    	hide,
     	payload
     }
 	}
