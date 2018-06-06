@@ -1,5 +1,7 @@
-const DEFAULT_END_SESSION = false
-const DEFAULT_VERSION = '1.0'
+const {
+	DEFAULT_END_SESSION,
+	ALICE_PROTOCOL_VERSION
+} = require('./constants')
 
 const reply = (params) => {
 	const data = {
@@ -8,7 +10,7 @@ const reply = (params) => {
 	    end_session: DEFAULT_END_SESSION
 	  },
 	  session: null,
-	  version: DEFAULT_VERSION
+	  version: ALICE_PROTOCOL_VERSION
 	}
 
 	if (typeof params === 'string') {

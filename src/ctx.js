@@ -64,6 +64,8 @@ class Ctx {
         .text(replyMessage)
         .tts(replyMessage)
         .get()
+
+      replyMessage.session = this.session
     }
     return this._sendReply(replyMessage)
   }
