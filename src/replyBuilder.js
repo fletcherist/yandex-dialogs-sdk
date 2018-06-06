@@ -10,8 +10,11 @@ class ReplyBuilder {
         buttons: [],
         end_session: DEFAULT_END_SESSION
       },
-      session: request.session,
       version: ALICE_PROTOCOL_VERSION
+    }
+
+    if (request) {
+      this.reply.session = request.session
     }
   }
 
