@@ -64,6 +64,11 @@ class Ctx {
         .text(replyMessage)
         .tts(replyMessage)
         .get()
+
+      // Is no session, lets use context session
+      if (!replyMessage.session) {
+        replyMessage.session = this.session
+      }
     }
     return this._sendReply(replyMessage)
   }

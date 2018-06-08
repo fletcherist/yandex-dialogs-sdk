@@ -1,5 +1,7 @@
-const DEFAULT_END_SESSION = false
-const DEFAULT_VERSION = '1.0'
+const {
+  DEFAULT_END_SESSION,
+  ALICE_PROTOCOL_VERSION
+} = require('./constants')
 
 class ReplyBuilder {
   constructor(request) {
@@ -8,8 +10,11 @@ class ReplyBuilder {
         buttons: [],
         end_session: DEFAULT_END_SESSION
       },
-      session: request.session,
-      version: DEFAULT_VERSION
+      version: ALICE_PROTOCOL_VERSION
+    }
+
+    if (request) {
+      this.reply.session = request.session
     }
   }
 
