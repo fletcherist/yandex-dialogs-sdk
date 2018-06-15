@@ -34,7 +34,15 @@ class Alice {
 
   }
 
+  /*
+   * Attach alice middleware to the application
+   * @param {Function} middleware - function, that receives {context}
+   * and makes some modifications with it.
+   */
   use(middleware) {
+    if (!isFunction(middleware)) {
+      throw new Error('Any middleware could only be a function.')
+    }
     this.middlewares.push(middleware)
   }
 
@@ -112,13 +120,21 @@ class Alice {
     let requestedCommands = this.commands.search(requestedCommandName)
 
     /*
-     * Инициализация контекста запроса
+     * Initializing context of the request
      */
     const ctxDefaultParams = {
       req: req,
       session: session,
-      sendResponse: sendResponse || null
+      sendResponse: sendResponse || null,
+      /*
+       * if Alice is listening on express.js port, add this server instance
+       * to the context
+       */
+      server: this.server || null
     }
+
+    /* Run all middlewares */
+    this.middlewares.forEach(middleware => middleware.call(this, ctx))
     
     /*
      * Команда нашлась в списке.
@@ -129,6 +145,7 @@ class Alice {
       const ctx = new Ctx(merge(ctxDefaultParams, {
         command: requestedCommand
       }))
+
       return await requestedCommand.callback.call(this, ctx)
     }
 
