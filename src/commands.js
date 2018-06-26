@@ -73,7 +73,7 @@ class Commands {
 
 class Command {
   constructor(name, callback) {
-    if (!name) throw new Error('Command name is not specified')
+    if (name === undefined) throw new Error('Command name is not specified')
     this.name = name
     this.callback = callback
     this.type = this._defineCommandType(this.name)
