@@ -1,14 +1,6 @@
 const ReplyBuilder = require('./replyBuilder')
 const ButtonBuilder = require('./buttonBuilder')
-const { reversedInterpolation } = require('./utils')
-
-const {
-  selectCommand,
-  selectSession,
-  selectSessionId,
-  selectUserId,
-  isFunction
-} = require('./utils')
+const { reversedInterpolation, selectCommand } = require('./utils')
 
 class Ctx {
   constructor({

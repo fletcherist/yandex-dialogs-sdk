@@ -29,7 +29,6 @@ test('Creating session array', () => {
   /* test not found session */
   expect(sessions.findById('')).toBe(null)
 
-
   /* when something changes in session
     it should change in sessions too
   */
@@ -39,5 +38,4 @@ test('Creating session array', () => {
   session.update(mockedUpdate)
   expect(sessions.find(session)).toEqual(session)
   expect(sessions.find(session).data).toEqual(mockedUpdate)
-
 })

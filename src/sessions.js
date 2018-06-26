@@ -45,7 +45,7 @@ class Sessions {
     return false
   }
 
-  /* 
+  /*
    * Remove all sessions
    */
   flush() {
@@ -86,7 +86,6 @@ class Session {
     this.data = merge(this.data, data)
   }
 }
-
 
 module.exports = Sessions
 module.exports.Sessions = Sessions
