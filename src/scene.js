@@ -80,7 +80,7 @@ class Scene extends Alice {
     }
 
     if (this.anyCallback) {
-      return this.anyCallback.call(this, ctx)
+      return this.anyCallback(ctx)
     }
 
     return null
