@@ -19,11 +19,12 @@ const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не 
 class Alice {
   constructor(config = {}) {
     this.anyCallback = DEFAULT_ANY_CALLBACK
-    this.commands = new Commands()
+    this.commands = new Commands(config.fuseOptions || null)
     this.middlewares = []
     this.scenes = []
     this.currentScene = null
     this.sessions = new Sessions()
+    this.config = config
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
