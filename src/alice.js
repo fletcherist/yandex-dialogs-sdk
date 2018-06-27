@@ -67,7 +67,7 @@ class Alice {
     const requestedCommandName = selectCommand(req)
 
     /* clear old sessions */
-    if (this.sessions.length > this.config.sessionsLimit || 1000) {
+    if (this.sessions.length > (this.config.sessionsLimit || 1000)) {
       this.sessions.flush()
     } 
 
