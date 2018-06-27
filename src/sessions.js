@@ -60,14 +60,6 @@ class Session {
     this.data = data
   }
 
-  set currentScene(scene) {
-    this.data.currentScene = scene
-  }
-
-  get currentScene() {
-    return this.data.currentScene
-  }
-
   get() {
     return Object.freeze({
       sessionId: this.sessionId,
@@ -75,11 +67,19 @@ class Session {
     })
   }
 
+  getData(key) {
+    return this.data[key]
+  }
+
   set(data) {
     if (typeof data !== 'object') {
       throw new Error(`Can't set data. Data should be an object`)
     }
     this.data = data
+  }
+
+  setData(key, value) {
+    this.data[key] = value
   }
 
   update(data) {
