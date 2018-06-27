@@ -24,6 +24,7 @@ class Alice {
     this.scenes = []
     this.currentScene = null
     this.sessions = new Sessions()
+    this.config = config
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
@@ -64,6 +65,11 @@ class Alice {
    */
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
+
+    /* clear old sessions */
+    if (this.sessions.length > this.config.sessionsLimit || 1000) {
+      this.sessions.flush()
+    } 
 
     /* initializing session */
     const sessionId = selectSessionId(req)
