@@ -14,6 +14,10 @@ const alice = new Alice()
  * 
  */
 
+alice.first(async (ctx) => {
+  return ctx.reply('Привет! Смотри, что я могу')
+})
+
 // Example for pure strings #1
 alice.command('дай совет', async (ctx) => {
   return ctx.reply('Make const not var')
