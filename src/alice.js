@@ -71,7 +71,7 @@ class Alice {
 
     /* check whether current scene is not defined */
     if (!session.data.currentScene) {
-      session.update({currentScene: null})
+      session.update({ currentScene: null })
     }
 
     /* give control to the current scene */
@@ -81,12 +81,12 @@ class Alice {
        * activation trigger
        */
       if (session.currentScene.isLeaveCommand(requestedCommandName)) {
-        session.currentScene.handleRequest(req, sendResponse)
+        session.currentScene.handleRequest(req, sendResponse, session)
         session.currentScene = null
         return true
       } else {
         const sceneResponse = await session.currentScene.handleRequest(
-          req, sendResponse
+          req, sendResponse, session
         )
         if (sceneResponse) {
           return true
@@ -101,7 +101,7 @@ class Alice {
       if (matchedScene) {
         session.currentScene = matchedScene
         const sceneResponse = await session.currentScene.handleRequest(
-          req, sendResponse
+          req, sendResponse, session
         )
         if (sceneResponse) {
           return true
