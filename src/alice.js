@@ -48,6 +48,13 @@ class Alice {
   }
 
   /*
+  * Стартовая команда на начало сессии
+  */
+  first(callback) {
+    this.firstCommand = callback
+  }
+
+  /*
    * Если среди команд не нашлось той,
    * которую запросил пользователь,
    * вызывается этот колбек
@@ -119,7 +126,15 @@ class Alice {
       session: session,
       sendResponse: sendResponse || null
     }
-    
+
+    /*
+    * Если новая сессия, то запускаем стартовую команду
+    */
+    if (req.session.new && this.firstCommand) {
+      const ctx = new Ctx(ctxDefaultParams)
+      return await this.firstCommand.call(this, ctx)
+    }
+
     /*
      * Команда нашлась в списке.
      * Запускаем её обработчик.
