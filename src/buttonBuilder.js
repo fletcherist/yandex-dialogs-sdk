@@ -11,7 +11,7 @@ class ButtonBuilder {
       throw new Error('Invalid ButtonBuilder constructor type. Should be object')
     }
     const {
-      title, text, url, shouldHide, payload
+      title, text
     } = buttonConstructor
     if (!title && !text) {
       throw new Error('Button [title] or [text] is required for ButtonBuilder constructor.')

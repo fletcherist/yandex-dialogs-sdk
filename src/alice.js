@@ -1,16 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const Commands = require('./commands')
-const { Sessions, Session } = require('./sessions')
+const { Sessions } = require('./sessions')
 const { merge } = require('ramda')
 
 const Ctx = require('./ctx')
 
 const {
   selectCommand,
-  selectSession,
   selectSessionId,
-  selectUserId,
   isFunction
 } = require('./utils')
 
@@ -133,9 +130,6 @@ class Alice {
       server: this.server || null
     }
 
-    /* Run all middlewares */
-    this.middlewares.forEach(middleware => middleware.call(this, ctx))
-    
     /*
      * Команда нашлась в списке.
      * Запускаем её обработчик.
@@ -154,7 +148,7 @@ class Alice {
      * Переходим в обработчик исключений
      */
     const ctx = new Ctx(ctxDefaultParams)
-    return await this.anyCallback.call(this, ctx)
+    return await this.anyCallback(ctx)
   }
 
   /*
@@ -175,10 +169,10 @@ class Alice {
   async listen(callbackUrl = '/', port = 80, callback) {
     return new Promise(resolve => {
       const app = express()
-      app.use(bodyParser.json())
+      app.use(express.json())
       app.post(callbackUrl, async (req, res) => {
         const handleResponseCallback = response => res.send(response)
-        const replyMessage = await this.handleRequestBody(req.body, handleResponseCallback)
+        await this.handleRequestBody(req.body, handleResponseCallback)
       })
       this.server = app.listen(port, () => {
         // Resolves with callback function

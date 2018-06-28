@@ -27,7 +27,7 @@ alice.command(['сколько стоит bitcoin', 'стоимость bitcoin'
 
 // Example for regular expressions #3
 alice.command(/(https?:\/\/[^\s]+)/g, ctx => {
-  return ctx.reply('I am matching any url you send me')
+  return ctx.reply('I am matching any url you send me.')
 })
 
 alice.any(async (ctx) => {

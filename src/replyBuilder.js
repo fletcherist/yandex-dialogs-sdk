@@ -44,6 +44,7 @@ class ReplyBuilder {
 
   shouldEndSession(flag) {
     this.reply.response.end_session = flag
+    return this
   }
 
   get() {

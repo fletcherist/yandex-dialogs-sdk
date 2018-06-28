@@ -9,7 +9,7 @@ const SEARCH_REGEX_STR = '(.*)'
 function extractTemplateTokenNames(template) {
   const matchedTokens = template.match(MATCH_REGEX).map(formatToken)
   const tokensObject = {}
-  matchedTokens.forEach((token, index) => tokensObject[token] = index)
+  matchedTokens.forEach((token, index) => { tokensObject[token] = index })
   return tokensObject
 }
 
