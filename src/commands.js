@@ -9,8 +9,8 @@ class Commands {
   constructor(config = {}) {
     this.commands = []
     this.fuseOptions = {
-      tokenize: true,
-      treshold: config.fuzzyTreshold || 0.1,
+      tokenize: false,
+      threshold: config.fuzzyTreshold || 0.3,
       distance: config.fuzzyDistance || 10,
       keys: ['name']
     }
