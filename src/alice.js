@@ -1,16 +1,13 @@
 const express = require('express')
-const bodyParser = require('body-parser')
 const Commands = require('./commands')
-const { Sessions, Session } = require('./sessions')
+const { Sessions } = require('./sessions')
 const { merge } = require('ramda')
 
 const Ctx = require('./ctx')
 
 const {
   selectCommand,
-  selectSession,
   selectSessionId,
-  selectUserId,
   isFunction
 } = require('./utils')
 
@@ -19,11 +16,12 @@ const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не 
 class Alice {
   constructor(config = {}) {
     this.anyCallback = DEFAULT_ANY_CALLBACK
-    this.commands = new Commands()
+    this.commands = new Commands(config.fuseOptions || null)
     this.middlewares = []
     this.scenes = []
     this.currentScene = null
     this.sessions = new Sessions()
+    this.config = config
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
@@ -34,7 +32,15 @@ class Alice {
 
   }
 
+  /*
+   * Attach alice middleware to the application
+   * @param {Function} middleware - function, that receives {context}
+   * and makes some modifications with it.
+   */
   use(middleware) {
+    if (!isFunction(middleware)) {
+      throw new Error('Any middleware could only be a function.')
+    }
     this.middlewares.push(middleware)
   }
 
@@ -87,12 +93,12 @@ class Alice {
        */
       if (matchedScene) {
         if (matchedScene.isLeaveCommand(requestedCommandName)) {
-          matchedScene.handleRequest(req, sendResponse)
+          matchedScene.handleRequest(req, sendResponse, session)
           session.setData('currentScene', null)
           return true
         } else {
           const sceneResponse = await matchedScene.handleRequest(
-            req, sendResponse
+            req, sendResponse, session
           )
           if (sceneResponse) {
             return true
@@ -108,7 +114,7 @@ class Alice {
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
         const sceneResponse = await matchedScene.handleRequest(
-          req, sendResponse
+          req, sendResponse, session
         )
         if (sceneResponse) {
           return true
@@ -119,14 +125,19 @@ class Alice {
     let requestedCommands = this.commands.search(requestedCommandName)
 
     /*
-     * Инициализация контекста запроса
+     * Initializing context of the request
      */
     const ctxDefaultParams = {
       req: req,
       session: session,
-      sendResponse: sendResponse || null
+      sendResponse: sendResponse || null,
+      /*
+       * if Alice is listening on express.js port, add this server instance
+       * to the context
+       */
+      server: this.server || null
     }
-    
+
     /*
      * Команда нашлась в списке.
      * Запускаем её обработчик.
@@ -136,6 +147,7 @@ class Alice {
       const ctx = new Ctx(merge(ctxDefaultParams, {
         command: requestedCommand
       }))
+
       return await requestedCommand.callback.call(this, ctx)
     }
 
@@ -144,7 +156,7 @@ class Alice {
      * Переходим в обработчик исключений
      */
     const ctx = new Ctx(ctxDefaultParams)
-    return await this.anyCallback.call(this, ctx)
+    return await this.anyCallback(ctx)
   }
 
   /*
@@ -165,10 +177,10 @@ class Alice {
   async listen(callbackUrl = '/', port = 80, callback) {
     return new Promise(resolve => {
       const app = express()
-      app.use(bodyParser.json())
+      app.use(express.json())
       app.post(callbackUrl, async (req, res) => {
         const handleResponseCallback = response => res.send(response)
-        const replyMessage = await this.handleRequestBody(req.body, handleResponseCallback)
+        await this.handleRequestBody(req.body, handleResponseCallback)
       })
       this.server = app.listen(port, () => {
         // Resolves with callback function

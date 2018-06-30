@@ -6,12 +6,12 @@ const TYPE_REGEXP = 'regexp'
 const TYPE_ARRAY = 'array'
 
 class Commands {
-  constructor(config = {}) {
+  constructor(config = null) {
     this.commands = []
-    this.fuseOptions = {
-      tokenize: true,
-      treshold: config.fuzzyTreshold || 0.1,
-      distance: config.fuzzyDistance || 10,
+    this.fuseOptions = config || {
+      tokenize: false,
+      threshold: 0.1,
+      distance: 10,
       keys: ['name']
     }
   }
@@ -36,7 +36,7 @@ class Commands {
   _searchRegexps(requestedCommandName) {
     const regexpCommands = this._regexps
     // @TODO: include matches and captured groups
-    return regexpCommands.filter(reg => requestedCommandName.match(reg))
+    return regexpCommands.filter(reg => requestedCommandName.match(reg.name))
   }
 
   search(requestedCommandName) {
@@ -73,7 +73,7 @@ class Commands {
 
 class Command {
   constructor(name, callback) {
-    if (!name) throw new Error('Command name is not specified')
+    if (name === undefined) throw new Error('Command name is not specified')
     this.name = name
     this.callback = callback
     this.type = this._defineCommandType(this.name)

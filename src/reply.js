@@ -1,3 +1,5 @@
+/* eslint camelcase: 0 */
+
 const {
   DEFAULT_END_SESSION,
   ALICE_PROTOCOL_VERSION
