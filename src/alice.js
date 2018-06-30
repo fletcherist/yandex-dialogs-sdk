@@ -76,26 +76,33 @@ class Alice {
     const session = this.sessions.findOrCreate(sessionId)
 
     /* check whether current scene is not defined */
-    if (!session.data.currentScene) {
-      session.update({ currentScene: null })
+    if (!session.getData('currentScene')) {
+      session.setData('currentScene', null)
     }
 
     /* give control to the current scene */
-    if (session.currentScene !== null) {
+    if (session.getData('currentScene') !== null) {
+
+      const matchedScene = this.scenes.find(scene => {
+        return scene.name === session.currentScene
+      })
+
       /*
        * Checking whether that's the leave scene
        * activation trigger
        */
-      if (session.currentScene.isLeaveCommand(requestedCommandName)) {
-        session.currentScene.handleRequest(req, sendResponse, session)
-        session.currentScene = null
-        return true
-      } else {
-        const sceneResponse = await session.currentScene.handleRequest(
-          req, sendResponse, session
-        )
-        if (sceneResponse) {
+      if (matchedScene) {
+        if (matchedScene.isLeaveCommand(requestedCommandName)) {
+          matchedScene.handleRequest(req, sendResponse, session)
+          session.setData('currentScene', null)
           return true
+        } else {
+          const sceneResponse = await matchedScene.handleRequest(
+            req, sendResponse, session
+          )
+          if (sceneResponse) {
+            return true
+          }
         }
       }
     } else {
@@ -105,8 +112,8 @@ class Alice {
       const matchedScene = this.scenes.find(scene =>
         scene.isEnterCommand(requestedCommandName))
       if (matchedScene) {
-        session.currentScene = matchedScene
-        const sceneResponse = await session.currentScene.handleRequest(
+        session.setData('currentScene', matchedScene.name)
+        const sceneResponse = await matchedScene.handleRequest(
           req, sendResponse, session
         )
         if (sceneResponse) {
