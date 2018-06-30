@@ -9,7 +9,7 @@ class Commands {
   constructor(config = null) {
     this.commands = []
     this.fuseOptions = config || {
-      tokenize: false,
+      tokenize: true,
       threshold: 0.1,
       distance: 10,
       keys: ['name']

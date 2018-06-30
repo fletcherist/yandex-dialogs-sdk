@@ -6,14 +6,14 @@ const { generateRequest } = require('./testUtils')
 test('matching with string', async (done) => {
   const alice = new Alice()
 
-  alice.command('привет', ctx => done())
+  alice.command('Привет, как дела', ctx => done())
   alice.handleRequestBody(generateRequest('Привет, как дела?'))
 })
 
 test('matching with array', async (done) => {
   const alice = new Alice()
 
-  alice.command(['привет', 'как'], ctx => done())
+  alice.command(['привет', 'как дела'], ctx => done())
   alice.handleRequestBody(generateRequest('Привет, как дела?'))
 })
 
