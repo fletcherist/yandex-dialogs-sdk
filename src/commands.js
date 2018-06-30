@@ -6,12 +6,12 @@ const TYPE_REGEXP = 'regexp'
 const TYPE_ARRAY = 'array'
 
 class Commands {
-  constructor(config = {}) {
+  constructor(config = null) {
     this.commands = []
-    this.fuseOptions = {
+    this.fuseOptions = config || {
       tokenize: false,
-      threshold: config.fuzzyTreshold || 0.3,
-      distance: config.fuzzyDistance || 10,
+      threshold: 0.1,
+      distance: 10,
       keys: ['name']
     }
   }

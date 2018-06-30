@@ -6,11 +6,12 @@ const Alice = require('./alice')
 const selectCommand = req => req.request.command
 
 class Scene extends Alice {
-  constructor(name) {
+  constructor(name, config = {}) {
     super()
     this.name = name
     this.anyCallback = null
-    this.commands = new Commands()
+    this.commands = new Commands(config.fuseOptions || null)
+    this.config = config
 
     this.enterCommand = null
     this.leaveCommand = null
