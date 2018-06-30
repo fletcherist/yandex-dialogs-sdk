@@ -36,7 +36,7 @@ class Commands {
   _searchRegexps(requestedCommandName) {
     const regexpCommands = this._regexps
     // @TODO: include matches and captured groups
-    return regexpCommands.filter(reg => requestedCommandName.match(reg))
+    return regexpCommands.filter(reg => requestedCommandName.match(reg.name))
   }
 
   search(requestedCommandName) {
