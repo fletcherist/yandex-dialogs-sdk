@@ -5,7 +5,10 @@
   "main": "src/index.js",
   "scripts": {
     "lint": "eslint src",
-    "test": "jest"
+    "test": "jest",
+    "version": "npm run changelog && git add CHANGELOG.md",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "release": "conventional-github-releaser -p angular"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,8 @@
     "ramda": "^0.25.0"
   },
   "devDependencies": {
+    "conventional-changelog-cli": "^2.0.0",
+    "conventional-github-releaser": "^3.1.0",
     "eslint": "^4.19.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.10.0",
