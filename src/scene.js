@@ -60,7 +60,7 @@ class Scene extends Alice {
     return this.leaveCommand.name.toLowerCase() === commandName.toLowerCase()
   }
 
-  async handleRequest(req, sendResponse) {
+  async handleRequest(req, sendResponse, session) {
     const requestedCommandName = selectCommand(req)
     const requestedCommands = this.commands.search(requestedCommandName)
 
@@ -72,7 +72,8 @@ class Scene extends Alice {
       req: req,
       sendResponse: sendResponse || null,
       leaveScene: super._handleLeaveScene,
-      enterScene: super._handleEnterScene
+      enterScene: super._handleEnterScene,
+      session: session
     })
 
     if (requestedCommands.length !== 0) {
@@ -81,7 +82,7 @@ class Scene extends Alice {
     }
 
     if (this.anyCallback) {
-      return this.anyCallback.call(this, ctx)
+      return this.anyCallback(ctx)
     }
 
     return null

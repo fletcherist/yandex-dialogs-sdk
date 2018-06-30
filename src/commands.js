@@ -9,7 +9,7 @@ class Commands {
   constructor(config = null) {
     this.commands = []
     this.fuseOptions = config || {
-      tokenize: true,
+      tokenize: false,
       threshold: 0.1,
       distance: 10,
       keys: ['name']
@@ -36,7 +36,7 @@ class Commands {
   _searchRegexps(requestedCommandName) {
     const regexpCommands = this._regexps
     // @TODO: include matches and captured groups
-    return regexpCommands.filter(reg => requestedCommandName.match(reg))
+    return regexpCommands.filter(reg => requestedCommandName.match(reg.name))
   }
 
   search(requestedCommandName) {
@@ -73,7 +73,7 @@ class Commands {
 
 class Command {
   constructor(name, callback) {
-    if (!name) throw new Error('Command name is not specified')
+    if (name === undefined) throw new Error('Command name is not specified')
     this.name = name
     this.callback = callback
     this.type = this._defineCommandType(this.name)

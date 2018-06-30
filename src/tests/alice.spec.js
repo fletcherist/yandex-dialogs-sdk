@@ -1,7 +1,6 @@
 const Alice = require('../alice')
 const { generateRequest } = require('./testUtils')
 
-
 // Test for matching all command types
 
 test('matching with string', async (done) => {
@@ -11,7 +10,7 @@ test('matching with string', async (done) => {
   alice.handleRequestBody(generateRequest('Привет, как дела?'))
 })
 
-test('matching with array', async(done) => {
+test('matching with array', async (done) => {
   const alice = new Alice()
 
   alice.command(['привет', 'как'], ctx => done())
