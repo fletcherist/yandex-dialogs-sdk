@@ -14,28 +14,28 @@ const alice = new Alice()
  * 
  */
 
-alice.first(async (ctx) => {
-  return ctx.reply('Привет! Смотри, что я могу')
+alice.welcome(async (ctx) => {
+  ctx.reply('Привет! Смотри, что я могу')
 })
 
 // Example for pure strings #1
 alice.command('дай совет', async (ctx) => {
-  return ctx.reply('Make const not var')
+  ctx.reply('Make const not var')
 })
 
 // Example for array of strings #2
 alice.command(['сколько стоит bitcoin', 'стоимость bitcoin', 'цена биткоина'], ctx => {
   // Will trigger on any string above
-  return ctx.reply('now 8800$')
+  ctx.reply('now 8800$')
 })
 
 // Example for regular expressions #3
 alice.command(/(https?:\/\/[^\s]+)/g, ctx => {
-  return ctx.reply('I am matching any url you send me.')
+  ctx.reply('I am matching any url you send me.')
 })
 
 alice.any(async (ctx) => {
-  return ctx.reply('О чём это вы?')
+  ctx.reply('О чём это вы?')
 })
 
 alice.listen('/', 8080)

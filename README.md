@@ -16,22 +16,22 @@
 const Alice = require('yandex-dialogs-sdk')
 const alice = new Alice()
 
-alice.first(async (ctx) => {
-  return ctx.reply('Привет! Смотри, что я могу')
+alice.welcome(async (ctx) => {
+  ctx.reply('Привет! Смотри, что я могу')
 })
 
 alice.command('дай совет', async (ctx) => {
-  return ctx.reply('Make const not var')
+  ctx.reply('Make const not var')
 })
 
 alice.command(['билет в кино', 'что посмотреть', 'что показывают'], ctx => {
-  return ctx.reply('') 
+  ctx.reply('') 
 })
 
 alice.command(/(https?:\/\/[^\s]+)/g, ctx => ctx.reply('Matched a link!'))
 
 alice.any(async (ctx) => {
-  return ctx.reply('О чём это вы?')
+  ctx.reply('О чём это вы?')
 })
 
 alice.listen('/', 80)

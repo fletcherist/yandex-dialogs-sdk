@@ -16,6 +16,7 @@ const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не 
 class Alice {
   constructor(config = {}) {
     this.anyCallback = DEFAULT_ANY_CALLBACK
+    this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
     this.middlewares = []
     this.scenes = []
@@ -56,8 +57,8 @@ class Alice {
   /*
   * Стартовая команда на начало сессии
   */
-  first(callback) {
-    this.firstCommand = callback
+  welcome(callback) {
+    this.welcomeCallback = callback
   }
 
   /*
@@ -152,9 +153,9 @@ class Alice {
     /*
     * Если новая сессия, то запускаем стартовую команду
     */
-    if (req.session.new && this.firstCommand) {
+    if (req.session.new && this.welcomeCallback) {
       const ctx = new Ctx(ctxDefaultParams)
-      return await this.firstCommand(ctx)
+      return await this.welcomeCallback(ctx)
     }
     /*
      * Команда нашлась в списке.
