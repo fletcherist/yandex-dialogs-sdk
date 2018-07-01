@@ -14,7 +14,7 @@
 ### Если вы собрались помочь в разработке
 `git clone`
 
-`yarn && npm run dev`
+`yarn && npm run test && npm run dev`
 > typescript-приложение соберётся в ./dist
 
 
