@@ -1,4 +1,5 @@
-const ButtonBuilder = require('../buttonBuilder')
+// const ButtonBuilder = require('../buttonBuilder')
+import ButtonBuilder from '../buttonBuilder'
 
 test('common test for buttonBuilder', () => {
   const expected = {

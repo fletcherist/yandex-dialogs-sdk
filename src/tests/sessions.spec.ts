@@ -5,14 +5,14 @@ test('session methods', () => {
   expect(session.sessionId).toBe('some-session-id')
 
   const mockedSet = {
-    foo: 'bar'
+    foo: 'bar',
   }
   session.set(mockedSet)
   expect(session.data).toEqual(mockedSet)
 
   const mockedUpdate = {
     bar: 'baz',
-    foo: 'foo'
+    foo: 'foo',
   }
   session.update(mockedUpdate)
   expect(session.data).toEqual(mockedUpdate)
@@ -33,7 +33,7 @@ test('Creating session array', () => {
     it should change in sessions too
   */
   const mockedUpdate = {
-    foo: 'bar'
+    foo: 'bar',
   }
   session.update(mockedUpdate)
   expect(sessions.find(session)).toEqual(session)
