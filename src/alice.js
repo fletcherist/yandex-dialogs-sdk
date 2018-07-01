@@ -96,7 +96,7 @@ class Alice {
     /* give control to the current scene */
     if (session.getData('currentScene') !== null) {
       const matchedScene = this.scenes.find(scene => {
-        return scene.name === session.currentScene
+        return scene.name === session.getData('currentScene');
       })
 
       /*
