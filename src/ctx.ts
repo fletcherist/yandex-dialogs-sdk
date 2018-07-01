@@ -1,8 +1,27 @@
-const ReplyBuilder = require('./replyBuilder')
-const ButtonBuilder = require('./buttonBuilder')
 const { reversedInterpolation, selectCommand } = require('./utils')
+import Session from './session'
 
-class Ctx {
+import ReplyBuilder from './replyBuilder'
+import ButtonBuilder from './buttonBuilder'
+import Command from './command'
+
+export default class Ctx {
+  public req: {}
+  public sessionId: string
+  public messageId: string
+  public userId: string
+  public payload: {}
+  public message: string
+  public session: Session
+
+  public command?: Command
+
+  public replyBuilder: ReplyBuilder
+  public buttonBuilder: ButtonBuilder
+
+  private sendResponse: (response: string) => void
+  private enterScene: () => void
+  private leaveScene: () => void
   constructor({
     req,
     sendResponse,
@@ -11,7 +30,7 @@ class Ctx {
     enterScene,
     leaveScene,
 
-    command
+    command,
   }) {
     this.req = req
     this.sendResponse = sendResponse
@@ -20,7 +39,7 @@ class Ctx {
     this.messageId = req.session.message_id
     this.userId = req.session.user_id
     this.payload = req.request.payload
-    this.messsage = req.request.original_utterance
+    this.message = req.request.original_utterance
 
     this.session = session
 
@@ -42,7 +61,7 @@ class Ctx {
     return reversedInterpolation(this.command.name, requestText)
   }
 
-  async reply(replyMessage) {
+  public async reply(replyMessage) {
     if (!replyMessage) {
       throw new Error('Reply message could not be empty!')
     }
@@ -65,7 +84,7 @@ class Ctx {
     return this._sendReply(replyMessage)
   }
 
-  _sendReply(replyMessage) {
+  public _sendReply(replyMessage) {
     /*
      * That fires when listening on port.
      */

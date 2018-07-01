@@ -1,6 +1,6 @@
 // Для асинхронной работы используется пакет micro.
 const { json } = require('micro')
-const Alice = require('../src/index')
+const Alice = require('../dist/index')
 const alice = new Alice()
 
 alice.command('say my name', (ctx) => {

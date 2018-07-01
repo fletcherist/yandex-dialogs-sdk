@@ -1,16 +1,27 @@
-const {
+import {
   DEFAULT_END_SESSION,
-  ALICE_PROTOCOL_VERSION
-} = require('./constants')
+  ALICE_PROTOCOL_VERSION,
+} from './constants'
 
-class ReplyBuilder {
+interface ReplyInterface {
+  response: {
+    text?: string,
+    tts?: string,
+    buttons: any[], // @TODO: change to button type
+    end_session: boolean,
+  },
+  version: string,
+  session?: {},
+}
+export default class ReplyBuilder {
+  public reply: ReplyInterface
   constructor(request) {
     this.reply = {
       response: {
         buttons: [],
-        end_session: DEFAULT_END_SESSION
+        end_session: DEFAULT_END_SESSION,
       },
-      version: ALICE_PROTOCOL_VERSION
+      version: ALICE_PROTOCOL_VERSION,
     }
 
     if (request) {
@@ -18,7 +29,7 @@ class ReplyBuilder {
     }
   }
 
-  text(textMessage) {
+  public text(textMessage) {
     if (!textMessage) {
       throw new Error('Text message for reply could not be empty!')
     }
@@ -26,7 +37,7 @@ class ReplyBuilder {
     return this
   }
 
-  tts(ttsMessage) {
+  public tts(ttsMessage) {
     if (!ttsMessage) {
       throw new Error('Text-to-speech message for Alice can not be empty!')
     }
@@ -34,7 +45,7 @@ class ReplyBuilder {
     return this
   }
 
-  addButton(button) {
+  public addButton(button) {
     if (!button) {
       throw new Error('Button block can not be empty!')
     }
@@ -42,12 +53,12 @@ class ReplyBuilder {
     return this
   }
 
-  shouldEndSession(flag) {
+  public shouldEndSession(flag) {
     this.reply.response.end_session = flag
     return this
   }
 
-  get() {
+  public get() {
     return this.reply
   }
 }

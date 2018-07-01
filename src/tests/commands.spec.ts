@@ -11,6 +11,6 @@ test('adding a command', () => {
   expect(commands.getByName('Привет, алиса!')).toEqual({
     name: 'Привет, алиса!',
     callback: cb,
-    type: 'string'
+    type: 'string',
   })
 })

@@ -1,5 +1,5 @@
-const Alice = require('../src')
-const Scene = require('../src').Scene
+const Alice = require('../dist')
+const Scene = require('../dist').Scene
 
 const alice = new Alice()
 

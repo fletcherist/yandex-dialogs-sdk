@@ -1,19 +1,32 @@
-const express = require('express')
-const Commands = require('./commands')
-const { Sessions } = require('./sessions')
-const { merge } = require('ramda')
+import express from 'express'
+import Commands from './commands'
+import { Sessions } from './sessions'
+import { merge } from 'ramda'
+
+import Scene from './scene'
+import { ADDRCONFIG } from 'dns'
 
 const Ctx = require('./ctx')
 
 const {
   selectCommand,
   selectSessionId,
-  isFunction
+  isFunction,
 } = require('./utils')
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 
-class Alice {
+export default class Alice {
+  private anyCallback: (ctx: Ctx) => void
+  private welcomeCallback: (ctx: Ctx) => void
+  private commands: Commands
+  private middlewares: any[]
+  private scenes: Scene[]
+  private currentScene: Scene | null
+  private sessions: Sessions
+  private config: {}
+  private server: {}
+
   constructor(config = {}) {
     this.anyCallback = DEFAULT_ANY_CALLBACK
     this.welcomeCallback = null
@@ -29,7 +42,8 @@ class Alice {
   }
 
   /* @TODO: Implement watchers (errors, messages) */
-  on() {
+  // tslint:disable-next-line:no-empty
+  public on() {
 
   }
 
@@ -38,7 +52,7 @@ class Alice {
    * @param {Function} middleware - function, that receives {context}
    * and makes some modifications with it.
    */
-  use(middleware) {
+  public use(middleware) {
     if (!isFunction(middleware)) {
       throw new Error('Any middleware could only be a function.')
     }
@@ -50,14 +64,14 @@ class Alice {
    * @param {string | Array<string> | regex} name — Trigger for the command
    * @param {Function} callback — Handler for the command
    */
-  command(name, callback) {
+  public command(name, callback) {
     this.commands.add(name, callback)
   }
 
   /*
   * Стартовая команда на начало сессии
   */
-  welcome(callback) {
+  public welcome(callback) {
     this.welcomeCallback = callback
   }
 
@@ -66,7 +80,7 @@ class Alice {
    * которую запросил пользователь,
    * вызывается этот колбек
    */
-  any(callback) {
+  public any(callback) {
     this.anyCallback = callback
   }
 
@@ -76,13 +90,13 @@ class Alice {
    * @param {Object} req — JSON request from the client
    * @param {Function} sendResponse — Express res function while listening on port.
    */
-  async handleRequestBody(req, sendResponse) {
+  public async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
 
     /* clear old sessions */
     if (this.sessions.length > (this.config.sessionsLimit || 1000)) {
       this.sessions.flush()
-    } 
+    }
 
     /* initializing session */
     const sessionId = selectSessionId(req)
@@ -95,8 +109,8 @@ class Alice {
 
     /* give control to the current scene */
     if (session.getData('currentScene') !== null) {
-      const matchedScene = this.scenes.find(scene => {
-        return scene.name === session.getData('currentScene');
+      const matchedScene = this.scenes.find((scene) => {
+        return scene.name === session.getData('currentScene')
       })
 
       /*
@@ -110,7 +124,7 @@ class Alice {
           return true
         } else {
           const sceneResponse = await matchedScene.handleRequest(
-            req, sendResponse, session
+            req, sendResponse, session,
           )
           if (sceneResponse) {
             return true
@@ -121,12 +135,12 @@ class Alice {
       /*
        * Looking for scene's activational phrases
        */
-      const matchedScene = this.scenes.find(scene =>
+      const matchedScene = this.scenes.find((scene) =>
         scene.isEnterCommand(requestedCommandName))
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
         const sceneResponse = await matchedScene.handleRequest(
-          req, sendResponse, session
+          req, sendResponse, session,
         )
         if (sceneResponse) {
           return true
@@ -134,28 +148,28 @@ class Alice {
       }
     }
 
-    let requestedCommands = this.commands.search(requestedCommandName)
+    const requestedCommands = this.commands.search(requestedCommandName)
 
     /*
      * Initializing context of the request
      */
     const ctxDefaultParams = {
-      req: req,
-      session: session,
+      req,
+      session,
       sendResponse: sendResponse || null,
       /*
        * if Alice is listening on express.js port, add this server instance
        * to the context
        */
-      server: this.server || null
+      server: this.server || null,
     }
 
     /*
     * Если новая сессия, то запускаем стартовую команду
     */
     if (req.session.new && this.welcomeCallback) {
-      const ctx = new Ctx(ctxDefaultParams)
-      return await this.welcomeCallback(ctx)
+      const ctxInstance = new Ctx(ctxDefaultParams)
+      return await this.welcomeCallback(ctxInstance)
     }
     /*
      * Команда нашлась в списке.
@@ -163,11 +177,11 @@ class Alice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
-      const ctx = new Ctx(merge(ctxDefaultParams, {
-        command: requestedCommand
+      const ctxInstance = new Ctx(merge(ctxDefaultParams, {
+        command: requestedCommand,
       }))
 
-      return await requestedCommand.callback(ctx)
+      return await requestedCommand.callback(ctxInstance)
     }
 
     /*
@@ -181,7 +195,7 @@ class Alice {
   /*
    * Same as handleRequestBody, but syntax shorter
    */
-  async handleRequest(req, sendResponse) {
+  public async handleRequest(req, sendResponse) {
     return this.handleRequestBody(req, sendResponse)
   }
 
@@ -193,12 +207,12 @@ class Alice {
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  async listen(callbackUrl = '/', port = 80, callback) {
-    return new Promise(resolve => {
+  public async listen(callbackUrl = '/', port = 80, callback) {
+    return new Promise((resolve) => {
       const app = express()
       app.use(express.json())
       app.post(callbackUrl, async (req, res) => {
-        const handleResponseCallback = response => res.send(response)
+        const handleResponseCallback = (response) => res.send(response)
         await this.handleRequestBody(req.body, handleResponseCallback)
       })
       this.server = app.listen(port, () => {
@@ -214,21 +228,20 @@ class Alice {
     })
   }
 
-  registerScene(scene) {
+  public registerScene(scene) {
     this.scenes.push(scene)
   }
 
-  stopListening() {
+  public stopListening() {
     if (this.server && this.server.close) {
       this.server.close()
     }
   }
 
-  _handleEnterScene(sceneName) {
+  private _handleEnterScene(sceneName) {
     this.currentScene = sceneName
   }
-  _handleLeaveScene(sceneName) {
-    console.log('leaving scene', sceneName)
+  private _handleLeaveScene(sceneName) {
     this.currentScene = null
   }
 }

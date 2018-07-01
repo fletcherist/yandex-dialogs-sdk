@@ -10,6 +10,14 @@
 
 `yarn add yandex-dialogs-sdk`
 
+
+### Если вы собрались помочь в разработке
+`git clone`
+
+`yarn && npm run test && npm run dev`
+> typescript-приложение соберётся в ./dist
+
+
 ### Создайте своё первое приложение
 
 ```javascript

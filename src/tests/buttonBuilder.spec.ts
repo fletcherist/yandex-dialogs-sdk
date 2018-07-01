@@ -1,4 +1,5 @@
-const ButtonBuilder = require('../buttonBuilder')
+// const ButtonBuilder = require('../buttonBuilder')
+import ButtonBuilder from '../buttonBuilder'
 
 test('common test for buttonBuilder', () => {
   const expected = {
@@ -6,8 +7,8 @@ test('common test for buttonBuilder', () => {
     url: 'https://example.com',
     hide: true,
     payload: {
-      some: 'data'
-    }
+      some: 'data',
+    },
   }
 
   const button = new ButtonBuilder()

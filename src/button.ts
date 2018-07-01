@@ -1,8 +1,8 @@
-const button = params => {
+const button = (params) => {
   // Button has been created from string
   if (typeof params === 'string') {
     return {
-      title: params
+      title: params,
     }
   }
 
@@ -13,7 +13,7 @@ const button = params => {
       tts,
       url,
       hide = false,
-      payload
+      payload,
     } = params
 
     if (!title && !text) {
@@ -25,7 +25,7 @@ const button = params => {
       tts,
       url,
       hide,
-      payload
+      payload,
     }
   }
 
@@ -34,3 +34,4 @@ const button = params => {
 }
 
 module.exports = button
+export default button
