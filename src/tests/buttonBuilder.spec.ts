@@ -7,8 +7,8 @@ test('common test for buttonBuilder', () => {
     url: 'https://example.com',
     hide: true,
     payload: {
-      some: 'data'
-    }
+      some: 'data',
+    },
   }
 
   const button = new ButtonBuilder()

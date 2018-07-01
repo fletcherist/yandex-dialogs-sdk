@@ -42,6 +42,7 @@ export default class Alice {
   }
 
   /* @TODO: Implement watchers (errors, messages) */
+  // tslint:disable-next-line:no-empty
   public on() {
 
   }

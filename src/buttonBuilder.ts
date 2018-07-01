@@ -1,5 +1,16 @@
+
+interface ButtonConstructor {
+  title?: string // title and text — same
+  text?: string
+}
 export default class ButtonBuilder {
-  constructor(buttonConstructor?: {}) {
+  public button: {
+    title?: string,
+    url?: string,
+    hide?: boolean,
+    payload?: {},
+  }
+  constructor(buttonConstructor?: ButtonConstructor) {
     /* No button object passed to the constructor */
     if (!buttonConstructor) {
       this.button = {}
@@ -17,13 +28,8 @@ export default class ButtonBuilder {
       throw new Error('Button [title] or [text] is required for ButtonBuilder constructor.')
     }
 
-    this.button = Object.assign({}, buttonConstructor)
+    this.button = buttonConstructor
     return this.button
-  }
-
-  public _setTitle(title) {
-    this.button.title = title
-    return this
   }
 
   public text(text) {
@@ -51,6 +57,11 @@ export default class ButtonBuilder {
 
   public get() {
     return this.button
+  }
+
+  private _setTitle(title) {
+    this.button.title = title
+    return this
   }
 }
 
