@@ -1,5 +1,5 @@
 <a name="1.1.9"></a>
-## 1.1.9 (2018-06-30)
+## [1.1.9](https://github.com/fletcherist/yandex-dialogs-sdk/compare/c266eac...v1.1.9) (2018-06-30)
 
 
 ### Bug Fixes
