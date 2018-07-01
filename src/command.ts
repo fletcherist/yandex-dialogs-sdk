@@ -6,12 +6,13 @@ import {
 
     CommandType,
 } from './constants'
+import Ctx from './ctx'
 
 const foo: 'bar' = 'bar'
 
 export default class Command {
     public name: any[] | string | RegExp
-    public callback: () => void
+    public callback: (ctx: Ctx) => void
     public type: | CommandType
 
     constructor(name: string, callback: (() => void)) {

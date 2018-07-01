@@ -167,8 +167,8 @@ export default class Alice {
     * Если новая сессия, то запускаем стартовую команду
     */
     if (req.session.new && this.welcomeCallback) {
-      const ctx = new Ctx(ctxDefaultParams)
-      return await this.welcomeCallback(ctx)
+      const ctxInstance = new Ctx(ctxDefaultParams)
+      return await this.welcomeCallback(ctxInstance)
     }
     /*
      * Команда нашлась в списке.
@@ -176,11 +176,11 @@ export default class Alice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
-      const ctx = new Ctx(merge(ctxDefaultParams, {
+      const ctxInstance = new Ctx(merge(ctxDefaultParams, {
         command: requestedCommand,
       }))
 
-      return await requestedCommand.callback(ctx)
+      return await requestedCommand.callback(ctxInstance)
     }
 
     /*
@@ -237,11 +237,10 @@ export default class Alice {
     }
   }
 
-  public _handleEnterScene(sceneName) {
+  private _handleEnterScene(sceneName) {
     this.currentScene = sceneName
   }
-  public _handleLeaveScene(sceneName) {
-    console.log('leaving scene', sceneName)
+  private _handleLeaveScene(sceneName) {
     this.currentScene = null
   }
 }
