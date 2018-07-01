@@ -15,17 +15,17 @@ class Sessions {
 
   public find(session) {
     if (!session) { throw new Error('No session provided') }
-    return Object.values(this.sessions).find((_sess) => session === _sess)
+    return Object.values(this.sessions).find((sessionCandidate) => session === sessionCandidate)
   }
 
-  public findById(sessionId) {
+  public findById(sessionId: string) {
     if (this.sessions[sessionId]) {
       return this.sessions[sessionId]
     }
     return null
   }
 
-  public findOrCreate(sessionId) {
+  public findOrCreate(sessionId: string) {
     if (this.findById(sessionId)) {
       return this.findById(sessionId)
     }

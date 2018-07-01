@@ -4,17 +4,16 @@ import { Sessions } from './sessions'
 import { merge } from 'ramda'
 
 import Scene from './scene'
-import { ADDRCONFIG } from 'dns'
+import Ctx from './ctx'
 
-const Ctx = require('./ctx')
-
-const {
+import {
   selectCommand,
   selectSessionId,
   isFunction,
-} = require('./utils')
+} from './utils'
 
 const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
+const DEFAULT_SESSIONS_LIMIT: number = 1000
 
 export default class Alice {
   private anyCallback: (ctx: Ctx) => void
@@ -94,7 +93,7 @@ export default class Alice {
     const requestedCommandName = selectCommand(req)
 
     /* clear old sessions */
-    if (this.sessions.length > (this.config.sessionsLimit || 1000)) {
+    if (this.sessions.length > (this.config.sessionsLimit || DEFAULT_SESSIONS_LIMIT)) {
       this.sessions.flush()
     }
 
@@ -207,7 +206,7 @@ export default class Alice {
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  public async listen(callbackUrl = '/', port = 80, callback) {
+  public async listen(callbackUrl = '/', port = 80, callback: () => void) {
     return new Promise((resolve) => {
       const app = express()
       app.use(express.json())
@@ -245,5 +244,3 @@ export default class Alice {
     this.currentScene = null
   }
 }
-
-module.exports = Alice

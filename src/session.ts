@@ -3,7 +3,7 @@ import { merge } from 'ramda'
 export default class Session {
     public sessionId: string
     public data: {}
-    constructor(sessionId, data = {}) {
+    constructor(sessionId: string, data = {}) {
         if (!sessionId) { throw new Error('Cant create new session. Missed {sessionId}') }
         this.sessionId = sessionId
         this.data = data

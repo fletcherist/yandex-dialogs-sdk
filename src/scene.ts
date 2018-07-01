@@ -1,7 +1,7 @@
+import Alice from './alice'
 const Commands = require('./commands')
 const Command = require('./commands').Command
 const Ctx = require('./ctx')
-const Alice = require('./alice')
 
 const selectCommand = (req) => req.request.command
 

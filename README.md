@@ -17,7 +17,6 @@
 `yarn && npm run test && npm run dev`
 > typescript-приложение соберётся в ./dist
 
-
 ### Создайте своё первое приложение
 
 ```javascript
@@ -236,6 +235,11 @@ const buyBtn = ctx.buttonBuilder
   .shouldHide(true)
   .get()
 ```
+
+## 🔨 Сделано с помощью SDK
+
+- [yandex-dialogs-whatis](https://github.com/popstas/yandex-dialogs-whatis) 
+Бот подскажет, что где находится, если вы перед этим расскажете ему об этом
 
 
 # Contributors
