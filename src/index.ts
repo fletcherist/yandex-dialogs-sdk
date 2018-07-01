@@ -1,4 +1,4 @@
-import replyBuilder from './replyBuilder.js'
+import replyBuilder from './replyBuilder'
 
 const Alice = require('./alice')
 const Scene = require('./scene')
