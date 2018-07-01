@@ -45,7 +45,7 @@ class Sessions {
     return false
   }
 
-  /* 
+  /*
    * Remove all sessions
    */
   flush() {
@@ -60,19 +60,15 @@ class Session {
     this.data = data
   }
 
-  set currentScene(scene) {
-    this.data.currentScene = scene
-  }
-
-  get currentScene() {
-    return this.data.currentScene
-  }
-
   get() {
     return Object.freeze({
       sessionId: this.sessionId,
       data: this.data
     })
+  }
+
+  getData(key) {
+    return this.data[key]
   }
 
   set(data) {
@@ -82,11 +78,14 @@ class Session {
     this.data = data
   }
 
+  setData(key, value) {
+    this.data[key] = value
+  }
+
   update(data) {
     this.data = merge(this.data, data)
   }
 }
-
 
 module.exports = Sessions
 module.exports.Sessions = Sessions

@@ -1,10 +1,14 @@
 {
   "name": "yandex-dialogs-sdk",
-  "version": "1.1.7",
+  "version": "1.1.9",
   "description": "Build your skill for Alice with ease.",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "lint": "eslint src",
+    "test": "jest",
+    "version": "npm run changelog && git add CHANGELOG.md",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "release": "conventional-github-releaser -p angular"
   },
   "repository": {
     "type": "git",
@@ -28,19 +32,19 @@
   },
   "homepage": "https://github.com/fletcherist/yandex-dialogs-sdk#readme",
   "dependencies": {
-    "body-parser": "^1.18.2",
     "express": "^4.16.3",
     "fuse.js": "^3.2.0",
-    "node-fetch": "^2.1.1",
     "ramda": "^0.25.0"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
+    "conventional-changelog-cli": "^2.0.0",
+    "conventional-github-releaser": "^3.1.0",
     "eslint": "^4.19.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.10.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.0.1"
+    "eslint-plugin-standard": "^3.0.1",
+    "jest": "^23.2.0"
   }
 }
