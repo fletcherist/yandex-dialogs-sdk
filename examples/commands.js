@@ -1,4 +1,4 @@
-const Alice = require('../src/index')
+const Alice = require('../dist/index')
 const alice = new Alice()
 
 /*
@@ -11,7 +11,7 @@ const alice = new Alice()
  *
  * Для строк и массивов строк использутся fuzzysearch (fuse.js)
  * В случае с регулярными выражениями вы пишете триггер сами.
- * 
+ *
  */
 
 alice.welcome(async (ctx) => {

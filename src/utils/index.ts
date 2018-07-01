@@ -19,7 +19,7 @@ function searchFiguresInString(template, string) {
   return matched.filter(Boolean).slice(1)
 }
 
-function getFiguresRegexp(figure){
+function getFiguresRegexp(figure) {
   const searchTemplate = figure.replace(MATCH_REGEX, SEARCH_REGEX_STR)
   return new RegExp(searchTemplate, 'ig')
 }
@@ -32,7 +32,7 @@ function connectTokensWithFigures(tokens, figures) {
   return res
 }
 
-function reversedInterpolation(template, string) {
+function reversedInterpolation(template: string, string: string) {
   if (!template) throw new Error('No template provided')
   if (!string) throw new Error('No string provided')
   const tokens = extractTemplateTokenNames(template)
@@ -40,17 +40,18 @@ function reversedInterpolation(template, string) {
   return connectTokensWithFigures(tokens, figures)
 }
 
-module.exports.reversedInterpolation = reversedInterpolation
-
 const selectCommand = req => req.request.command
 const selectSession = req => req.session
 const selectSessionId = req => selectSession(req).session_id
 const selectUserId = req => selectSession(req).user_id
-const isFunction = fn => fn && typeof fn === 'function'
+const isFunction = (fn: Function) => fn && typeof fn === 'function'
 
-module.exports.getFiguresRegexp = getFiguresRegexp
-module.exports.selectCommand = selectCommand
-module.exports.selectSession = selectSession
-module.exports.selectSessionId = selectSessionId
-module.exports.selectUserId = selectUserId
-module.exports.isFunction = isFunction
+export {
+  getFiguresRegexp,
+  selectCommand,
+  selectSession,
+  selectSessionId,
+  selectUserId,
+  isFunction,
+  reversedInterpolation
+}

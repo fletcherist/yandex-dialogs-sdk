@@ -43,7 +43,7 @@ class Commands {
     return figuresCommands.filter(figure => {
       const reg = utils.getFiguresRegexp(figure.name)
       return requestedCommandName.match(reg)
-    });
+    })
   }
 
   _searchRegexps(requestedCommandName) {
@@ -102,7 +102,7 @@ class Command {
 
     if (typeof name === 'string') {
       type = TYPE_STRING
-      if(name.includes('${')){
+      if (name.includes('${')) {
         type = TYPE_FIGURE
       }
     } else if (name instanceof RegExp) {

@@ -1,10 +1,10 @@
-const Alice = require('../src/index')
+const Alice = require('../dist/index')
 const alice = new Alice()
 
 const aliceCorsMiddleware = (params) => {
   return ctx => {
     if (ctx.server) {
-      ctx.server.use(function(req, res, next) {
+      ctx.server.use(function (req, res, next) {
         res.header('Access-Control-Allow-Origin', '*')
         res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
         next()

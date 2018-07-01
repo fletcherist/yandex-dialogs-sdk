@@ -82,7 +82,7 @@ class Alice {
     /* clear old sessions */
     if (this.sessions.length > (this.config.sessionsLimit || 1000)) {
       this.sessions.flush()
-    } 
+    }
 
     /* initializing session */
     const sessionId = selectSessionId(req)
@@ -96,7 +96,7 @@ class Alice {
     /* give control to the current scene */
     if (session.getData('currentScene') !== null) {
       const matchedScene = this.scenes.find(scene => {
-        return scene.name === session.getData('currentScene');
+        return scene.name === session.getData('currentScene')
       })
 
       /*

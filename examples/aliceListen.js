@@ -1,4 +1,4 @@
-const Alice = require('../src/index')
+const Alice = require('../dist/index')
 const alice = new Alice()
 
 alice.welcome(async (ctx) => {
