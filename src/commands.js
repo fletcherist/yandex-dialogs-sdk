@@ -1,7 +1,9 @@
 const Fuse = require('fuse.js')
+const utils = require('./utils')
 
 // declaring possible command types
 const TYPE_STRING = 'string'
+const TYPE_FIGURE = 'figure'
 const TYPE_REGEXP = 'regexp'
 const TYPE_ARRAY = 'array'
 
@@ -23,6 +25,9 @@ class Commands {
   get _strings() {
     return this.commands.filter(cmd => cmd.type !== TYPE_REGEXP)
   }
+  get _figures() {
+    return this.commands.filter(cmd => cmd.type === TYPE_FIGURE)
+  }
   get _regexps() {
     return this.commands.filter(cmd => cmd.type === TYPE_REGEXP)
   }
@@ -31,6 +36,14 @@ class Commands {
     const stringCommands = this._strings
     const fuse = new Fuse(stringCommands, this.fuseOptions)
     return fuse.search(requestedCommandName)
+  }
+
+  _searchFigures(requestedCommandName) {
+    const figuresCommands = this._figures
+    return figuresCommands.filter(figure => {
+      const reg = utils.getFiguresRegexp(figure.name)
+      return requestedCommandName.match(reg)
+    });
   }
 
   _searchRegexps(requestedCommandName) {
@@ -42,10 +55,13 @@ class Commands {
   search(requestedCommandName) {
     const matchedStrings = this._searchStrings(requestedCommandName)
     const matchedRegexps = this._searchRegexps(requestedCommandName)
+    const matchedFigures = this._searchFigures(requestedCommandName)
     if (matchedStrings.length > 0) {
       return matchedStrings
     } else if (matchedRegexps.length > 0) {
       return matchedRegexps
+    } else if (matchedFigures.length > 0) {
+      return matchedFigures
     } else {
       return []
     }
@@ -86,6 +102,9 @@ class Command {
 
     if (typeof name === 'string') {
       type = TYPE_STRING
+      if(name.includes('${')){
+        type = TYPE_FIGURE
+      }
     } else if (name instanceof RegExp) {
       type = TYPE_REGEXP
     } else if (Array.isArray(name)) {

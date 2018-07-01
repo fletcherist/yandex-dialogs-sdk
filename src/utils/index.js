@@ -14,10 +14,14 @@ function extractTemplateTokenNames(template) {
 }
 
 function searchFiguresInString(template, string) {
-  const searchTemplate = template.replace(MATCH_REGEX, SEARCH_REGEX_STR)
-  const searchTemplateRegex = new RegExp(searchTemplate, 'ig')
+  const searchTemplateRegex = getFiguresRegexp(template)
   const matched = searchTemplateRegex.exec(string)
   return matched.filter(Boolean).slice(1)
+}
+
+function getFiguresRegexp(figure){
+  const searchTemplate = figure.replace(MATCH_REGEX, SEARCH_REGEX_STR)
+  return new RegExp(searchTemplate, 'ig')
 }
 
 function connectTokensWithFigures(tokens, figures) {
@@ -44,6 +48,7 @@ const selectSessionId = req => selectSession(req).session_id
 const selectUserId = req => selectSession(req).user_id
 const isFunction = fn => fn && typeof fn === 'function'
 
+module.exports.getFiguresRegexp = getFiguresRegexp
 module.exports.selectCommand = selectCommand
 module.exports.selectSession = selectSession
 module.exports.selectSessionId = selectSessionId
