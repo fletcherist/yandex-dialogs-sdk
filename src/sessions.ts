@@ -1,6 +1,8 @@
 import { merge } from 'ramda'
+import Session from './session'
 
 class Sessions {
+  public sessions: {}
   constructor() {
     this.sessions = {}
   }
@@ -55,6 +57,7 @@ class Sessions {
 
 module.exports = Sessions
 module.exports.Sessions = Sessions
+module.exports.Session = Session
 
 export default Sessions
 export {
