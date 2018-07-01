@@ -1,4 +1,4 @@
-const generateRequest = (commandText, utteranceText) => ({
+export const generateRequest = (commandText, utteranceText) => ({
   meta: {
     client_id: 'Developer Console',
     locale: 'ru-RU',

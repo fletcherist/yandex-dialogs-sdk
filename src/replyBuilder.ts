@@ -13,7 +13,7 @@ interface ReplyInterface {
   version: string,
   session?: {},
 }
-class ReplyBuilder {
+export default class ReplyBuilder {
   public reply: ReplyInterface
   constructor(request) {
     this.reply = {

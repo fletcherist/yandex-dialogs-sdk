@@ -3,9 +3,9 @@ const Command = require('./commands').Command
 const Ctx = require('./ctx')
 const Alice = require('./alice')
 
-const selectCommand = req => req.request.command
+const selectCommand = (req) => req.request.command
 
-class Scene extends Alice {
+export default class Scene extends Alice {
   constructor(name, config = {}) {
     super()
     this.name = name
@@ -20,15 +20,15 @@ class Scene extends Alice {
     return this.name
   }
 
-  on(event) {
+  public on(event) {
     /* enter, leave, etc */
   }
 
   /*
    * Trigger to activate the scene
    */
-  enter(name, callback) {
-    if (!name) throw new Error('Enter command name is not specified')
+  public enter(name, callback) {
+    if (!name) { throw new Error('Enter command name is not specified') }
     this.enterCommand = new Command(name, callback)
     this.commands.add(name, callback)
   }
@@ -36,31 +36,31 @@ class Scene extends Alice {
   /*
    * Trigger to leave the scene
    */
-  leave(name, callback) {
-    if (!name) throw new Error('Leave command name is not specified')
+  public leave(name, callback) {
+    if (!name) { throw new Error('Leave command name is not specified') }
     this.leaveCommand = new Command(name, callback)
     this.commands.add(name, callback)
   }
 
-  command(name, callback) {
+  public command(name, callback) {
     this.commands.add(name, callback)
   }
 
-  any(callback) {
+  public any(callback) {
     this.anyCallback = callback
   }
 
-  isEnterCommand(commandName) {
-    if (!this.enterCommand) return false
+  public isEnterCommand(commandName) {
+    if (!this.enterCommand) { return false }
     return this.enterCommand.name.toLowerCase() === commandName.toLowerCase()
   }
 
-  isLeaveCommand(commandName) {
-    if (!this.leaveCommand) return false
+  public isLeaveCommand(commandName) {
+    if (!this.leaveCommand) { return false }
     return this.leaveCommand.name.toLowerCase() === commandName.toLowerCase()
   }
 
-  async handleRequest(req, sendResponse, session) {
+  public async handleRequest(req, sendResponse, session) {
     const requestedCommandName = selectCommand(req)
     const requestedCommands = this.commands.search(requestedCommandName)
 
@@ -69,11 +69,11 @@ class Scene extends Alice {
     }
 
     const ctx = new Ctx({
-      req: req,
+      req,
       sendResponse: sendResponse || null,
       leaveScene: super._handleLeaveScene,
       enterScene: super._handleEnterScene,
-      session: session
+      session,
     })
 
     if (requestedCommands.length !== 0) {

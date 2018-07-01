@@ -6,29 +6,29 @@ const { generateRequest } = require('./testUtils')
 test('matching with string', async (done) => {
   const alice = new Alice()
 
-  alice.command('Привет, как дела', ctx => done())
+  alice.command('Привет, как дела', (ctx) => done())
   alice.handleRequestBody(generateRequest('Привет, как дела?'))
 })
 
 test('matching with array', async (done) => {
   const alice = new Alice()
 
-  alice.command(['привет', 'как дела'], ctx => done())
+  alice.command(['привет', 'как дела'], (ctx) => done())
   alice.handleRequestBody(generateRequest('Привет, как дела?'))
 })
 
 test('matching with regexp', async (done) => {
   const alice = new Alice()
 
-  alice.command(/[а-яё]+/i, ctx => done())
+  alice.command(/[а-яё]+/i, (ctx) => done())
   alice.handleRequestBody(generateRequest('Привет как дела'))
 })
 
 test('priority check, strings over regexps', async (done) => {
   const alice = new Alice()
 
-  alice.command(/[а-яё]+/i, ctx => new Error('Error has occured'))
-  alice.command('привет', ctx => done())
+  alice.command(/[а-яё]+/i, (ctx) => new Error('Error has occured'))
+  alice.command('привет', (ctx) => done())
   alice.handleRequestBody(generateRequest('Привет как дела'))
 })
 
@@ -50,18 +50,18 @@ test('listening on port with promise', async (done) => {
 
 test('ctx body', async (done) => {
   const alice = new Alice()
-  alice.command('забронируй встречу в ${where} на ${when}', ctx => {
+  alice.command('забронируй встречу в ${where} на ${when}', (ctx) => {
     /*
      * Context body parses message and extract phrases
      * in brackets!
      */
     expect(ctx.body).toEqual({
       where: '7-холмов',
-      when: '18:00'
+      when: '18:00',
     })
     done()
   })
   alice.handleRequestBody(
-    generateRequest('забронируй встречу в 7-холмов на 18:00')
+    generateRequest('забронируй встречу в 7-холмов на 18:00'),
   )
 })
