@@ -1,7 +1,7 @@
-const express = require('express')
-const Commands = require('./commands')
-const { Sessions } = require('./sessions')
-const { merge } = require('ramda')
+import express from 'express'
+import Commands from './commands'
+import { Sessions } from './sessions'
+import { merge } from 'ramda'
 
 const Ctx = require('./ctx')
 

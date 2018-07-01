@@ -1,29 +1,29 @@
-const { merge } = require('ramda')
+import { merge } from 'ramda'
 
 class Sessions {
   constructor() {
     this.sessions = {}
   }
 
-  add(session) {
+  public add(session) {
     const { sessionId } = session
     this.sessions[sessionId] = session
     return this.sessions[sessionId]
   }
 
-  find(session) {
-    if (!session) throw new Error('No session provided')
-    return Object.values(this.sessions).find(_sess => session === _sess)
+  public find(session) {
+    if (!session) { throw new Error('No session provided') }
+    return Object.values(this.sessions).find((_sess) => session === _sess)
   }
 
-  findById(sessionId) {
+  public findById(sessionId) {
     if (this.sessions[sessionId]) {
       return this.sessions[sessionId]
     }
     return null
   }
 
-  findOrCreate(sessionId) {
+  public findOrCreate(sessionId) {
     if (this.findById(sessionId)) {
       return this.findById(sessionId)
     }
@@ -37,7 +37,7 @@ class Sessions {
     return Object.keys(this.sessions).length
   }
 
-  removeById(sessionId) {
+  public removeById(sessionId) {
     if (sessionId) {
       delete this.sessions[sessionId]
       return true
@@ -48,45 +48,16 @@ class Sessions {
   /*
    * Remove all sessions
    */
-  flush() {
+  public flush() {
     this.sessions = {}
-  }
-}
-
-class Session {
-  constructor(sessionId, data = {}) {
-    if (!sessionId) throw new Error('Cant create new session. Missed {sessionId}')
-    this.sessionId = sessionId
-    this.data = data
-  }
-
-  get() {
-    return Object.freeze({
-      sessionId: this.sessionId,
-      data: this.data
-    })
-  }
-
-  getData(key) {
-    return this.data[key]
-  }
-
-  set(data) {
-    if (typeof data !== 'object') {
-      throw new Error(`Can't set data. Data should be an object`)
-    }
-    this.data = data
-  }
-
-  setData(key, value) {
-    this.data[key] = value
-  }
-
-  update(data) {
-    this.data = merge(this.data, data)
   }
 }
 
 module.exports = Sessions
 module.exports.Sessions = Sessions
-module.exports.Session = Session
+
+export default Sessions
+export {
+  Sessions,
+  Session,
+}

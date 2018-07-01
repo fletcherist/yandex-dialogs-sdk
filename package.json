@@ -28,7 +28,9 @@
     "yandex-dialogs-sdk",
     "imperator"
   ],
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "author": "Phil Romanov (@fletcherist)",
   "license": "MIT",
   "bugs": {
@@ -46,11 +48,13 @@
     "conventional-github-releaser": "^3.1.0",
     "eslint": "^4.19.0",
     "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-import": "^2.10.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
     "jest": "^23.2.0",
+    "tslint": "^5.10.0",
     "typescript": "^2.9.2",
     "typescript-eslint-parser": "^16.0.1"
   }
