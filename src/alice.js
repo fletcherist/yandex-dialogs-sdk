@@ -71,6 +71,11 @@ class Alice {
   async handleRequestBody(req, sendResponse) {
     const requestedCommandName = selectCommand(req)
 
+    /* clear old sessions */
+    if (this.sessions.length > (this.config.sessionsLimit || 1000)) {
+      this.sessions.flush()
+    } 
+
     /* initializing session */
     const sessionId = selectSessionId(req)
     const session = this.sessions.findOrCreate(sessionId)
