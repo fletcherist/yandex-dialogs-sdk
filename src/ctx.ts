@@ -84,7 +84,7 @@ export default class Ctx {
     return this._sendReply(replyMessage)
   }
 
-  public _sendReply(replyMessage) {
+  private _sendReply(replyMessage) {
     /*
      * That fires when listening on port.
      */
@@ -95,5 +95,3 @@ export default class Ctx {
     return replyMessage
   }
 }
-
-module.exports = Ctx

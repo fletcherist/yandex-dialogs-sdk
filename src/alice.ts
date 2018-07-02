@@ -1,7 +1,7 @@
 import express from 'express'
 import Commands from './commands'
 import { Sessions } from './sessions'
-import { merge } from 'ramda'
+import { merge, compose } from 'ramda'
 
 import Scene from './scene'
 import Ctx from './ctx'
@@ -12,7 +12,13 @@ import {
   isFunction,
 } from './utils'
 
-const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
+import {
+  applyMiddlewares,
+  MiddlewareType,
+} from './middlewares'
+
+import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
+
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 
 export default class Alice {
@@ -27,10 +33,10 @@ export default class Alice {
   private server: {}
 
   constructor(config = {}) {
-    this.anyCallback = DEFAULT_ANY_CALLBACK
+    this.anyCallback = null
     this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
-    this.middlewares = []
+    this.middlewares = [aliceStateMiddleware()]
     this.scenes = []
     this.currentScene = null
     this.sessions = new Sessions()
@@ -161,14 +167,23 @@ export default class Alice {
        * to the context
        */
       server: this.server || null,
+      middlewares: this.middlewares,
     }
 
     /*
     * Если новая сессия, то запускаем стартовую команду
     */
     if (req.session.new && this.welcomeCallback) {
-      const ctxInstance = new Ctx(ctxDefaultParams)
-      return await this.welcomeCallback(ctxInstance)
+      /*
+       * Patch context with middlewares
+       */
+      if (this.welcomeCallback) {
+        // tslint:disable:no-shadowed-variable
+        const ctxInstance = new Ctx(ctxDefaultParams)
+        const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+        // tslint:enable:no-shadowed-variable
+        return await this.welcomeCallback(ctxWithMiddlewares)
+      }
     }
     /*
      * Команда нашлась в списке.
@@ -176,26 +191,36 @@ export default class Alice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
+      // tslint:disable:no-shadowed-variable
       const ctxInstance = new Ctx(merge(ctxDefaultParams, {
         command: requestedCommand,
       }))
-
-      return await requestedCommand.callback(ctxInstance)
+      const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+      // tslint:enable:no-shadowed-variable
+      return await requestedCommand.callback(ctxWithMiddlewares)
     }
 
     /*
      * Такой команды не было зарегестрировано.
      * Переходим в обработчик исключений
      */
-    const ctx = new Ctx(ctxDefaultParams)
-    return await this.anyCallback(ctx)
+    const ctxInstance = new Ctx(ctxDefaultParams)
+    const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+
+    if (!this.anyCallback) {
+      throw new Error([
+        `alice.any(ctx => ctx.reply('404')) Method must be defined`,
+        'to catch anything that not matches with commands',
+      ].join('\n'))
+    }
+    return await this.anyCallback(ctxWithMiddlewares)
   }
 
   /*
    * Same as handleRequestBody, but syntax shorter
    */
   public async handleRequest(req, sendResponse) {
-    return this.handleRequestBody(req, sendResponse)
+    return await this.handleRequestBody(req, sendResponse)
   }
 
   /*
@@ -212,7 +237,11 @@ export default class Alice {
       app.use(express.json())
       app.post(callbackUrl, async (req, res) => {
         const handleResponseCallback = (response) => res.send(response)
-        await this.handleRequestBody(req.body, handleResponseCallback)
+        try {
+          return await this.handleRequestBody(req.body, handleResponseCallback)
+        } catch (error) {
+          throw new Error(error)
+        }
       })
       this.server = app.listen(port, () => {
         // Resolves with callback function

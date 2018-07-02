@@ -1,4 +1,12 @@
-const button = (params) => {
+export interface ButtonParams {
+  title: string,
+  text: string,
+  tts?: string,
+  url?: string,
+  hide?: boolean,
+  payload?: {}
+}
+const button = (params: ButtonParams) => {
   // Button has been created from string
   if (typeof params === 'string') {
     return {

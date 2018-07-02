@@ -8,7 +8,7 @@ const TYPE_FIGURE = 'figure'
 const TYPE_REGEXP = 'regexp'
 const TYPE_ARRAY = 'array'
 
-class Commands {
+export default class Commands {
   public commands: Command[]
   public fuseOptions: {}
   constructor(config = null) {
@@ -93,5 +93,4 @@ class Commands {
 module.exports = Commands
 module.exports.Command = Command
 
-export default Commands
 export { Command }

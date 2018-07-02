@@ -1,11 +1,18 @@
 import Alice from './alice'
-const Commands = require('./commands')
-const Command = require('./commands').Command
-const Ctx = require('./ctx')
+import Commands from './commands'
+import Command from './Command'
+import Ctx from './ctx'
 
 const selectCommand = (req) => req.request.command
 
 export default class Scene extends Alice {
+  public name: string
+  public enterCommand: Command
+  public leaveCommand: Command
+  public anyCallback: (ctx: Ctx) => void
+  public commands: Commands
+  public config: {}
+
   constructor(name, config = {}) {
     super()
     this.name = name
@@ -16,6 +23,7 @@ export default class Scene extends Alice {
     this.enterCommand = null
     this.leaveCommand = null
   }
+
   get title() {
     return this.name
   }
