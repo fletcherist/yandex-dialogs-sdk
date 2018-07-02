@@ -12,7 +12,6 @@ import {
   isFunction,
 } from './utils'
 
-const DEFAULT_ANY_CALLBACK = () => 'Что-то пошло не так. Я не знаю, что на это сказать.'
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 
 export default class Alice {
@@ -27,7 +26,7 @@ export default class Alice {
   private server: {}
 
   constructor(config = {}) {
-    this.anyCallback = DEFAULT_ANY_CALLBACK
+    this.anyCallback = null
     this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
     this.middlewares = []
@@ -188,6 +187,13 @@ export default class Alice {
      * Переходим в обработчик исключений
      */
     const ctx = new Ctx(ctxDefaultParams)
+
+    if (!this.anyCallback) {
+      throw new Error([
+        `alice.any(ctx => ctx.reply('не поняла')) Method must be defined`,
+        'to catch anything that not matches with commands',
+      ].join('\n'))
+    }
     return await this.anyCallback(ctx)
   }
 
