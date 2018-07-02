@@ -11,8 +11,8 @@ export default class Session {
 
     public get() {
         return Object.freeze({
-        sessionId: this.sessionId,
-        data: this.data,
+            sessionId: this.sessionId,
+            data: this.data,
         })
     }
 
