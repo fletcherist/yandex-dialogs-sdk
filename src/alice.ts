@@ -15,9 +15,9 @@ import {
 import {
   applyMiddlewares,
   MiddlewareType,
-
-  createAliceStateMiddleware,
 } from './middlewares'
+
+import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 
@@ -36,7 +36,7 @@ export default class Alice {
     this.anyCallback = null
     this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
-    this.middlewares = [createAliceStateMiddleware()]
+    this.middlewares = [aliceStateMiddleware()]
     this.scenes = []
     this.currentScene = null
     this.sessions = new Sessions()
