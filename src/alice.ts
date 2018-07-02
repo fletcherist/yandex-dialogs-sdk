@@ -15,6 +15,8 @@ import {
 import {
   applyMiddlewares,
   MiddlewareType,
+
+  createAliceStateMiddleware,
 } from './middlewares'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
@@ -23,7 +25,7 @@ export default class Alice {
   private anyCallback: (ctx: Ctx) => void
   private welcomeCallback: (ctx: Ctx) => void
   private commands: Commands
-  private middlewares: MiddlewareType[]
+  private middlewares: any[]
   private scenes: Scene[]
   private currentScene: Scene | null
   private sessions: Sessions
@@ -34,7 +36,7 @@ export default class Alice {
     this.anyCallback = null
     this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
-    this.middlewares = []
+    this.middlewares = [createAliceStateMiddleware()]
     this.scenes = []
     this.currentScene = null
     this.sessions = new Sessions()
@@ -202,10 +204,8 @@ export default class Alice {
      * Такой команды не было зарегестрировано.
      * Переходим в обработчик исключений
      */
-    console.log('intiakzw context')
     const ctxInstance = new Ctx(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-    console.log('CONTEXT INITIALIZED')
 
     if (!this.anyCallback) {
       throw new Error([
@@ -237,7 +237,11 @@ export default class Alice {
       app.use(express.json())
       app.post(callbackUrl, async (req, res) => {
         const handleResponseCallback = (response) => res.send(response)
-        await this.handleRequestBody(req.body, handleResponseCallback)
+        try {
+          return await this.handleRequestBody(req.body, handleResponseCallback)
+        } catch (error) {
+          throw new Error(error)
+        }
       })
       this.server = app.listen(port, () => {
         // Resolves with callback function
