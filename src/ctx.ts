@@ -5,6 +5,8 @@ import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 import Command from './command'
 
+import { WebhookResponse } from './types/webhook'
+
 export default class Ctx {
   public req: {}
   public sessionId: string
@@ -22,16 +24,18 @@ export default class Ctx {
   private sendResponse: (response: string) => void
   private enterScene: () => void
   private leaveScene: () => void
-  constructor({
-    req,
-    sendResponse,
-    session,
+  constructor(params) {
+    const {
+      req,
+      sendResponse,
+      session,
 
-    enterScene,
-    leaveScene,
+      enterScene,
+      leaveScene,
 
-    command,
-  }) {
+      command,
+    } = params
+
     this.req = req
     this.sendResponse = sendResponse
 
@@ -66,22 +70,26 @@ export default class Ctx {
       throw new Error('Reply message could not be empty!')
     }
 
+    const message = this._createReply(replyMessage)
+    return this._sendReply(message)
+  }
+
+  public _createReply(replyMessage): WebhookResponse {
     /*
-     * Если @replyMessage — string,
-     * то заворачиваем в стандартную форму.
-     */
+    * Если @replyMessage — string,
+    * то заворачиваем в стандартную форму.
+    */
     if (typeof replyMessage === 'string') {
       replyMessage = this.replyBuilder
         .text(replyMessage)
         .tts(replyMessage)
         .get()
-
-      // Is no session, lets use context session
-      if (!replyMessage.session) {
-        replyMessage.session = this.session
-      }
     }
-    return this._sendReply(replyMessage)
+    // Is no session, lets use context session
+    if (!replyMessage.session) {
+      replyMessage.session = this.session
+    }
+    return replyMessage
   }
 
   private _sendReply(replyMessage) {
