@@ -9,8 +9,8 @@ export interface ButtonParams {
 
 export interface Button {
   title: string,
-  tts?: 
-  url:
-  hide: boolean
+  tts?: string,
+  url: string,
+  hide: boolean,
   payload?: {}
 }
