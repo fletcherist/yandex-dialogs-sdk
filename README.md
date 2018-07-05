@@ -240,6 +240,8 @@ const buyBtn = ctx.buttonBuilder
 
 - [yandex-dialogs-whatis](https://github.com/popstas/yandex-dialogs-whatis) 
 Бот подскажет, что где находится, если вы перед этим расскажете ему об этом
+- [uraljs-alice-bot](https://github.com/sameoldmadness/uraljs-alice-bot)
+Навык Алисы UralJS
 
 
 # Contributors
