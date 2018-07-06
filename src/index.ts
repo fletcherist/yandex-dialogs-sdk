@@ -1,4 +1,5 @@
-import replyBuilder from './replyBuilder'
+import ReplyBuilder from './replyBuilder'
+import ButtonBuilder from './buttonBuilder'
 import Alice from './alice'
 const Scene = require('./scene')
 
@@ -17,13 +18,13 @@ export {
   button,
   reply,
 
-  buttonBuilder,
-  replyBuilder,
+  ButtonBuilder,
+  ReplyBuilder,
 }
 
 module.exports = Alice
 module.exports.Scene = Scene
 module.exports.button = button
 module.exports.reply = reply
-module.exports.buttonBuilder = buttonBuilder
-module.exports.replyBuilder = replyBuilder
+module.exports.ButtonBuilder = ButtonBuilder
+module.exports.ReplyBuilder = ReplyBuilder

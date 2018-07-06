@@ -7,10 +7,10 @@ export interface ButtonParams {
   payload?: {}
 }
 
-export interface Button {
+export interface ButtonInterface {
   title: string,
   tts?: string,
-  url: string,
-  hide: boolean,
+  url?: string,
+  hide?: boolean,
   payload?: {}
 }

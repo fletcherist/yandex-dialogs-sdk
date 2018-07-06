@@ -72,9 +72,9 @@ export default class Commands {
 
   public getByName(name) {
     if (!name) { throw new Error('Name is not specified') }
-    return this.commands.find((command) =>
-      command.name.toLowerCase() === name.toLowerCase(),
-    )
+    return this._strings.find((command) => {
+      return command.name.toLowerCase() === name.toLowerCase()
+    })
   }
 
   get length() {

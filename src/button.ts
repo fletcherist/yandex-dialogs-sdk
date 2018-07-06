@@ -1,5 +1,5 @@
-import { ButtonParams } from './types/button'
-const button = (params: ButtonParams | string) => {
+import { ButtonParams, ButtonInterface } from './types/button'
+const button = (params: ButtonParams | string): ButtonInterface => {
   // Button has been created from string
   if (typeof params === 'string') {
     return {

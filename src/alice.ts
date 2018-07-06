@@ -18,6 +18,9 @@ import {
 } from './middlewares'
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
+import { configInterface } from './types/alice'
+import { CommandInterface } from './types/command'
+import { WebhookResponse, WebhookRequest } from 'webhook'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 
@@ -29,10 +32,12 @@ export default class Alice {
   private scenes: Scene[]
   private currentScene: Scene | null
   private sessions: Sessions
-  private config: {}
-  private server: {}
+  private server: {
+    close: () => void,
+  }
+  private config: configInterface
 
-  constructor(config = {}) {
+  constructor(config: configInterface = {}) {
     this.anyCallback = null
     this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
@@ -190,7 +195,7 @@ export default class Alice {
      * Запускаем её обработчик.
      */
     if (requestedCommands.length !== 0) {
-      const requestedCommand = requestedCommands[0]
+      const requestedCommand: CommandInterface = requestedCommands[0]
       // tslint:disable:no-shadowed-variable
       const ctxInstance = new Ctx(merge(ctxDefaultParams, {
         command: requestedCommand,
@@ -219,7 +224,10 @@ export default class Alice {
   /*
    * Same as handleRequestBody, but syntax shorter
    */
-  public async handleRequest(req, sendResponse) {
+  public async handleRequest(
+    req: WebhookRequest,
+    sendResponse?: (res: WebhookResponse) => void,
+  ) {
     return await this.handleRequestBody(req, sendResponse)
   }
 
@@ -231,7 +239,7 @@ export default class Alice {
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  public async listen(callbackUrl = '/', port = 80, callback: () => void) {
+  public async listen(callbackUrl = '/', port = 80, callback?: () => void) {
     return new Promise((resolve) => {
       const app = express()
       app.use(express.json())

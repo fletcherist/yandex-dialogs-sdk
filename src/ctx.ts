@@ -5,10 +5,11 @@ import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 import Command from './command'
 
-import { WebhookResponse } from './types/webhook'
+import { WebhookResponse, WebhookRequest } from './types/webhook'
+import { CtxInterface } from './types/ctx'
 
-export default class Ctx {
-  public req: {}
+export default class Ctx implements CtxInterface {
+  public req: WebhookRequest
   public sessionId: string
   public messageId: string
   public userId: string
@@ -21,9 +22,9 @@ export default class Ctx {
   public replyBuilder: ReplyBuilder
   public buttonBuilder: ButtonBuilder
 
-  private sendResponse: (response: string) => void
-  private enterScene: () => void
-  private leaveScene: () => void
+  public sendResponse: (response: string) => void
+  public enterScene: () => void
+  public leaveScene: () => void
   constructor(params) {
     const {
       req,

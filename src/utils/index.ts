@@ -27,7 +27,9 @@ export function getFiguresRegexp(figure) {
 function connectTokensWithFigures(tokens, figures) {
   const res = {}
   for (const token in tokens) {
-    res[token] = figures[tokens[token]] || null
+    if (figures[tokens[token]]) {
+      res[token] = figures[tokens[token]] || null
+    }
   }
   return res
 }
