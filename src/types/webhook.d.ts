@@ -12,7 +12,7 @@ export interface WebhookRequest {
       markup?: {
           dangerous_context?: true
       },
-      payload: object
+      payload?: object
   }
   session: {
       new: boolean
