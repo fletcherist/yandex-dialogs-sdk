@@ -3,6 +3,8 @@ import Commands from './commands'
 import Command from './Command'
 import Ctx from './ctx'
 
+import { configInterface } from './types/alice'
+
 const selectCommand = (req) => req.request.command
 
 export default class Scene extends Alice {
@@ -11,9 +13,9 @@ export default class Scene extends Alice {
   public leaveCommand: Command
   public anyCallback: (ctx: Ctx) => void
   public commands: Commands
-  public config: {}
+  public config: configInterface
 
-  constructor(name, config = {}) {
+  constructor(name, config: configInterface = {}) {
     super()
     this.name = name
     this.anyCallback = null

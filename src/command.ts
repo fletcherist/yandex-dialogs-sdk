@@ -3,19 +3,17 @@ import {
     TYPE_FIGURE,
     TYPE_REGEXP,
     TYPE_ARRAY,
-
-    CommandType,
 } from './constants'
 import Ctx from './ctx'
+import { CommandInterface, CallbackType, CommandType } from './types/command'
+import { CtxInterface } from './types/ctx'
 
-const foo: 'bar' = 'bar'
-
-export default class Command {
+export default class Command implements CommandInterface {
     public name: any[] | string | RegExp
-    public callback: (ctx: Ctx) => void
     public type: | CommandType
+    public callback: CallbackType
 
-    constructor(name: string, callback: (() => void)) {
+    constructor(name: string, callback: CallbackType) {
         if (name === undefined) { throw new Error('Command name is not specified') }
         this.name = name
         this.callback = callback

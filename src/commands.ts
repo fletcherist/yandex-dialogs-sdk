@@ -2,14 +2,17 @@ import Command from './command'
 import utils from './utils'
 import Fuse from 'fuse.js'
 
-// declaring possible command types
-const TYPE_STRING = 'string'
-const TYPE_FIGURE = 'figure'
-const TYPE_REGEXP = 'regexp'
-const TYPE_ARRAY = 'array'
+import {
+  TYPE_STRING,
+  TYPE_ARRAY,
+  TYPE_REGEXP,
+  TYPE_FIGURE,
+} from './constants'
+import { CommandsInterface } from './types/commands'
+import { CommandInterface } from './types/command'
 
-export default class Commands {
-  public commands: Command[]
+export default class Commands implements CommandsInterface {
+  public commands: CommandInterface[]
   public fuseOptions: {}
   constructor(config = null) {
     this.commands = []
@@ -26,7 +29,8 @@ export default class Commands {
   }
 
   get _strings() {
-    return this.commands.filter((command) => command.type !== TYPE_REGEXP)
+    return this.commands.filter((command) =>
+      command.type === TYPE_FIGURE || command.type === TYPE_STRING)
   }
   get _figures() {
     return this.commands.filter((command) => command.type === TYPE_FIGURE)
@@ -72,9 +76,9 @@ export default class Commands {
 
   public getByName(name) {
     if (!name) { throw new Error('Name is not specified') }
-    return this.commands.find((command) =>
-      command.name.toLowerCase() === name.toLowerCase(),
-    )
+    return this._strings.find((command) => {
+      return command.name.toLowerCase() === name.toLowerCase()
+    })
   }
 
   get length() {
