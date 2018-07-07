@@ -3,10 +3,10 @@ import Session from './session'
 
 import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
-import Command from './command'
 
 import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { CtxInterface } from './types/ctx'
+import { CommandInterface } from './types/command'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -17,7 +17,7 @@ export default class Ctx implements CtxInterface {
   public message: string
   public session: Session
 
-  public command?: Command
+  public command?: CommandInterface
 
   public replyBuilder: ReplyBuilder
   public buttonBuilder: ButtonBuilder

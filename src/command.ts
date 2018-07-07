@@ -3,14 +3,10 @@ import {
     TYPE_FIGURE,
     TYPE_REGEXP,
     TYPE_ARRAY,
-
-    CommandType,
 } from './constants'
 import Ctx from './ctx'
-import { CommandInterface, CallbackType } from './types/command'
+import { CommandInterface, CallbackType, CommandType } from './types/command'
 import { CtxInterface } from './types/ctx'
-
-const foo: 'bar' = 'bar'
 
 export default class Command implements CommandInterface {
     public name: any[] | string | RegExp

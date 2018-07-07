@@ -1,4 +1,5 @@
-export const generateRequest = (commandText, utteranceText?) => ({
+import { WebhookRequest } from '../types/webhook'
+export const generateRequest = (commandText, utteranceText?): WebhookRequest => ({
   meta: {
     client_id: 'Developer Console',
     locale: 'ru-RU',

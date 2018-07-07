@@ -274,10 +274,10 @@ export default class Alice {
     }
   }
 
-  private _handleEnterScene(sceneName) {
+  protected _handleEnterScene(sceneName) {
     this.currentScene = sceneName
   }
-  private _handleLeaveScene(sceneName) {
+  protected _handleLeaveScene() {
     this.currentScene = null
   }
 }

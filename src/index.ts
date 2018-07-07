@@ -1,15 +1,15 @@
-import ReplyBuilder from './replyBuilder'
-import ButtonBuilder from './buttonBuilder'
 import Alice from './alice'
-const Scene = require('./scene')
+import Scene from './scene'
 
 // fp
-const button = require('./button')
-const reply = require('./reply')
+import reply from './reply'
+import button from './button'
 
 // for java-lovers
-const buttonBuilder = require('./buttonBuilder')
-// const replyBuilder = require('./replyBuilder')
+import ReplyBuilder from './replyBuilder'
+import ButtonBuilder from './buttonBuilder'
+// const button = require('./button')
+// const reply = require('./reply')
 
 export default Alice
 export {
