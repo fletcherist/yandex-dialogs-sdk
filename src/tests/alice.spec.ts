@@ -14,6 +14,7 @@ test('matching with array', async (done) => {
   const alice = new Alice()
 
   alice.command(['привет', 'как дела'], (ctx) => done())
+  alice.any((ctx) => ctx)
   alice.handleRequest(generateRequest('Привет, как дела?'))
 })
 
@@ -21,6 +22,7 @@ test('matching with regexp', async (done) => {
   const alice = new Alice()
 
   alice.command(/[а-яё]+/i, (ctx) => done())
+  alice.any((ctx) => ctx)
   alice.handleRequest(generateRequest('Привет как дела'))
 })
 
@@ -29,6 +31,7 @@ test('priority check, strings over regexps', async (done) => {
 
   alice.command(/[а-яё]+/i, (ctx) => new Error('Error has occured'))
   alice.command('привет', (ctx) => done())
+  alice.any((ctx) => ctx)
   alice.handleRequest(generateRequest('Привет как дела'))
 })
 

@@ -30,7 +30,8 @@ export default class Commands implements CommandsInterface {
 
   get _strings() {
     return this.commands.filter((command) =>
-      command.type === TYPE_FIGURE || command.type === TYPE_STRING)
+      [TYPE_FIGURE, TYPE_STRING, TYPE_ARRAY].includes(command.type),
+    )
   }
   get _figures() {
     return this.commands.filter((command) => command.type === TYPE_FIGURE)

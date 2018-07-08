@@ -2,7 +2,7 @@
  * Videotutorial: https://youtu.be/exPnIFMa1H8
  */
 
-const Alice = require('yandex-dialogs-sdk')
+const Alice = require('../dist/index')
 const alice = new Alice()
 
 const random = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
