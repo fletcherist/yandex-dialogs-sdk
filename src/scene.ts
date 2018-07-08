@@ -1,6 +1,6 @@
 import Alice from './alice'
 import Commands from './commands'
-import Command from './Command'
+import Command from './command'
 import Ctx from './ctx'
 
 import { configInterface } from './types/alice'
