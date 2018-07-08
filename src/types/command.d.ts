@@ -1,9 +1,8 @@
 import Ctx from '../ctx'
 import { CtxInterface } from './ctx'
 
-export type CallbackType = (ctx: CtxInterface) => CtxInterface
-export type MatcherType = (ctx: CtxInterface) => boolean
-export type CommandNameType = any[] | string | RegExp | MatcherType
+export type CallbackType = (ctx: CtxInterface) => void
+export type CommandNameType = (ctx: CtxInterface) => boolean | any[] | string | RegExp
 export type CommandType = 'string' | 'figure' | 'regexp' | 'array' | 'matcher'
 export interface CommandInterface {
   callback: CallbackType

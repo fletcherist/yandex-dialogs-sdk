@@ -13,6 +13,7 @@ import {
     CommandNameType,
 } from './types/command'
 import { CtxInterface } from './types/ctx'
+import { isFunction } from './utils'
 
 export default class Command implements CommandInterface {
     public name: CommandNameType
@@ -31,10 +32,9 @@ export default class Command implements CommandInterface {
     public _defineCommandType(name) {
         let type
 
-        if (typeof name === 'function') {
+        if (isFunction(name)) {
             type = TYPE_MATCHER
-        }
-        if (typeof name === 'string') {
+        } else if (typeof name === 'string') {
             type = TYPE_STRING
             if (name.includes('${')) {
                 type = TYPE_FIGURE
@@ -44,8 +44,8 @@ export default class Command implements CommandInterface {
         } else if (Array.isArray(name)) {
             type = TYPE_ARRAY
         } else {
-        throw new Error(`Command name is not of proper type.
-            Could be only string, array of strings or regular expression`)
+            throw new Error(`Command name is not of proper type.
+                Could be only string, array of strings, regular expression or function`)
         }
         return type
     }

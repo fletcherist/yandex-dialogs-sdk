@@ -158,8 +158,6 @@ export default class Alice {
       }
     }
 
-    const requestedCommands = this.commands.search(requestedCommandName)
-
     /*
      * Initializing context of the request
      */
@@ -174,7 +172,10 @@ export default class Alice {
       server: this.server || null,
       middlewares: this.middlewares,
     }
+    const ctxInstance = new Ctx(ctxDefaultParams)
+    const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
 
+    const requestedCommands = await this.commands.search(ctxWithMiddlewares)
     /*
     * Если новая сессия, то запускаем стартовую команду
     */
@@ -183,10 +184,6 @@ export default class Alice {
        * Patch context with middlewares
        */
       if (this.welcomeCallback) {
-        // tslint:disable:no-shadowed-variable
-        const ctxInstance = new Ctx(ctxDefaultParams)
-        const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-        // tslint:enable:no-shadowed-variable
         return await this.welcomeCallback(ctxWithMiddlewares)
       }
     }
@@ -196,12 +193,7 @@ export default class Alice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand: CommandInterface = requestedCommands[0]
-      // tslint:disable:no-shadowed-variable
-      const ctxInstance = new Ctx(merge(ctxDefaultParams, {
-        command: requestedCommand,
-      }))
-      const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-      // tslint:enable:no-shadowed-variable
+      ctxWithMiddlewares.command = requestedCommand
       return await requestedCommand.callback(ctxWithMiddlewares)
     }
 
@@ -209,9 +201,6 @@ export default class Alice {
      * Такой команды не было зарегестрировано.
      * Переходим в обработчик исключений
      */
-    const ctxInstance = new Ctx(ctxDefaultParams)
-    const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-
     if (!this.anyCallback) {
       throw new Error([
         `alice.any(ctx => ctx.reply('404')) Method must be defined`,

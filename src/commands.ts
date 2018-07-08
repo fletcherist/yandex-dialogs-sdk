@@ -7,9 +7,11 @@ import {
   TYPE_ARRAY,
   TYPE_REGEXP,
   TYPE_FIGURE,
+  TYPE_MATCHER,
 } from './constants'
 import { CommandsInterface } from './types/commands'
 import { CommandInterface } from './types/command'
+import { CtxInterface } from 'ctx'
 
 export default class Commands implements CommandsInterface {
   public commands: CommandInterface[]
@@ -28,6 +30,9 @@ export default class Commands implements CommandsInterface {
     return this.commands
   }
 
+  get _matchers() {
+    return this.commands.filter((command) => command.type === TYPE_MATCHER)
+  }
   get _strings() {
     return this.commands.filter((command) =>
       [TYPE_FIGURE, TYPE_STRING, TYPE_ARRAY].includes(command.type),
@@ -40,31 +45,14 @@ export default class Commands implements CommandsInterface {
     return this.commands.filter((command) => command.type === TYPE_REGEXP)
   }
 
-  public _searchStrings(requestedCommandName) {
-    const stringCommands = this._strings
-    const fuse = new Fuse(stringCommands, this.fuseOptions)
-    return fuse.search(requestedCommandName)
-  }
-
-  public _searchFigures(requestedCommandName) {
-    const figuresCommands = this._figures
-    return figuresCommands.filter((figure) => {
-      const reg = utils.getFiguresRegexp(figure.name)
-      return requestedCommandName.match(reg)
-    })
-  }
-
-  public _searchRegexps(requestedCommandName) {
-    const regexpCommands = this._regexps
-    // @TODO: include matches and captured groups
-    return regexpCommands.filter((reg) => requestedCommandName.match(reg.name))
-  }
-
-  public search(requestedCommandName) {
-    const matchedStrings = this._searchStrings(requestedCommandName)
-    const matchedRegexps = this._searchRegexps(requestedCommandName)
-    const matchedFigures = this._searchFigures(requestedCommandName)
-    if (matchedStrings.length > 0) {
+  public async search(ctx: CtxInterface) {
+    const matchedStrings = this._searchStrings(ctx.message)
+    const matchedRegexps = this._searchRegexps(ctx.message)
+    const matchedFigures = this._searchFigures(ctx.message)
+    const matchedMatchers = await this._searchMatchers(ctx)
+    if (matchedMatchers.length > 0) {
+      return matchedMatchers
+    } else if (matchedStrings.length > 0) {
       return matchedStrings
     } else if (matchedRegexps.length > 0) {
       return matchedRegexps
@@ -92,6 +80,36 @@ export default class Commands implements CommandsInterface {
 
   public flush() {
     this.commands = []
+  }
+
+  private async _searchMatchers(ctx: CtxInterface) {
+    const matchers = this._matchers
+    for (const matcher of matchers) {
+      if (await matcher.name(ctx)) {
+        return [matcher]
+      }
+    }
+    return []
+  }
+
+  private _searchStrings(requestedCommandName: string) {
+    const stringCommands = this._strings
+    const fuse = new Fuse(stringCommands, this.fuseOptions)
+    return fuse.search(requestedCommandName)
+  }
+
+  private _searchFigures(requestedCommandName: string) {
+    const figuresCommands = this._figures
+    return figuresCommands.filter((figure) => {
+      const reg = utils.getFiguresRegexp(figure.name)
+      return requestedCommandName.match(reg)
+    })
+  }
+
+  private _searchRegexps(requestedCommandName) {
+    const regexpCommands = this._regexps
+    // @TODO: include matches and captured groups
+    return regexpCommands.filter((reg) => requestedCommandName.match(reg.name))
   }
 }
 
