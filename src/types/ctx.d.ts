@@ -2,6 +2,7 @@ import { WebhookRequest, WebhookResponse } from './webhook'
 // import { SessionInterface } from './types/session'
 import ReplyBuilder from '../replyBuilder'
 import ButtonBuilder from '../buttonBuilder'
+import { EventEmitterInterface } from './eventEmitter'
 
 export interface CtxInterface {
   req: WebhookRequest
@@ -11,6 +12,7 @@ export interface CtxInterface {
   payload: {}
   message: string
   session: {}
+  EventEmitter: EventEmitterInterface
 
   // command?: Command
 

@@ -4,6 +4,7 @@ import { Sessions } from './sessions'
 
 import Scene from './scene'
 import Ctx from './ctx'
+import EventEmitter from './eventEmitter'
 
 import {
   selectCommand,
@@ -20,7 +21,7 @@ import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 import { configInterface } from './types/alice'
 import { CommandInterface } from './types/command'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
-import { EventInterface } from './types/eventQueue'
+import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 
@@ -36,6 +37,7 @@ export default class Alice {
     close: () => void,
   }
   private config: configInterface
+  private eventEmitter: EventEmitterInterface
 
   constructor(config: configInterface = {}) {
     this.anyCallback = null
@@ -46,6 +48,7 @@ export default class Alice {
     this.currentScene = null
     this.sessions = new Sessions()
     this.config = config
+    this.eventEmitter = new EventEmitter()
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
@@ -54,7 +57,7 @@ export default class Alice {
   /* @TODO: Implement watchers (errors, messages) */
   // tslint:disable-next-line:no-empty
   public on(event: EventInterface['type'], callback: EventInterface['callback']) {
-
+    this.eventEmitter.subscribe(event, callback)
   }
 
   /*
@@ -125,9 +128,12 @@ export default class Alice {
        */
       server: this.server || null,
       middlewares: this.middlewares,
+      eventEmitter: this.eventEmitter,
     }
     const ctxInstance = new Ctx(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+
+    this.eventEmitter.dispatch('MESSAGE_RECIEVED', ctxWithMiddlewares.message)
 
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {

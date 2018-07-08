@@ -1,16 +1,16 @@
 import {
-  EventQueueInterface,
+  EventEmitterInterface,
   EventType,
   EventInterface,
   EventData,
-} from './types/eventQueue'
+} from './types/eventEmitter'
 
-export default class EventQueue implements EventQueueInterface {
+export default class EventEmitter implements EventEmitterInterface {
   public events: EventInterface[]
   constructor() {
     this.events = []
   }
-  public push(eventType: EventType, callback: EventInterface['callback']) {
+  public subscribe(eventType: EventType, callback: EventInterface['callback']) {
     this.events.push({
       type: eventType,
       callback,

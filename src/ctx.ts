@@ -7,6 +7,7 @@ import ButtonBuilder from './buttonBuilder'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { CtxInterface } from './types/ctx'
 import { CommandInterface } from './types/command'
+import { EventEmitterInterface } from './types/eventEmitter'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -16,6 +17,7 @@ export default class Ctx implements CtxInterface {
   public payload: {}
   public message: string
   public session: Session
+  public EventEmitter: EventEmitterInterface
 
   public command?: CommandInterface
 
