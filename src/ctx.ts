@@ -22,8 +22,8 @@ export default class Ctx implements CtxInterface {
   public replyBuilder: ReplyBuilder
   public buttonBuilder: ButtonBuilder
 
-  public sendResponse: (response: string) => void
-  public enterScene: () => void
+  public sendResponse: (response: WebhookResponse) => void
+  public enterScene: (sceneName: string) => void
   public leaveScene: () => void
   constructor(params) {
     const {
