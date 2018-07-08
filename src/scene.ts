@@ -1,7 +1,11 @@
 import Alice from './alice'
 import Commands from './commands'
-import Command from './Command'
+import Command from './command'
 import Ctx from './ctx'
+
+import { configInterface } from './types/alice'
+import { WebhookRequest, WebhookResponse } from './types/webhook'
+import { CtxInterface } from 'ctx'
 
 const selectCommand = (req) => req.request.command
 
@@ -11,9 +15,9 @@ export default class Scene extends Alice {
   public leaveCommand: Command
   public anyCallback: (ctx: Ctx) => void
   public commands: Commands
-  public config: {}
+  public config: configInterface
 
-  constructor(name, config = {}) {
+  constructor(name, config: configInterface = {}) {
     super()
     this.name = name
     this.anyCallback = null
@@ -68,32 +72,32 @@ export default class Scene extends Alice {
     return this.leaveCommand.name.toLowerCase() === commandName.toLowerCase()
   }
 
-  public async handleRequest(req, sendResponse, session) {
-    const requestedCommandName = selectCommand(req)
-    const requestedCommands = this.commands.search(requestedCommandName)
+  public async handleRequest(
+    req: WebhookRequest,
+    sendResponse: (res: WebhookResponse) => void,
+    ctx: CtxInterface,
+  ): Promise<any> {
 
-    if (this.isLeaveCommand(requestedCommandName)) {
+    ctx.sendResponse = sendResponse
+    ctx.leaveScene = super._handleLeaveScene
+    ctx.enterScene = super._handleEnterScene
+
+    const requestedCommands = await this.commands.search(ctx)
+
+    if (this.isLeaveCommand(ctx.message)) {
       this._handleLeaveScene()
     }
 
-    const ctx = new Ctx({
-      req,
-      sendResponse: sendResponse || null,
-      leaveScene: super._handleLeaveScene,
-      enterScene: super._handleEnterScene,
-      session,
-    })
-
     if (requestedCommands.length !== 0) {
       const requestedCommand = requestedCommands[0]
-      return await requestedCommand.callback.call(this, ctx)
+      return await requestedCommand.callback(ctx)
     }
 
     if (this.anyCallback) {
-      return this.anyCallback(ctx)
+      return await this.anyCallback(ctx)
     }
 
-    return null
+    return Promise.resolve()
   }
 }
 

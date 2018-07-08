@@ -1,10 +1,10 @@
 /* eslint camelcase: 0 */
-
-const {
+import {
   DEFAULT_END_SESSION,
   ALICE_PROTOCOL_VERSION,
-} = require('./constants')
-import { ButtonParams } from './button'
+} from './constants'
+import { ButtonParams } from './types/button'
+import { WebhookResponse } from './types/webhook'
 
 interface ReplyType {
   response: {
@@ -12,7 +12,7 @@ interface ReplyType {
     buttons?: ButtonParams[],
     end_session: boolean,
   },
-  session?: {},
+  session?: {} | null,
   version: string,
 }
 
@@ -25,9 +25,10 @@ interface ParamsType {
   session: {},
   buttons: any[]
 }
-const reply = (params: ParamsType) => {
-  const data: ReplyType = {
+const reply = (params: ParamsType): WebhookResponse => {
+  const data: WebhookResponse = {
     response: {
+      text: '',
       buttons: [],
       end_session: DEFAULT_END_SESSION,
     },
@@ -63,4 +64,5 @@ const reply = (params: ParamsType) => {
   }
 }
 
+export default reply
 module.exports = reply

@@ -3,10 +3,13 @@ import Session from './session'
 
 import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
-import Command from './command'
 
-export default class Ctx {
-  public req: {}
+import { WebhookResponse, WebhookRequest } from './types/webhook'
+import { CtxInterface } from './types/ctx'
+import { CommandInterface } from './types/command'
+
+export default class Ctx implements CtxInterface {
+  public req: WebhookRequest
   public sessionId: string
   public messageId: string
   public userId: string
@@ -14,24 +17,26 @@ export default class Ctx {
   public message: string
   public session: Session
 
-  public command?: Command
+  public command?: CommandInterface
 
   public replyBuilder: ReplyBuilder
   public buttonBuilder: ButtonBuilder
 
-  private sendResponse: (response: string) => void
-  private enterScene: () => void
-  private leaveScene: () => void
-  constructor({
-    req,
-    sendResponse,
-    session,
+  public sendResponse: (response: WebhookResponse) => void
+  public enterScene: (sceneName: string) => void
+  public leaveScene: () => void
+  constructor(params) {
+    const {
+      req,
+      sendResponse,
+      session,
 
-    enterScene,
-    leaveScene,
+      enterScene,
+      leaveScene,
 
-    command,
-  }) {
+      command,
+    } = params
+
     this.req = req
     this.sendResponse = sendResponse
 
@@ -66,22 +71,26 @@ export default class Ctx {
       throw new Error('Reply message could not be empty!')
     }
 
+    const message = this._createReply(replyMessage)
+    return this._sendReply(message)
+  }
+
+  public _createReply(replyMessage): WebhookResponse {
     /*
-     * Если @replyMessage — string,
-     * то заворачиваем в стандартную форму.
-     */
+    * Если @replyMessage — string,
+    * то заворачиваем в стандартную форму.
+    */
     if (typeof replyMessage === 'string') {
       replyMessage = this.replyBuilder
         .text(replyMessage)
         .tts(replyMessage)
         .get()
-
-      // Is no session, lets use context session
-      if (!replyMessage.session) {
-        replyMessage.session = this.session
-      }
     }
-    return this._sendReply(replyMessage)
+    // Is no session, lets use context session
+    if (!replyMessage.session) {
+      replyMessage.session = this.session
+    }
+    return replyMessage
   }
 
   private _sendReply(replyMessage) {
