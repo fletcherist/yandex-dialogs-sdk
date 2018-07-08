@@ -1,7 +1,6 @@
 import express from 'express'
 import Commands from './commands'
 import { Sessions } from './sessions'
-import { merge, compose } from 'ramda'
 
 import Scene from './scene'
 import Ctx from './ctx'
@@ -20,7 +19,8 @@ import {
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 import { configInterface } from './types/alice'
 import { CommandInterface } from './types/command'
-import { WebhookResponse, WebhookRequest } from 'webhook'
+import { WebhookResponse, WebhookRequest } from './types/webhook'
+import { EventInterface } from './types/eventQueue'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 
@@ -53,7 +53,7 @@ export default class Alice {
 
   /* @TODO: Implement watchers (errors, messages) */
   // tslint:disable-next-line:no-empty
-  public on() {
+  public on(event: EventInterface['type'], callback: EventInterface['callback']) {
 
   }
 
