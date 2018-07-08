@@ -112,6 +112,23 @@ export default class Alice {
     const sessionId = selectSessionId(req)
     const session = this.sessions.findOrCreate(sessionId)
 
+    /*
+     * Initializing context of the request
+     */
+    const ctxDefaultParams = {
+      req,
+      session,
+      sendResponse: sendResponse || null,
+      /*
+       * if Alice is listening on express.js port, add this server instance
+       * to the context
+       */
+      server: this.server || null,
+      middlewares: this.middlewares,
+    }
+    const ctxInstance = new Ctx(ctxDefaultParams)
+    const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {
       session.setData('currentScene', null)
@@ -129,12 +146,12 @@ export default class Alice {
        */
       if (matchedScene) {
         if (matchedScene.isLeaveCommand(requestedCommandName)) {
-          matchedScene.handleRequest(req, sendResponse, session)
+          await matchedScene.handleRequest(req, sendResponse, ctxWithMiddlewares)
           session.setData('currentScene', null)
           return true
         } else {
           const sceneResponse = await matchedScene.handleRequest(
-            req, sendResponse, session,
+            req, sendResponse, ctxWithMiddlewares,
           )
           if (sceneResponse) {
             return true
@@ -150,7 +167,7 @@ export default class Alice {
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
         const sceneResponse = await matchedScene.handleRequest(
-          req, sendResponse, session,
+          req, sendResponse, ctxWithMiddlewares,
         )
         if (sceneResponse) {
           return true
@@ -158,23 +175,7 @@ export default class Alice {
       }
     }
 
-    const requestedCommands = this.commands.search(requestedCommandName)
-
-    /*
-     * Initializing context of the request
-     */
-    const ctxDefaultParams = {
-      req,
-      session,
-      sendResponse: sendResponse || null,
-      /*
-       * if Alice is listening on express.js port, add this server instance
-       * to the context
-       */
-      server: this.server || null,
-      middlewares: this.middlewares,
-    }
-
+    const requestedCommands = await this.commands.search(ctxWithMiddlewares)
     /*
     * Если новая сессия, то запускаем стартовую команду
     */
@@ -183,10 +184,6 @@ export default class Alice {
        * Patch context with middlewares
        */
       if (this.welcomeCallback) {
-        // tslint:disable:no-shadowed-variable
-        const ctxInstance = new Ctx(ctxDefaultParams)
-        const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-        // tslint:enable:no-shadowed-variable
         return await this.welcomeCallback(ctxWithMiddlewares)
       }
     }
@@ -196,12 +193,7 @@ export default class Alice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand: CommandInterface = requestedCommands[0]
-      // tslint:disable:no-shadowed-variable
-      const ctxInstance = new Ctx(merge(ctxDefaultParams, {
-        command: requestedCommand,
-      }))
-      const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-      // tslint:enable:no-shadowed-variable
+      ctxWithMiddlewares.command = requestedCommand
       return await requestedCommand.callback(ctxWithMiddlewares)
     }
 
@@ -209,9 +201,6 @@ export default class Alice {
      * Такой команды не было зарегестрировано.
      * Переходим в обработчик исключений
      */
-    const ctxInstance = new Ctx(ctxDefaultParams)
-    const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
-
     if (!this.anyCallback) {
       throw new Error([
         `alice.any(ctx => ctx.reply('404')) Method must be defined`,
@@ -227,7 +216,7 @@ export default class Alice {
   public async handleRequest(
     req: WebhookRequest,
     sendResponse?: (res: WebhookResponse) => void,
-  ) {
+  ): Promise<any> {
     return await this.handleRequestBody(req, sendResponse)
   }
 

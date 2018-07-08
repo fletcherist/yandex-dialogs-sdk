@@ -1,4 +1,7 @@
-import { WebhookRequest } from './webhook'
+import { WebhookRequest, WebhookResponse } from './webhook'
+// import { SessionInterface } from './types/session'
+import ReplyBuilder from '../replyBuilder'
+import ButtonBuilder from '../buttonBuilder'
 
 export interface CtxInterface {
   req: WebhookRequest
@@ -7,14 +10,14 @@ export interface CtxInterface {
   userId: string
   payload: {}
   message: string
-  // session: Session
+  session: {}
 
   // command?: Command
 
-  // replyBuilder: ReplyBuilder
-  // buttonBuilder: ButtonBuilder
+  replyBuilder: ReplyBuilder
+  buttonBuilder: ButtonBuilder
 
-  sendResponse: (response: string) => void
-  enterScene: () => void
+  sendResponse: (response: WebhookResponse) => void
+  enterScene: (sceneName: string) => void
   leaveScene: () => void
 }

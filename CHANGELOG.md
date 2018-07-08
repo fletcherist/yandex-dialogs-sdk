@@ -1,3 +1,20 @@
+<a name="1.3.3"></a>
+## [1.3.3](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.2...v1.3.3) (2018-07-08)
+
+
+### Bug Fixes
+
+* bug with commands (array) ([8cac580](https://github.com/fletcherist/yandex-dialogs-sdk/commit/8cac580))
+* package.json ([169a818](https://github.com/fletcherist/yandex-dialogs-sdk/commit/169a818))
+
+
+### Features
+
+* add guess number game to examples ([3d34c26](https://github.com/fletcherist/yandex-dialogs-sdk/commit/3d34c26))
+* add youtube link to readme ([31c8328](https://github.com/fletcherist/yandex-dialogs-sdk/commit/31c8328))
+
+
+
 <a name="1.3.2"></a>
 ## [1.3.2](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.2.1...v1.3.2) (2018-07-08)
 
