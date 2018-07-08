@@ -3,17 +3,23 @@ import {
     TYPE_FIGURE,
     TYPE_REGEXP,
     TYPE_ARRAY,
+    TYPE_MATCHER,
 } from './constants'
 import Ctx from './ctx'
-import { CommandInterface, CallbackType, CommandType } from './types/command'
+import {
+    CommandInterface,
+    CallbackType,
+    CommandType,
+    CommandNameType,
+} from './types/command'
 import { CtxInterface } from './types/ctx'
 
 export default class Command implements CommandInterface {
-    public name: any[] | string | RegExp
-    public type: | CommandType
+    public name: CommandNameType
+    public type: CommandType
     public callback: CallbackType
 
-    constructor(name: string, callback: CallbackType) {
+    constructor(name: CommandNameType, callback: CallbackType) {
         if (name === undefined) { throw new Error('Command name is not specified') }
         this.name = name
         this.callback = callback
@@ -25,15 +31,18 @@ export default class Command implements CommandInterface {
     public _defineCommandType(name) {
         let type
 
-        if (typeof name === 'string') {
-        type = TYPE_STRING
-        if (name.includes('${')) {
-            type = TYPE_FIGURE
+        if (typeof name === 'function') {
+            type = TYPE_MATCHER
         }
+        if (typeof name === 'string') {
+            type = TYPE_STRING
+            if (name.includes('${')) {
+                type = TYPE_FIGURE
+            }
         } else if (name instanceof RegExp) {
-        type = TYPE_REGEXP
+            type = TYPE_REGEXP
         } else if (Array.isArray(name)) {
-        type = TYPE_ARRAY
+            type = TYPE_ARRAY
         } else {
         throw new Error(`Command name is not of proper type.
             Could be only string, array of strings or regular expression`)
