@@ -17,6 +17,9 @@
 `yarn && npm run test && npm run dev`
 > typescript-приложение соберётся в ./dist
 
+### Видеоуроки
+- [Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
+
 ### Создайте своё первое приложение
 
 ```javascript
