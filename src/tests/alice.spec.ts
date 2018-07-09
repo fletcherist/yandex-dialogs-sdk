@@ -14,7 +14,6 @@ test('matching with array', async (done) => {
   const alice = new Alice()
 
   alice.command(['привет', 'как дела'], (ctx) => done())
-  alice.any((ctx) => ctx)
   alice.handleRequest(generateRequest('Привет, как дела?'))
 })
 

@@ -145,9 +145,10 @@ export default class Alice {
        * activation trigger
        */
       if (matchedScene) {
-        if (matchedScene.isLeaveCommand(requestedCommandName)) {
-          await matchedScene.handleRequest(req, sendResponse, ctxWithMiddlewares)
+        if (await matchedScene.isLeaveCommand(ctxWithMiddlewares)) {
+          await matchedScene.handleRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
           session.setData('currentScene', null)
+          this._handleLeaveScene()
           return true
         } else {
           const sceneResponse = await matchedScene.handleRequest(
@@ -162,12 +163,19 @@ export default class Alice {
       /*
        * Looking for scene's activational phrases
        */
-      const matchedScene = this.scenes.find((scene) =>
-        scene.isEnterCommand(requestedCommandName))
+      let matchedScene = null
+      for (const scene of this.scenes) {
+        const result = await scene.isEnterCommand(ctxWithMiddlewares)
+        if (result) {
+          matchedScene = scene
+        }
+      }
+
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
+        this._handleEnterScene(matchedScene.name)
         const sceneResponse = await matchedScene.handleRequest(
-          req, sendResponse, ctxWithMiddlewares,
+          req, sendResponse, ctxWithMiddlewares, 'enter',
         )
         if (sceneResponse) {
           return true

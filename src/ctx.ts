@@ -44,7 +44,7 @@ export default class Ctx implements CtxInterface {
     this.messageId = req.session.message_id
     this.userId = req.session.user_id
     this.payload = req.request.payload
-    this.message = req.request.original_utterance
+    this.message = req.request.command
 
     this.session = session
 
