@@ -262,7 +262,12 @@ export default class Alice {
   }
 
   public registerScene(scene) {
-    this.scenes.push(scene)
+    // Allow for multiple scenes to be registered at once.
+    if (Array.isArray(scene)) {
+      scene.forEach(sceneItem => this.scenes.push(sceneItem))
+    } else {
+      this.scenes.push(scene)
+    }
   }
 
   public stopListening() {
