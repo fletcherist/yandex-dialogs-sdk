@@ -2,6 +2,7 @@ import express from 'express'
 import Commands from './commands'
 import { Sessions } from './sessions'
 import { merge, compose } from 'ramda'
+import fetch from 'node-fetch'
 
 import Scene from './scene'
 import Ctx from './ctx'
@@ -11,6 +12,8 @@ import {
   selectSessionId,
   isFunction,
 } from './utils'
+
+import { ALICE_API_URL } from './constants'
 
 import {
   applyMiddlewares,
@@ -241,6 +244,10 @@ export default class Alice {
       const app = express()
       app.use(express.json())
       app.post(callbackUrl, async (req, res) => {
+        if (this.config.oAuthToken) {
+          res.setHeader('Authorization', this.config.oAuthToken)
+        }
+        res.setHeader('Content-type', 'application/json')
         const handleResponseCallback = (response) => res.send(response)
         try {
           return await this.handleRequestBody(req.body, handleResponseCallback)
@@ -264,10 +271,44 @@ export default class Alice {
   public registerScene(scene) {
     // Allow for multiple scenes to be registered at once.
     if (Array.isArray(scene)) {
-      scene.forEach(sceneItem => this.scenes.push(sceneItem))
+      scene.forEach((sceneItem) => this.scenes.push(sceneItem))
     } else {
       this.scenes.push(scene)
     }
+  }
+
+  public uploadImage(imageUrl: string) {
+    if (!this.config.skillId) {
+      throw new Error('Please, provide {skillId} to alice constructor')
+    }
+    if (!this.config.oAuthToken) {
+      throw new Error('Please, provide {oAuthToken} to alice constructor')
+    }
+    fetch(`${ALICE_API_URL}/${this.config.skillId}/images`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `OAuth ${this.config.oAuthToken}`,
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        url: imageUrl,
+      }),
+    })
+    .then((res) => res.text())
+    .then(console.log)
+    .catch((error) => console.error(error))
+  }
+
+  public getImages() {
+    fetch(`${ALICE_API_URL}/${this.config.skillId}/images`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `OAuth ${this.config.oAuthToken}`,
+        'Content-type': 'application/json',
+      },
+    }).then((res) => res.text())
+    .then(console.log)
+    .catch((error) => console.log(error))
   }
 
   public stopListening() {

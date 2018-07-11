@@ -1,4 +1,6 @@
 export interface configInterface {
-  fuseOptions?: {},
+  fuseOptions?: {}
   sessionsLimit?: number
+  oAuthToken?: string
+  skillId?: string
 }
