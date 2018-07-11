@@ -1,3 +1,19 @@
+<a name="1.3.6"></a>
+## [1.3.6](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.5...v1.3.6) (2018-07-11)
+
+
+### Bug Fixes
+
+* TYPE_FIGURE excluded from Commands._strings() ([f1f5779](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f1f5779))
+* wrong case sensitive path './Command' ([f2ea4ea](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f2ea4ea))
+
+
+### Features
+
+* add match docs ([c0cac58](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c0cac58))
+
+
+
 <a name="1.3.4"></a>
 ## [1.3.4](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.2...v1.3.4) (2018-07-08)
 
@@ -31,6 +47,7 @@
 * invalid import replyBuilder ([c98f048](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c98f048))
 * reconfigure jest ([31f5b72](https://github.com/fletcherist/yandex-dialogs-sdk/commit/31f5b72))
 * session types ([a646c47](https://github.com/fletcherist/yandex-dialogs-sdk/commit/a646c47))
+* tests ([86e6d3a](https://github.com/fletcherist/yandex-dialogs-sdk/commit/86e6d3a))
 * types in alice.ts ([2a4e266](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2a4e266))
 * typos in tests, ctx and main ([0c55743](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0c55743))
 
