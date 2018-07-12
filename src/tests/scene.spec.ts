@@ -1,4 +1,4 @@
-import Alice from "..";
+import Alice from '../alice';
 
 const Scene = require('../scene')
 
@@ -14,6 +14,7 @@ test('registering an array of scenes', () => {
 
   alice.registerScene([scene1, scene2])
 
+  // yup it's a private method but who cares whatsoever?..
   expect(alice.scenes.length).toBe(2)
 })
 
