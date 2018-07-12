@@ -6,6 +6,7 @@ import fetch from 'node-fetch'
 
 import Scene from './scene'
 import Ctx from './ctx'
+import ImagesApi from './imagesApi'
 
 import {
   selectCommand,
@@ -35,6 +36,7 @@ export default class Alice {
   private scenes: Scene[]
   private currentScene: Scene | null
   private sessions: Sessions
+  private imagesApi: ImagesApi
   private server: {
     close: () => void,
   }
@@ -49,6 +51,10 @@ export default class Alice {
     this.currentScene = null
     this.sessions = new Sessions()
     this.config = config
+    this.imagesApi = new ImagesApi({
+      oAuthToken: this.config.oAuthToken,
+      skillId: this.config.skillId,
+    })
 
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
@@ -277,38 +283,12 @@ export default class Alice {
     }
   }
 
-  public uploadImage(imageUrl: string) {
-    if (!this.config.skillId) {
-      throw new Error('Please, provide {skillId} to alice constructor')
-    }
-    if (!this.config.oAuthToken) {
-      throw new Error('Please, provide {oAuthToken} to alice constructor')
-    }
-    fetch(`${ALICE_API_URL}/${this.config.skillId}/images`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `OAuth ${this.config.oAuthToken}`,
-        'Content-type': 'application/json',
-      },
-      body: JSON.stringify({
-        url: imageUrl,
-      }),
-    })
-    .then((res) => res.text())
-    .then(console.log)
-    .catch((error) => console.error(error))
+  public async uploadImage(imageUrl: string) {
+    return await this.imagesApi.uploadImage(imageUrl)
   }
 
-  public getImages() {
-    fetch(`${ALICE_API_URL}/${this.config.skillId}/images`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `OAuth ${this.config.oAuthToken}`,
-        'Content-type': 'application/json',
-      },
-    }).then((res) => res.text())
-    .then(console.log)
-    .catch((error) => console.log(error))
+  public async getImages() {
+    return await this.imagesApi.getImages()
   }
 
   public stopListening() {
