@@ -10,6 +10,7 @@ import {
   selectCommand,
   selectSessionId,
   isFunction,
+  delay,
 } from './utils'
 
 import {
@@ -19,13 +20,17 @@ import {
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 import { configInterface } from './types/alice'
 import { CommandInterface } from './types/command'
+import { CtxInterface } from './types/ctx'
 import { WebhookResponse, WebhookRequest } from 'webhook'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
+const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
+const DEFAULT_TIMEOUT_CALLBACK = 600
 
 export default class Alice {
-  private anyCallback: (ctx: Ctx) => void
-  private welcomeCallback: (ctx: Ctx) => void
+  private anyCallback: (ctx: CtxInterface) => void
+  private welcomeCallback: (ctx: CtxInterface) => void
+  private timeoutCallback: (ctx: CtxInterface) => void
   private commands: Commands
   private middlewares: any[]
   private scenes: Scene[]
@@ -40,6 +45,10 @@ export default class Alice {
   constructor(config: configInterface = {}) {
     this.anyCallback = null
     this.welcomeCallback = null
+    this.timeoutCallback = async (ctx) => {
+      await delay(DEFAULT_TIMEOUT_CALLBACK)
+      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
+    }
     this.commands = new Commands(config.fuseOptions || null)
     this.middlewares = [aliceStateMiddleware()]
     this.scenes = []
@@ -240,18 +249,31 @@ export default class Alice {
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  public async listen(callbackUrl = '/', port = 80, callback?: () => void) {
+  public async listen(webhookPath = '/', port = 80, callback?: () => void) {
     return new Promise((resolve) => {
       const app = express()
       app.use(express.json())
-      app.post(callbackUrl, async (req, res) => {
+      app.post(webhookPath, async (req, res) => {
         if (this.config.oAuthToken) {
           res.setHeader('Authorization', this.config.oAuthToken)
         }
         res.setHeader('Content-type', 'application/json')
-        const handleResponseCallback = (response) => res.send(response)
+
+        let responseAlreadySent = false
+        const handleResponseCallback = (response) => {
+          /* dont answer twice */
+          if (responseAlreadySent) {
+            return false
+          }
+          res.send(response)
+          responseAlreadySent = true
+        }
         try {
-          return await this.handleRequestBody(req.body, handleResponseCallback)
+          const executors = [
+            this.handleRequestBody(req.body, handleResponseCallback),
+            await this.timeoutCallback(new Ctx({ req: req.body, sendResponse: handleResponseCallback })),
+          ].filter(Boolean)
+          return await Promise.race(executors)
         } catch (error) {
           throw new Error(error)
         }

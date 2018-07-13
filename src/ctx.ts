@@ -66,7 +66,7 @@ export default class Ctx implements CtxInterface {
     return reversedInterpolation(this.command.name, requestText)
   }
 
-  public async reply(replyMessage) {
+  public async reply(replyMessage: string | {}): Promise<WebhookResponse> {
     if (!replyMessage) {
       throw new Error('Reply message could not be empty!')
     }
@@ -103,4 +103,6 @@ export default class Ctx implements CtxInterface {
 
     return replyMessage
   }
+
+  public getDefaultRespons
 }

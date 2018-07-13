@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint src",
     "test": "jest",
-    "dev": "tsc -w",
-    "build": "tsc",
+    "dev": "tsc -w --declaration",
+    "build": "rm -rf dist && tsc --declaration",
     "version": "npm run changelog && git add CHANGELOG.md",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "release": "conventional-github-releaser -p angular",
