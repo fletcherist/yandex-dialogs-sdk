@@ -4,4 +4,5 @@ export interface configInterface {
   oAuthToken?: string
   skillId?: string
   devServerUrl?: string
+  responseTimeout?: number
 }

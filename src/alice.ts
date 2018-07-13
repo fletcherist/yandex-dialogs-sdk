@@ -26,7 +26,7 @@ import { WebhookResponse, WebhookRequest } from 'webhook'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
-const DEFAULT_TIMEOUT_CALLBACK = 600
+const DEFAULT_RESPONSE_TIMEOUT = 1300
 
 export default class Alice {
   private anyCallback: (ctx: CtxInterface) => void
@@ -46,10 +46,6 @@ export default class Alice {
   constructor(config: configInterface = {}) {
     this.anyCallback = null
     this.welcomeCallback = null
-    this.timeoutCallback = async (ctx) => {
-      await delay(DEFAULT_TIMEOUT_CALLBACK)
-      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
-    }
     this.commands = new Commands(config.fuseOptions || null)
     this.middlewares = [aliceStateMiddleware()]
     this.scenes = []
@@ -61,6 +57,10 @@ export default class Alice {
       skillId: this.config.skillId,
     })
 
+    this.timeoutCallback = async (ctx) => {
+      await delay(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT)
+      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
+    }
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
@@ -140,6 +140,8 @@ export default class Alice {
     }
     const ctxInstance = new Ctx(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+
+    console.log(ctxWithMiddlewares.message)
 
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {
@@ -242,7 +244,7 @@ export default class Alice {
       this.config.devServerUrl
         ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
         : this.handleRequestBody(req, sendResponse),
-      await this.timeoutCallback(new Ctx({ req, sendResponse })),
+      // await this.timeoutCallback(new Ctx({ req, sendResponse })),
     ].filter(Boolean)
     return await Promise.race(executors)
   }
@@ -328,12 +330,16 @@ export default class Alice {
     devServerUrl: string,
     sendResponse?: (res: WebhookResponse) => void,
   ) {
-    const res = await fetch(devServerUrl, {
-      method: 'POST',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify(request),
-    })
-    const json = await res.json()
-    return sendResponse(json)
+    try {
+      const res = await fetch(devServerUrl, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(request),
+      })
+      const json = await res.json()
+      return sendResponse(json)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
