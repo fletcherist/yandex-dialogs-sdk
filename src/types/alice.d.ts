@@ -3,4 +3,5 @@ export interface configInterface {
   sessionsLimit?: number
   oAuthToken?: string
   skillId?: string
+  devServerUrl?: string
 }

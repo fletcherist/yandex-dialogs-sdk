@@ -114,8 +114,6 @@ export default class Alice {
    * @param {Function} sendResponse — Express res function while listening on port.
    */
   public async handleRequestBody(req, sendResponse) {
-    const requestedCommandName = selectCommand(req)
-
     /* clear old sessions */
     if (this.sessions.length > (this.config.sessionsLimit || DEFAULT_SESSIONS_LIMIT)) {
       this.sessions.flush()
@@ -238,11 +236,19 @@ export default class Alice {
     req: WebhookRequest,
     sendResponse?: (res: WebhookResponse) => void,
   ): Promise<any> {
+    const executors = [
+      /* proxy request to dev server, if enabled */
+      this.config.devServerUrl
+        ? this.handleProxyRequest(req, this.config.devServerUrl)
+        : this.handleRequestBody(req, sendResponse),
+      await this.timeoutCallback(new Ctx({ req, sendResponse })),
+    ].filter(Boolean)
+    return await Promise.race(executors)
     return await this.handleRequestBody(req, sendResponse)
   }
-
   /*
    * Метод создаёт сервер, который слушает указанный порт.
+
    * Когда на указанный URL приходит POST запрос, управление
    * передаётся в @handleRequestBody
    *
@@ -269,11 +275,7 @@ export default class Alice {
           responseAlreadySent = true
         }
         try {
-          const executors = [
-            this.handleRequestBody(req.body, handleResponseCallback),
-            await this.timeoutCallback(new Ctx({ req: req.body, sendResponse: handleResponseCallback })),
-          ].filter(Boolean)
-          return await Promise.race(executors)
+          return await this.handleRequest(req.body, handleResponseCallback)
         } catch (error) {
           throw new Error(error)
         }
@@ -319,5 +321,9 @@ export default class Alice {
   }
   protected _handleLeaveScene() {
     this.currentScene = null
+  }
+
+  private async handleProxyRequest(request: WebhookRequest, devServerUrl: string) {
+    return
   }
 }
