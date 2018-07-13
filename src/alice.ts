@@ -5,6 +5,7 @@ import { Sessions } from './sessions'
 import Scene from './scene'
 import Ctx from './ctx'
 import ImagesApi from './imagesApi'
+import fetch from 'node-fetch'
 
 import {
   selectCommand,
@@ -239,12 +240,11 @@ export default class Alice {
     const executors = [
       /* proxy request to dev server, if enabled */
       this.config.devServerUrl
-        ? this.handleProxyRequest(req, this.config.devServerUrl)
+        ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
         : this.handleRequestBody(req, sendResponse),
       await this.timeoutCallback(new Ctx({ req, sendResponse })),
     ].filter(Boolean)
     return await Promise.race(executors)
-    return await this.handleRequestBody(req, sendResponse)
   }
   /*
    * Метод создаёт сервер, который слушает указанный порт.
@@ -323,7 +323,17 @@ export default class Alice {
     this.currentScene = null
   }
 
-  private async handleProxyRequest(request: WebhookRequest, devServerUrl: string) {
-    return
+  private async handleProxyRequest(
+    request: WebhookRequest,
+    devServerUrl: string,
+    sendResponse?: (res: WebhookResponse) => void,
+  ) {
+    const res = await fetch(devServerUrl, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(request),
+    })
+    const json = await res.json()
+    return sendResponse(json)
   }
 }
