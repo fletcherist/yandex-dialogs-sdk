@@ -1,8 +1,6 @@
 import express from 'express'
 import Commands from './commands'
 import { Sessions } from './sessions'
-import { merge, compose } from 'ramda'
-import fetch from 'node-fetch'
 
 import Scene from './scene'
 import Ctx from './ctx'
@@ -14,11 +12,8 @@ import {
   isFunction,
 } from './utils'
 
-import { ALICE_API_URL } from './constants'
-
 import {
   applyMiddlewares,
-  MiddlewareType,
 } from './middlewares'
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
