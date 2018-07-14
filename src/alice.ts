@@ -244,7 +244,7 @@ export default class Alice {
       this.config.devServerUrl
         ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
         : this.handleRequestBody(req, sendResponse),
-      // await this.timeoutCallback(new Ctx({ req, sendResponse })),
+      await this.timeoutCallback(new Ctx({ req, sendResponse })),
     ].filter(Boolean)
     return await Promise.race(executors)
   }
