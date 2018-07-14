@@ -1,4 +1,5 @@
 import { ALICE_API_URL } from './constants'
+import fetch from 'node-fetch'
 
 export function getHeaders({
   oAuthToken,

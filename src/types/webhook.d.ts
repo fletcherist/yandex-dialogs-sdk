@@ -1,4 +1,5 @@
 import { ButtonInterface } from './button'
+import { ItemsListCard, BigImageCard } from './card'
 export interface WebhookRequest {
   meta: {
       locale: string
@@ -30,6 +31,7 @@ export interface WebhookResponse {
       tts?: string
       buttons?: ButtonInterface[]
       end_session?: boolean
+      card?: BigImageCard | ItemsListCard
   }
   session?: {
       message_id?: number

@@ -7,6 +7,8 @@ import ButtonBuilder from './buttonBuilder'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { CtxInterface } from './types/ctx'
 import { CommandInterface } from './types/command'
+import { BigImageCard } from './types/card'
+import { image } from './card'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -73,6 +75,14 @@ export default class Ctx implements CtxInterface {
 
     const message = this._createReply(replyMessage)
     return this._sendReply(message)
+  }
+
+  public async replyWithImage(image: string | BigImageCard) {
+
+  }
+
+  public async replyWithGallery() {
+
   }
 
   public _createReply(replyMessage): WebhookResponse {
