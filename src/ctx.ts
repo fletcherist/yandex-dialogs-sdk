@@ -8,7 +8,7 @@ import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { CtxInterface } from './types/ctx'
 import { CommandInterface } from './types/command'
 import { BigImageCard } from './types/card'
-import { image } from './card'
+import { image, bigImageCard, itemsListCard } from './card'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -69,7 +69,7 @@ export default class Ctx implements CtxInterface {
   }
 
   public async reply(replyMessage: string | {}): Promise<WebhookResponse> {
-    if (!replyMessage) {
+    if (typeof replyMessage === 'undefined') {
       throw new Error('Reply message could not be empty!')
     }
 
@@ -77,8 +77,15 @@ export default class Ctx implements CtxInterface {
     return this._sendReply(message)
   }
 
-  public async replyWithImage(image: string | BigImageCard) {
+  public async replyWithImage(params: string | BigImageCard) {
+    if (typeof params === 'string') {
 
+      const message = this._createReply(bigImageCard(image(params)))
+      return this._sendReply(message)
+    } else {
+      const message = this._createReply(bigImageCard(params))
+      return this._sendReply(message)
+    }
   }
 
   public async replyWithGallery() {
@@ -103,7 +110,7 @@ export default class Ctx implements CtxInterface {
     return replyMessage
   }
 
-  private _sendReply(replyMessage) {
+  private _sendReply(replyMessage: WebhookResponse) {
     /*
      * That fires when listening on port.
      */

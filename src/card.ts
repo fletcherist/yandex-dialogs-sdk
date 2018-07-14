@@ -31,11 +31,17 @@ export const footer = (text: string, button: ButtonInterface): Footer => {
     button,
   }
 }
-export const card = (): BigImageCard | ItemsListCard => {
-  return {
 
+export const bigImageCard = (params: BigImageCard): BigImageCard => {
+  return {
+    type: 'BigImage',
+    ...params,
   }
 }
 
-export default card
-module.exports = card
+export const itemsListCard = (params: ItemsListCard): ItemsListCard => {
+  return {
+    type: 'ItemsList',
+    ...params,
+  }
+}

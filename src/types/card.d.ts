@@ -17,19 +17,19 @@ export interface Header {
 }
 
 export interface BigImageCard {
-  type: 'BigImage'
+  type?: 'BigImage'
   image_id: string
-  title: string
-  description: string
-  button: ButtonInterface
-  footer: Footer
+  title?: string
+  description?: string
+  button?: ButtonInterface
+  footer?: Footer
 }
 
 export interface ItemsListCard {
-  type: 'ItemsList'
-  header: {
+  type?: 'ItemsList'
+  header?: {
     text: string
   }
   items: Image[]
-  footer: Footer
+  footer?: Footer
 }
