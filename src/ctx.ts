@@ -9,6 +9,7 @@ import { CtxInterface } from './types/ctx'
 import { CommandInterface } from './types/command'
 import { BigImageCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
+import reply from './reply'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -79,8 +80,8 @@ export default class Ctx implements CtxInterface {
 
   public async replyWithImage(params: string | BigImageCard) {
     if (typeof params === 'string') {
-
-      const message = this._createReply(bigImageCard(image(params)))
+      const message = this._createReply(reply(bigImageCard(image(params))))
+      console.log(message)
       return this._sendReply(message)
     } else {
       const message = this._createReply(bigImageCard(params))
