@@ -1,4 +1,5 @@
-import { ItemsListCard, BigImageCard, Image } from './types/card'
+import { ItemsListCard, BigImageCard, Image, Footer, Header } from './types/card'
+import { ButtonInterface } from './types/button'
 
 export const image = (params: string | Image): Image => {
   if (typeof params === 'string') {
@@ -18,12 +19,23 @@ export const image = (params: string | Image): Image => {
   }
 }
 
-// export const footer = (params: string | Footer): Footer => {
+export const header = (text: string): Header => {
+  return {
+    text,
+  }
+}
 
-// }
-// const card = (): BigImageCard | ItemsListCard => {
-//   return {}
-// }
+export const footer = (text: string, button: ButtonInterface): Footer => {
+  return {
+    text,
+    button,
+  }
+}
+export const card = (): BigImageCard | ItemsListCard => {
+  return {
 
-// export default card
-// module.exports = card
+  }
+}
+
+export default card
+module.exports = card

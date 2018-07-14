@@ -12,6 +12,10 @@ export interface Footer {
   button: ButtonInterface
 }
 
+export interface Header {
+  text: string
+}
+
 export interface BigImageCard {
   type: 'BigImage'
   image_id: string
