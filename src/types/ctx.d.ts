@@ -17,6 +17,7 @@ export interface CtxInterface {
   replyBuilder: ReplyBuilder
   buttonBuilder: ButtonBuilder
 
+  reply: (replyMessage: string | {}) => Promise<WebhookResponse>
   sendResponse: (response: WebhookResponse) => void
   enterScene: (sceneName: string) => void
   leaveScene: () => void

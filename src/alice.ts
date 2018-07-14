@@ -1,37 +1,43 @@
 import express from 'express'
 import Commands from './commands'
 import { Sessions } from './sessions'
-import { merge, compose } from 'ramda'
 
 import Scene from './scene'
 import Ctx from './ctx'
+import ImagesApi from './imagesApi'
+import fetch from 'node-fetch'
 
 import {
   selectCommand,
   selectSessionId,
   isFunction,
+  delay,
 } from './utils'
 
 import {
   applyMiddlewares,
-  MiddlewareType,
 } from './middlewares'
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 import { configInterface } from './types/alice'
 import { CommandInterface } from './types/command'
+import { CtxInterface } from './types/ctx'
 import { WebhookResponse, WebhookRequest } from 'webhook'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
+const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
+const DEFAULT_RESPONSE_TIMEOUT = 1300
 
 export default class Alice {
-  private anyCallback: (ctx: Ctx) => void
-  private welcomeCallback: (ctx: Ctx) => void
+  private anyCallback: (ctx: CtxInterface) => void
+  private welcomeCallback: (ctx: CtxInterface) => void
+  private timeoutCallback: (ctx: CtxInterface) => void
   private commands: Commands
   private middlewares: any[]
   private scenes: Scene[]
   private currentScene: Scene | null
   private sessions: Sessions
+  private imagesApi: ImagesApi
   private server: {
     close: () => void,
   }
@@ -46,7 +52,15 @@ export default class Alice {
     this.currentScene = null
     this.sessions = new Sessions()
     this.config = config
+    this.imagesApi = new ImagesApi({
+      oAuthToken: this.config.oAuthToken,
+      skillId: this.config.skillId,
+    })
 
+    this.timeoutCallback = async (ctx) => {
+      await delay(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT)
+      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
+    }
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
@@ -101,8 +115,6 @@ export default class Alice {
    * @param {Function} sendResponse — Express res function while listening on port.
    */
   public async handleRequestBody(req, sendResponse) {
-    const requestedCommandName = selectCommand(req)
-
     /* clear old sessions */
     if (this.sessions.length > (this.config.sessionsLimit || DEFAULT_SESSIONS_LIMIT)) {
       this.sessions.flush()
@@ -128,6 +140,8 @@ export default class Alice {
     }
     const ctxInstance = new Ctx(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+
+    console.log(ctxWithMiddlewares.message)
 
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {
@@ -225,25 +239,45 @@ export default class Alice {
     req: WebhookRequest,
     sendResponse?: (res: WebhookResponse) => void,
   ): Promise<any> {
-    return await this.handleRequestBody(req, sendResponse)
+    const executors = [
+      /* proxy request to dev server, if enabled */
+      this.config.devServerUrl
+        ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
+        : this.handleRequestBody(req, sendResponse),
+      await this.timeoutCallback(new Ctx({ req, sendResponse })),
+    ].filter(Boolean)
+    return await Promise.race(executors)
   }
-
   /*
    * Метод создаёт сервер, который слушает указанный порт.
+
    * Когда на указанный URL приходит POST запрос, управление
    * передаётся в @handleRequestBody
    *
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  public async listen(callbackUrl = '/', port = 80, callback?: () => void) {
+  public async listen(webhookPath = '/', port = 80, callback?: () => void) {
     return new Promise((resolve) => {
       const app = express()
       app.use(express.json())
-      app.post(callbackUrl, async (req, res) => {
-        const handleResponseCallback = (response) => res.send(response)
+      app.post(webhookPath, async (req, res) => {
+        if (this.config.oAuthToken) {
+          res.setHeader('Authorization', this.config.oAuthToken)
+        }
+        res.setHeader('Content-type', 'application/json')
+
+        let responseAlreadySent = false
+        const handleResponseCallback = (response) => {
+          /* dont answer twice */
+          if (responseAlreadySent) {
+            return false
+          }
+          res.send(response)
+          responseAlreadySent = true
+        }
         try {
-          return await this.handleRequestBody(req.body, handleResponseCallback)
+          return await this.handleRequest(req.body, handleResponseCallback)
         } catch (error) {
           throw new Error(error)
         }
@@ -264,10 +298,18 @@ export default class Alice {
   public registerScene(scene) {
     // Allow for multiple scenes to be registered at once.
     if (Array.isArray(scene)) {
-      scene.forEach(sceneItem => this.scenes.push(sceneItem))
+      scene.forEach((sceneItem) => this.scenes.push(sceneItem))
     } else {
       this.scenes.push(scene)
     }
+  }
+
+  public async uploadImage(imageUrl: string) {
+    return await this.imagesApi.uploadImage(imageUrl)
+  }
+
+  public async getImages() {
+    return await this.imagesApi.getImages()
   }
 
   public stopListening() {
@@ -281,5 +323,23 @@ export default class Alice {
   }
   protected _handleLeaveScene() {
     this.currentScene = null
+  }
+
+  private async handleProxyRequest(
+    request: WebhookRequest,
+    devServerUrl: string,
+    sendResponse?: (res: WebhookResponse) => void,
+  ) {
+    try {
+      const res = await fetch(devServerUrl, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(request),
+      })
+      const json = await res.json()
+      return sendResponse(json)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
