@@ -141,8 +141,6 @@ export default class Alice {
     const ctxInstance = new Ctx(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
 
-    console.log(ctxWithMiddlewares.message)
-
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {
       session.setData('currentScene', null)
