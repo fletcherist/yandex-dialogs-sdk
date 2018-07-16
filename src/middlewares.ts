@@ -1,16 +1,16 @@
 import { merge } from 'ramda'
-import Ctx from './ctx'
+import Context from './context'
 
-export type MiddlewareType = (ctx: Ctx) => Ctx
-export async function applyMiddleware(middleware: MiddlewareType, ctx: Ctx): Promise<Ctx> {
+export type MiddlewareType = (ctx: Context) => Context
+export async function applyMiddleware(middleware: MiddlewareType, ctx: Context): Promise<Context> {
   const newContext = await middleware(ctx)
   if (!newContext) {
-    throw new Error('Your middleware function should always return Ctx')
+    throw new Error('Your middleware function should always return Context')
   }
   return newContext
 }
 
-export async function applyMiddlewares(middlewares, ctx: Ctx): Promise<Ctx> {
+export async function applyMiddlewares(middlewares, ctx: Context): Promise<Context> {
   let newContext = ctx
   for (const middleware of middlewares) {
     try {

@@ -1,11 +1,11 @@
 import Alice from './alice'
 import Commands from './commands'
 import Command from './command'
-import Ctx from './ctx'
+import Context from './context'
 
-import { configInterface } from './types/alice'
+import { IConfig } from './types/alice'
 import { WebhookRequest, WebhookResponse } from './types/webhook'
-import { CtxInterface } from 'ctx'
+import { IContext } from 'ctx'
 
 const selectCommand = (req) => req.request.command
 
@@ -13,11 +13,11 @@ export default class Scene extends Alice {
   public name: string
   public enterCommand: Commands
   public leaveCommand: Commands
-  public anyCallback: (ctx: Ctx) => void
+  public anyCallback: (ctx: Context) => void
   public commands: Commands
-  public config: configInterface
+  public config: IConfig
 
-  constructor(name, config: configInterface = {}) {
+  constructor(name, config: IConfig = {}) {
     super()
     this.name = name
     this.anyCallback = null
@@ -77,7 +77,7 @@ export default class Scene extends Alice {
   public async handleRequest(
     req: WebhookRequest,
     sendResponse: (res: WebhookResponse) => void,
-    ctx: CtxInterface,
+    ctx: IContext,
     type: string = null,
   ): Promise<any> {
 
