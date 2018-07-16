@@ -8,6 +8,9 @@ import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { CtxInterface } from './types/ctx'
 import { CommandInterface } from './types/command'
 import { EventEmitterInterface } from './types/eventEmitter'
+import { BigImageCard } from './types/card'
+import { image, bigImageCard, itemsListCard } from './card'
+import reply from './reply'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -46,7 +49,7 @@ export default class Ctx implements CtxInterface {
     this.messageId = req.session.message_id
     this.userId = req.session.user_id
     this.payload = req.request.payload
-    this.message = req.request.original_utterance
+    this.message = req.request.command
 
     this.session = session
 
@@ -68,13 +71,27 @@ export default class Ctx implements CtxInterface {
     return reversedInterpolation(this.command.name, requestText)
   }
 
-  public async reply(replyMessage) {
-    if (!replyMessage) {
+  public async reply(replyMessage: string | {}): Promise<WebhookResponse> {
+    if (typeof replyMessage === 'undefined') {
       throw new Error('Reply message could not be empty!')
     }
 
     const message = this._createReply(replyMessage)
     return this._sendReply(message)
+  }
+
+  public async replyWithImage(params: string | BigImageCard) {
+    if (typeof params === 'string') {
+      const message = this._createReply(reply(bigImageCard(image(params))))
+      return this._sendReply(message)
+    } else {
+      const message = this._createReply(bigImageCard(params))
+      return this._sendReply(message)
+    }
+  }
+
+  public async replyWithGallery() {
+
   }
 
   public _createReply(replyMessage): WebhookResponse {
@@ -95,7 +112,7 @@ export default class Ctx implements CtxInterface {
     return replyMessage
   }
 
-  private _sendReply(replyMessage) {
+  private _sendReply(replyMessage: WebhookResponse) {
     /*
      * That fires when listening on port.
      */

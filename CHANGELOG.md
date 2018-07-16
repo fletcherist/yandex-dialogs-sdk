@@ -1,3 +1,44 @@
+<a name="1.4.4"></a>
+## [1.4.4](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.6...v1.4.4) (2018-07-16)
+
+
+### Bug Fixes
+
+* bug with number ([0abbf1c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0abbf1c))
+* remove console.logs ([a39d204](https://github.com/fletcherist/yandex-dialogs-sdk/commit/a39d204))
+* remove unnesessary files ([c9f778f](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c9f778f))
+* uncomment executor ([37f1ebd](https://github.com/fletcherist/yandex-dialogs-sdk/commit/37f1ebd))
+
+
+### Features
+
+* implement bigimage, listitems cards ([34d1d18](https://github.com/fletcherist/yandex-dialogs-sdk/commit/34d1d18))
+* implement footer, header ([d9f6945](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d9f6945))
+* implement proxy fn ([bf2a0cc](https://github.com/fletcherist/yandex-dialogs-sdk/commit/bf2a0cc))
+* implement replyWithImage method ([e806902](https://github.com/fletcherist/yandex-dialogs-sdk/commit/e806902))
+* implement timeout expired response ([d853700](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d853700))
+* implement uploadImage & getImages methods() ([040ef0c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/040ef0c))
+* refactoring ([957c750](https://github.com/fletcherist/yandex-dialogs-sdk/commit/957c750))
+* refactoring dev proxy ([cece2bd](https://github.com/fletcherist/yandex-dialogs-sdk/commit/cece2bd))
+
+
+
+<a name="1.3.6"></a>
+## [1.3.6](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.5...v1.3.6) (2018-07-11)
+
+
+### Bug Fixes
+
+* TYPE_FIGURE excluded from Commands._strings() ([f1f5779](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f1f5779))
+* wrong case sensitive path './Command' ([f2ea4ea](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f2ea4ea))
+
+
+### Features
+
+* add match docs ([c0cac58](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c0cac58))
+
+
+
 <a name="1.3.4"></a>
 ## [1.3.4](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.2...v1.3.4) (2018-07-08)
 
@@ -31,6 +72,7 @@
 * invalid import replyBuilder ([c98f048](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c98f048))
 * reconfigure jest ([31f5b72](https://github.com/fletcherist/yandex-dialogs-sdk/commit/31f5b72))
 * session types ([a646c47](https://github.com/fletcherist/yandex-dialogs-sdk/commit/a646c47))
+* tests ([86e6d3a](https://github.com/fletcherist/yandex-dialogs-sdk/commit/86e6d3a))
 * types in alice.ts ([2a4e266](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2a4e266))
 * typos in tests, ctx and main ([0c55743](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0c55743))
 

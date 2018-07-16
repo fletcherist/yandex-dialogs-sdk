@@ -25,7 +25,7 @@ interface ParamsType {
   session: {},
   buttons: any[]
 }
-const reply = (params: ParamsType): WebhookResponse => {
+export const reply = (params: ParamsType): WebhookResponse => {
   const data: WebhookResponse = {
     response: {
       text: '',
