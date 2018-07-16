@@ -4,8 +4,8 @@ import { Sessions } from './sessions'
 
 import Scene from './scene'
 import Ctx from './ctx'
-import EventEmitter from './eventEmitter'
 import ImagesApi from './imagesApi'
+import Logger from './logger'
 import fetch from 'node-fetch'
 
 import {
@@ -25,12 +25,19 @@ import { CommandInterface } from './types/command'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
 import { CtxInterface } from './types/ctx'
+import eventEmitter from './eventEmitter'
+
+import {
+  EVENT_MESSAGE_RECIEVED,
+  EVENT_MESSAGE_SENT,
+} from './constants'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
 const DEFAULT_RESPONSE_TIMEOUT = 1300
 
 export default class Alice {
+  public logger: object
   private anyCallback: (ctx: CtxInterface) => void
   private welcomeCallback: (ctx: CtxInterface) => void
   private timeoutCallback: (ctx: CtxInterface) => void
@@ -55,7 +62,7 @@ export default class Alice {
     this.currentScene = null
     this.sessions = new Sessions()
     this.config = config
-    this.eventEmitter = new EventEmitter()
+    this.logger = new Logger()
     this.imagesApi = new ImagesApi({
       oAuthToken: this.config.oAuthToken,
       skillId: this.config.skillId,
@@ -72,7 +79,7 @@ export default class Alice {
   /* @TODO: Implement watchers (errors, messages) */
   // tslint:disable-next-line:no-empty
   public on(event: EventInterface['type'], callback: EventInterface['callback']) {
-    this.eventEmitter.subscribe(event, callback)
+    eventEmitter.subscribe(event, callback)
   }
 
   /*
@@ -141,12 +148,14 @@ export default class Alice {
        */
       server: this.server || null,
       middlewares: this.middlewares,
-      eventEmitter: this.eventEmitter,
+      eventEmitter,
     }
     const ctxInstance = new Ctx(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
 
-    this.eventEmitter.dispatch('MESSAGE_RECIEVED', ctxWithMiddlewares.message)
+    eventEmitter.dispatch(EVENT_MESSAGE_RECIEVED, {
+      data: ctxWithMiddlewares.message, session: ctxWithMiddlewares.session,
+    })
 
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {
@@ -273,7 +282,7 @@ export default class Alice {
         res.setHeader('Content-type', 'application/json')
 
         let responseAlreadySent = false
-        const handleResponseCallback = (response) => {
+        const handleResponseCallback = (response: WebhookResponse) => {
           /* dont answer twice */
           if (responseAlreadySent) {
             return false

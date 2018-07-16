@@ -12,7 +12,7 @@ export interface CtxInterface {
   payload: {}
   message: string
   session: {}
-  EventEmitter: EventEmitterInterface
+  eventEmitter: EventEmitterInterface
 
   // command?: Command
 

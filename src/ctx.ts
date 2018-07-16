@@ -12,6 +12,8 @@ import { BigImageCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
 import reply from './reply'
 
+import { EVENT_MESSAGE_RECIEVED } from './constants'
+
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
   public sessionId: string
@@ -20,7 +22,7 @@ export default class Ctx implements CtxInterface {
   public payload: {}
   public message: string
   public session: Session
-  public EventEmitter: EventEmitterInterface
+  public eventEmitter: EventEmitterInterface
 
   public command?: CommandInterface
 
@@ -38,6 +40,7 @@ export default class Ctx implements CtxInterface {
 
       enterScene,
       leaveScene,
+      eventEmitter,
 
       command,
     } = params
@@ -53,6 +56,7 @@ export default class Ctx implements CtxInterface {
 
     this.session = session
 
+    this.eventEmitter = eventEmitter
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()
 
@@ -120,6 +124,9 @@ export default class Ctx implements CtxInterface {
       return this.sendResponse(replyMessage)
     }
 
+    this.eventEmitter.dispatch(EVENT_MESSAGE_RECIEVED, {
+      data: this.message, session: this.req.session,
+    })
     return replyMessage
   }
 }

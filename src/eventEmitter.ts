@@ -1,3 +1,4 @@
+import { merge } from 'ramda'
 import {
   EventEmitterInterface,
   EventType,
@@ -5,22 +6,31 @@ import {
   EventData,
 } from './types/eventEmitter'
 
-export default class EventEmitter implements EventEmitterInterface {
+class EventEmitter implements EventEmitterInterface {
   public events: EventInterface[]
   constructor() {
     this.events = []
   }
-  public subscribe(eventType: EventType, callback: EventInterface['callback']) {
+  public subscribe(eventType: string, callback: EventInterface['callback']) {
     this.events.push({
       type: eventType,
       callback,
     })
   }
-  public dispatch(eventType: EventType, data: EventData) {
+  public dispatch(eventType: string, dataValue) {
     for (const event of this.events) {
+      const eventData = {
+        timestamp: new Date().toString(),
+        type: eventType,
+        session: dataValue.session,
+        data: dataValue.data,
+      }
       if (event.type === eventType) {
-        event.callback(data)
+        event.callback(eventData)
       }
     }
   }
 }
+
+const eventEmitter = new EventEmitter()
+export default eventEmitter
