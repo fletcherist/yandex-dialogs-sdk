@@ -5,16 +5,18 @@ import { Sessions } from './sessions'
 import Scene from './scene'
 import Ctx from './ctx'
 import EventEmitter from './eventEmitter'
+import ImagesApi from './imagesApi'
+import fetch from 'node-fetch'
 
 import {
   selectCommand,
   selectSessionId,
   isFunction,
+  delay,
 } from './utils'
 
 import {
   applyMiddlewares,
-  MiddlewareType,
 } from './middlewares'
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
@@ -22,17 +24,22 @@ import { configInterface } from './types/alice'
 import { CommandInterface } from './types/command'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
+import { CtxInterface } from './types/ctx'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
+const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
+const DEFAULT_RESPONSE_TIMEOUT = 1300
 
 export default class Alice {
-  private anyCallback: (ctx: Ctx) => void
-  private welcomeCallback: (ctx: Ctx) => void
+  private anyCallback: (ctx: CtxInterface) => void
+  private welcomeCallback: (ctx: CtxInterface) => void
+  private timeoutCallback: (ctx: CtxInterface) => void
   private commands: Commands
   private middlewares: any[]
   private scenes: Scene[]
   private currentScene: Scene | null
   private sessions: Sessions
+  private imagesApi: ImagesApi
   private server: {
     close: () => void,
   }
@@ -49,7 +56,15 @@ export default class Alice {
     this.sessions = new Sessions()
     this.config = config
     this.eventEmitter = new EventEmitter()
+    this.imagesApi = new ImagesApi({
+      oAuthToken: this.config.oAuthToken,
+      skillId: this.config.skillId,
+    })
 
+    this.timeoutCallback = async (ctx) => {
+      await delay(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT)
+      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
+    }
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
@@ -104,8 +119,6 @@ export default class Alice {
    * @param {Function} sendResponse — Express res function while listening on port.
    */
   public async handleRequestBody(req, sendResponse) {
-    const requestedCommandName = selectCommand(req)
-
     /* clear old sessions */
     if (this.sessions.length > (this.config.sessionsLimit || DEFAULT_SESSIONS_LIMIT)) {
       this.sessions.flush()
@@ -151,9 +164,10 @@ export default class Alice {
        * activation trigger
        */
       if (matchedScene) {
-        if (matchedScene.isLeaveCommand(requestedCommandName)) {
-          await matchedScene.handleRequest(req, sendResponse, ctxWithMiddlewares)
+        if (await matchedScene.isLeaveCommand(ctxWithMiddlewares)) {
+          await matchedScene.handleRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
           session.setData('currentScene', null)
+          this._handleLeaveScene()
           return true
         } else {
           const sceneResponse = await matchedScene.handleRequest(
@@ -168,12 +182,19 @@ export default class Alice {
       /*
        * Looking for scene's activational phrases
        */
-      const matchedScene = this.scenes.find((scene) =>
-        scene.isEnterCommand(requestedCommandName))
+      let matchedScene = null
+      for (const scene of this.scenes) {
+        const result = await scene.isEnterCommand(ctxWithMiddlewares)
+        if (result) {
+          matchedScene = scene
+        }
+      }
+
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
+        this._handleEnterScene(matchedScene.name)
         const sceneResponse = await matchedScene.handleRequest(
-          req, sendResponse, ctxWithMiddlewares,
+          req, sendResponse, ctxWithMiddlewares, 'enter',
         )
         if (sceneResponse) {
           return true
@@ -223,25 +244,45 @@ export default class Alice {
     req: WebhookRequest,
     sendResponse?: (res: WebhookResponse) => void,
   ): Promise<any> {
-    return await this.handleRequestBody(req, sendResponse)
+    const executors = [
+      /* proxy request to dev server, if enabled */
+      this.config.devServerUrl
+        ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
+        : this.handleRequestBody(req, sendResponse),
+      await this.timeoutCallback(new Ctx({ req, sendResponse })),
+    ].filter(Boolean)
+    return await Promise.race(executors)
   }
-
   /*
    * Метод создаёт сервер, который слушает указанный порт.
+
    * Когда на указанный URL приходит POST запрос, управление
    * передаётся в @handleRequestBody
    *
    * При получении ответа от @handleRequestBody, результат
    * отправляется обратно.
    */
-  public async listen(callbackUrl = '/', port = 80, callback?: () => void) {
+  public async listen(webhookPath = '/', port = 80, callback?: () => void) {
     return new Promise((resolve) => {
       const app = express()
       app.use(express.json())
-      app.post(callbackUrl, async (req, res) => {
-        const handleResponseCallback = (response) => res.send(response)
+      app.post(webhookPath, async (req, res) => {
+        if (this.config.oAuthToken) {
+          res.setHeader('Authorization', this.config.oAuthToken)
+        }
+        res.setHeader('Content-type', 'application/json')
+
+        let responseAlreadySent = false
+        const handleResponseCallback = (response) => {
+          /* dont answer twice */
+          if (responseAlreadySent) {
+            return false
+          }
+          res.send(response)
+          responseAlreadySent = true
+        }
         try {
-          return await this.handleRequestBody(req.body, handleResponseCallback)
+          return await this.handleRequest(req.body, handleResponseCallback)
         } catch (error) {
           throw new Error(error)
         }
@@ -260,7 +301,20 @@ export default class Alice {
   }
 
   public registerScene(scene) {
-    this.scenes.push(scene)
+    // Allow for multiple scenes to be registered at once.
+    if (Array.isArray(scene)) {
+      scene.forEach((sceneItem) => this.scenes.push(sceneItem))
+    } else {
+      this.scenes.push(scene)
+    }
+  }
+
+  public async uploadImage(imageUrl: string) {
+    return await this.imagesApi.uploadImage(imageUrl)
+  }
+
+  public async getImages() {
+    return await this.imagesApi.getImages()
   }
 
   public stopListening() {
@@ -274,5 +328,23 @@ export default class Alice {
   }
   protected _handleLeaveScene() {
     this.currentScene = null
+  }
+
+  private async handleProxyRequest(
+    request: WebhookRequest,
+    devServerUrl: string,
+    sendResponse?: (res: WebhookResponse) => void,
+  ) {
+    try {
+      const res = await fetch(devServerUrl, {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(request),
+      })
+      const json = await res.json()
+      return sendResponse(json)
+    } catch (error) {
+      console.error(error)
+    }
   }
 }

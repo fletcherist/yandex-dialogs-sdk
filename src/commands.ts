@@ -35,7 +35,7 @@ export default class Commands implements CommandsInterface {
   }
   get _strings() {
     return this.commands.filter((command) =>
-      [TYPE_FIGURE, TYPE_STRING, TYPE_ARRAY].includes(command.type),
+      [TYPE_STRING, TYPE_ARRAY].includes(command.type),
     )
   }
   get _figures() {

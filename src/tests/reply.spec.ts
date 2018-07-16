@@ -1,4 +1,5 @@
-const reply = require('../reply')
+import reply from '../reply'
+import { bigImageCard, image } from '../card'
 import {
   ALICE_PROTOCOL_VERSION,
   DEFAULT_END_SESSION,
@@ -38,4 +39,11 @@ test('create reply with object constructor', () => {
     endSession: expectedData.response.end_session,
   })
   expect(msg).toEqual(expectedData)
+})
+
+test('creating big image card', () => {
+  const mockedImageId = '213044/2a175da14f91b71df60c'
+  expect(image(mockedImageId)).toEqual({
+    image_id: mockedImageId,
+  })
 })

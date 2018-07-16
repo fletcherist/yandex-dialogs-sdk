@@ -14,7 +14,6 @@ test('matching with array', async (done) => {
   const alice = new Alice()
 
   alice.command(['привет', 'как дела'], (ctx) => done())
-  alice.any((ctx) => ctx)
   alice.handleRequest(generateRequest('Привет, как дела?'))
 })
 
@@ -68,3 +67,5 @@ test('ctx body', async (done) => {
     generateRequest('забронируй встречу в 7-холмов на 18:00'),
   )
 })
+
+// TODO: write a test for registerScene()

@@ -1,6 +1,6 @@
 import Alice from './alice'
 import Commands from './commands'
-import Command from './Command'
+import Command from './command'
 import Ctx from './ctx'
 
 import { configInterface } from './types/alice'
@@ -11,8 +11,8 @@ const selectCommand = (req) => req.request.command
 
 export default class Scene extends Alice {
   public name: string
-  public enterCommand: Command
-  public leaveCommand: Command
+  public enterCommand: Commands
+  public leaveCommand: Commands
   public anyCallback: (ctx: Ctx) => void
   public commands: Commands
   public config: configInterface
@@ -41,8 +41,8 @@ export default class Scene extends Alice {
    */
   public enter(name, callback) {
     if (!name) { throw new Error('Enter command name is not specified') }
-    this.enterCommand = new Command(name, callback)
-    this.commands.add(name, callback)
+    this.enterCommand = new Commands(this.config.fuseOptions || null)
+    this.enterCommand.add(name, callback)
   }
 
   /*
@@ -50,8 +50,8 @@ export default class Scene extends Alice {
    */
   public leave(name, callback) {
     if (!name) { throw new Error('Leave command name is not specified') }
-    this.leaveCommand = new Command(name, callback)
-    this.commands.add(name, callback)
+    this.leaveCommand = new Commands(this.config.fuseOptions || null)
+    this.leaveCommand.add(name, callback)
   }
 
   public command(name, callback) {
@@ -62,30 +62,37 @@ export default class Scene extends Alice {
     this.anyCallback = callback
   }
 
-  public isEnterCommand(commandName) {
+  public async isEnterCommand(ctx) {
     if (!this.enterCommand) { return false }
-    return this.enterCommand.name.toLowerCase() === commandName.toLowerCase()
+    const matched = await this.enterCommand.search(ctx)
+    return matched.length !== 0
   }
 
-  public isLeaveCommand(commandName) {
+  public async isLeaveCommand(ctx) {
     if (!this.leaveCommand) { return false }
-    return this.leaveCommand.name.toLowerCase() === commandName.toLowerCase()
+    const matched = await this.leaveCommand.search(ctx)
+    return matched.length !== 0
   }
 
   public async handleRequest(
     req: WebhookRequest,
     sendResponse: (res: WebhookResponse) => void,
     ctx: CtxInterface,
+    type: string = null,
   ): Promise<any> {
 
     ctx.sendResponse = sendResponse
     ctx.leaveScene = super._handleLeaveScene
     ctx.enterScene = super._handleEnterScene
 
-    const requestedCommands = await this.commands.search(ctx)
+    let requestedCommands = []
 
-    if (this.isLeaveCommand(ctx.message)) {
-      this._handleLeaveScene()
+    if (type === 'enter') {
+      requestedCommands = [this.enterCommand.get()[0]]
+    } else if (type === 'leave') {
+      requestedCommands = [this.leaveCommand.get()[0]]
+    } else {
+      requestedCommands = await this.commands.search(ctx)
     }
 
     if (requestedCommands.length !== 0) {
