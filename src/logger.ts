@@ -5,6 +5,7 @@ import eventEmitter from './eventEmitter'
 import {
   EVENT_MESSAGE_RECIEVED,
   EVENT_MESSAGE_SENT,
+  EVENT_MESSAGE_NOT_SENT,
 } from './constants'
 
 colors.setTheme({
@@ -29,6 +30,7 @@ export default class Logger {
   constructor() {
     eventEmitter.subscribe(EVENT_MESSAGE_RECIEVED, this.log)
     eventEmitter.subscribe(EVENT_MESSAGE_SENT, this.log)
+    eventEmitter.subscribe(EVENT_MESSAGE_NOT_SENT, this.log)
   }
 
   public log(event: EventData) {
@@ -37,8 +39,8 @@ export default class Logger {
       [
         colors.info(`[${logTime(event.timestamp)}]:`),
         colors.verbose(`(${event.type})`),
-        colors.warn(event.data),
-      ].join(' '),
+        event.data ? colors.warn(event.data) : null,
+      ].filter(Boolean).join(' '),
     )
   }
 }

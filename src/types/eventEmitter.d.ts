@@ -15,4 +15,5 @@ export interface EventData {
   timestamp: string
   type: string
   data: any
+  session: object
 }

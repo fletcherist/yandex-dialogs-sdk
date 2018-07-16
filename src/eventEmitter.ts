@@ -17,13 +17,13 @@ class EventEmitter implements EventEmitterInterface {
       callback,
     })
   }
-  public dispatch(eventType: string, dataValue) {
+  public dispatch(eventType: string, dataValue?) {
     for (const event of this.events) {
-      const eventData = {
+      const eventData: EventData = {
         timestamp: new Date().toString(),
         type: eventType,
-        session: dataValue.session,
-        data: dataValue.data,
+        data: dataValue && dataValue.data,
+        session: dataValue && dataValue.session,
       }
       if (event.type === eventType) {
         event.callback(eventData)

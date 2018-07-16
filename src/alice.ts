@@ -13,6 +13,7 @@ import {
   selectSessionId,
   isFunction,
   delay,
+  rejectsIn,
 } from './utils'
 
 import {
@@ -29,12 +30,13 @@ import eventEmitter from './eventEmitter'
 
 import {
   EVENT_MESSAGE_RECIEVED,
-  EVENT_MESSAGE_SENT,
+  EVENT_MESSAGE_NOT_SENT,
 } from './constants'
+import { resolve } from 'dns'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
-const DEFAULT_RESPONSE_TIMEOUT = 1300
+const DEFAULT_RESPONSE_TIMEOUT = 1200
 
 export default class Alice {
   public logger: object
@@ -68,10 +70,7 @@ export default class Alice {
       skillId: this.config.skillId,
     })
 
-    this.timeoutCallback = async (ctx) => {
-      await delay(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT)
-      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
-    }
+    this.timeoutCallback = async (ctx) => ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
@@ -256,11 +255,16 @@ export default class Alice {
     const executors = [
       /* proxy request to dev server, if enabled */
       this.config.devServerUrl
-        ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
-        : this.handleRequestBody(req, sendResponse),
-      await this.timeoutCallback(new Ctx({ req, sendResponse })),
+        ? await this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
+        : await this.handleRequestBody(req, sendResponse),
+        rejectsIn(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT),
     ].filter(Boolean)
     return await Promise.race(executors)
+      .then((result) => result)
+      .catch(async (error) => {
+        eventEmitter.dispatch(EVENT_MESSAGE_NOT_SENT)
+        this.timeoutCallback(new Ctx({ req, sendResponse }))
+      })
   }
   /*
    * Метод создаёт сервер, который слушает указанный порт.

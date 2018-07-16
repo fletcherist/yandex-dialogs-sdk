@@ -1,3 +1,5 @@
+import { resolve } from 'path'
+
 const formatToken = (token) => token
   .replace('$', '')
   .replace('{', '')
@@ -48,6 +50,7 @@ export const selectSessionId = (req) => selectSession(req).session_id
 export const selectUserId = (req) => selectSession(req).user_id
 export const isFunction = (fn: () => void) => fn && typeof fn === 'function'
 export const delay = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))
+export const rejectsIn = (ms: number) => new Promise((resolve, reject) => setTimeout(reject, ms))
 
 export default {
   getFiguresRegexp,
