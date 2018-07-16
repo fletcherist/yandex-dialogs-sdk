@@ -32,7 +32,6 @@ import {
   EVENT_MESSAGE_RECIEVED,
   EVENT_MESSAGE_NOT_SENT,
 } from './constants'
-import { resolve } from 'dns'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
