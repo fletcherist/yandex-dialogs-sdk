@@ -20,6 +20,11 @@ colors.setTheme({
   error: 'red',
 })
 
+const logTime = (timestamp: string) => {
+  const event = new Date(timestamp)
+  return event.toLocaleString('en-US')
+}
+
 export default class Logger {
   constructor() {
     eventEmitter.subscribe(EVENT_MESSAGE_RECIEVED, this.log)
@@ -27,8 +32,13 @@ export default class Logger {
   }
 
   public log(event: EventData) {
+    // tslint:disable-next-line:no-console
     console.log(
-      colors.warn(event.data),
+      [
+        colors.info(`[${logTime(event.timestamp)}]:`),
+        colors.verbose(`(${event.type})`),
+        colors.warn(event.data),
+      ].join(' '),
     )
   }
 }

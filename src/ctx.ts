@@ -11,8 +11,9 @@ import { EventEmitterInterface } from './types/eventEmitter'
 import { BigImageCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
 import reply from './reply'
+import eventEmitter from './eventEmitter'
 
-import { EVENT_MESSAGE_RECIEVED } from './constants'
+import { EVENT_MESSAGE_SENT } from './constants'
 
 export default class Ctx implements CtxInterface {
   public req: WebhookRequest
@@ -81,6 +82,9 @@ export default class Ctx implements CtxInterface {
     }
 
     const message = this._createReply(replyMessage)
+    eventEmitter.dispatch(EVENT_MESSAGE_SENT, {
+      data: message.response.text, session: this.req.session,
+    })
     return this._sendReply(message)
   }
 
@@ -123,10 +127,6 @@ export default class Ctx implements CtxInterface {
     if (typeof this.sendResponse === 'function') {
       return this.sendResponse(replyMessage)
     }
-
-    this.eventEmitter.dispatch(EVENT_MESSAGE_RECIEVED, {
-      data: this.message, session: this.req.session,
-    })
     return replyMessage
   }
 }
