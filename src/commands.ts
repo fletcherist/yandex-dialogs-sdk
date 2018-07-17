@@ -11,7 +11,7 @@ import {
 } from './constants'
 import { ICommands } from './types/commands'
 import { ICommand } from './types/command'
-import { IContext } from 'ctx'
+import { IContext } from 'context'
 
 export default class Commands implements ICommands {
   public commands: ICommand[]
