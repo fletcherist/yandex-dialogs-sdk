@@ -12,6 +12,7 @@ import {
   selectSessionId,
   isFunction,
   delay,
+  rejectsIn,
 } from './utils'
 
 import {
@@ -19,14 +20,22 @@ import {
 } from './middlewares'
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
+
 import { IConfig } from './types/alice'
 import { ICommand } from './types/command'
 import { IContext } from './types/context'
 import { WebhookResponse, WebhookRequest } from 'webhook'
+import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
+import eventEmitter from './eventEmitter'
+
+import {
+  EVENT_MESSAGE_RECIEVED,
+  EVENT_MESSAGE_NOT_SENT,
+} from './constants'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
-const DEFAULT_RESPONSE_TIMEOUT = 1300
+const DEFAULT_RESPONSE_TIMEOUT = 1200
 
 export default class Alice {
   private anyCallback: (ctx: IContext) => void
@@ -41,6 +50,7 @@ export default class Alice {
   private server: {
     close: () => void,
   }
+  private eventEmitter: EventEmitterInterface
   private config: IConfig
 
   constructor(config: IConfig = {}) {
@@ -57,18 +67,15 @@ export default class Alice {
       skillId: this.config.skillId,
     })
 
-    this.timeoutCallback = async (ctx) => {
-      await delay(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT)
-      ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
-    }
+    this.timeoutCallback = async (ctx) => ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
     this._handleEnterScene = this._handleEnterScene.bind(this)
     this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
 
   /* @TODO: Implement watchers (errors, messages) */
   // tslint:disable-next-line:no-empty
-  public on() {
-
+  public on(event: EventInterface['type'], callback: EventInterface['callback']) {
+    eventEmitter.subscribe(event, callback)
   }
 
   /*
@@ -137,9 +144,14 @@ export default class Alice {
        */
       server: this.server || null,
       middlewares: this.middlewares,
+      eventEmitter,
     }
     const ctxInstance = new Context(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+
+    eventEmitter.dispatch(EVENT_MESSAGE_RECIEVED, {
+      data: ctxWithMiddlewares.message, session: ctxWithMiddlewares.session,
+    })
 
     /* check whether current scene is not defined */
     if (!session.getData('currentScene')) {
@@ -240,11 +252,16 @@ export default class Alice {
     const executors = [
       /* proxy request to dev server, if enabled */
       this.config.devServerUrl
-        ? this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
-        : this.handleRequestBody(req, sendResponse),
-      await this.timeoutCallback(new Context({ req, sendResponse })),
-    ].filter(Boolean)
+        ? await this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
+        : await this.handleRequestBody(req, sendResponse),
+      rejectsIn(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT),
+    ]
     return await Promise.race(executors)
+      .then((result) => result)
+      .catch(async (error) => {
+        eventEmitter.dispatch(EVENT_MESSAGE_NOT_SENT)
+        this.timeoutCallback(new Context({ req, sendResponse }))
+      })
   }
   /*
    * Метод создаёт сервер, который слушает указанный порт.
@@ -266,7 +283,7 @@ export default class Alice {
         res.setHeader('Content-type', 'application/json')
 
         let responseAlreadySent = false
-        const handleResponseCallback = (response) => {
+        const handleResponseCallback = (response: WebhookResponse) => {
           /* dont answer twice */
           if (responseAlreadySent) {
             return false

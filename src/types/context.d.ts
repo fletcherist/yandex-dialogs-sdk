@@ -1,6 +1,7 @@
 import { WebhookRequest, WebhookResponse } from './webhook'
 import ReplyBuilder from '../replyBuilder'
 import ButtonBuilder from '../buttonBuilder'
+import { EventEmitterInterface } from './eventEmitter'
 
 export interface IContext {
   req: WebhookRequest
@@ -10,6 +11,7 @@ export interface IContext {
   payload: {}
   message: string
   session: {}
+  eventEmitter: EventEmitterInterface
 
   // command?: Command
 

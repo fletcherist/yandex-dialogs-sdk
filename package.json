@@ -38,10 +38,14 @@
   },
   "homepage": "https://github.com/fletcherist/yandex-dialogs-sdk#readme",
   "dependencies": {
+    "bunyan": "^1.8.12",
+    "chalk": "^2.4.1",
     "express": "^4.16.3",
     "fuse.js": "^3.2.0",
+    "loglevel": "^1.6.1",
+    "loglevel-plugin-prefix": "^0.8.4",
     "node-fetch": "^2.1.2",
-    "ramda": "^0.25.0"
+    "ramda": "^0.25.0",
   },
   "devDependencies": {
     "@types/express": "^4.16.0",

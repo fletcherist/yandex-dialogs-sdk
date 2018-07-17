@@ -10,6 +10,7 @@ import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 // const button = require('./button')
 // const reply = require('./reply')
+import loggingMiddleware from './middlewares/loggingMiddleware'
 
 export default Alice
 export {
@@ -20,6 +21,8 @@ export {
 
   ButtonBuilder,
   ReplyBuilder,
+
+  loggingMiddleware,
 }
 
 module.exports = Alice
@@ -28,3 +31,4 @@ module.exports.button = button
 module.exports.reply = reply
 module.exports.ButtonBuilder = ButtonBuilder
 module.exports.ReplyBuilder = ReplyBuilder
+module.exports.loggingMiddleware = loggingMiddleware

@@ -8,5 +8,9 @@ export const ALICE_PROTOCOL_VERSION = '1.0'
 export const DEFAULT_END_SESSION = false
 export const ALICE_API_URL = 'https://dialogs.yandex.net/api/v1/skills'
 
+export const EVENT_MESSAGE_RECIEVED = 'messageRecieved'
+export const EVENT_MESSAGE_SENT = 'messageSent'
+export const EVENT_MESSAGE_NOT_SENT = 'messageNotSent'
+
 module.exports.ALICE_PROTOCOL_VERSION = '1.0'
 module.exports.DEFAULT_END_SESSION = false

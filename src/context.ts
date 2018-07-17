@@ -5,11 +5,15 @@ import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 
 import { WebhookResponse, WebhookRequest } from './types/webhook'
+import { EventEmitterInterface } from './types/eventEmitter'
 import { IContext } from './types/context'
 import { ICommand } from './types/command'
 import { BigImageCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
 import reply from './reply'
+import eventEmitter from './eventEmitter'
+
+import { EVENT_MESSAGE_SENT } from './constants'
 
 export default class Context implements IContext {
   public req: WebhookRequest
@@ -19,6 +23,7 @@ export default class Context implements IContext {
   public payload: {}
   public message: string
   public session: Session
+  public eventEmitter: EventEmitterInterface
 
   public command?: ICommand
 
@@ -51,6 +56,7 @@ export default class Context implements IContext {
 
     this.session = session
 
+    this.eventEmitter = eventEmitter
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()
 
@@ -75,6 +81,9 @@ export default class Context implements IContext {
     }
 
     const message = this._createReply(replyMessage)
+    eventEmitter.dispatch(EVENT_MESSAGE_SENT, {
+      data: message.response.text, session: this.req.session,
+    })
     return this._sendReply(message)
   }
 
@@ -117,9 +126,6 @@ export default class Context implements IContext {
     if (typeof this.sendResponse === 'function') {
       return this.sendResponse(replyMessage)
     }
-
     return replyMessage
   }
-
-  public getDefaultRespons
 }
