@@ -26,6 +26,12 @@
 const Alice = require('yandex-dialogs-sdk')
 const alice = new Alice()
 
+const { loggingMiddleware, button } = Alice
+
+alice.use(loggingMiddleware({
+  level: 1 // Optional. DEFAULT 0. see https://github.com/pimterry/loglevel
+}))
+
 alice.welcome(async (ctx) => {
   ctx.reply('Привет! Смотри, что я могу')
 })
@@ -35,7 +41,10 @@ alice.command('дай совет', async (ctx) => {
 })
 
 alice.command(['билет в кино', 'что посмотреть', 'что показывают'], ctx => {
-  ctx.reply('') 
+  ctx.reply({
+    text: 'Есть «2001 a space odyssey»',
+    buttons: [button('Забронировать')]
+  }) 
 })
 
 alice.command(/(https?:\/\/[^\s]+)/g, ctx => ctx.reply('Matched a link!'))
@@ -48,7 +57,7 @@ alice.listen('/', 80)
 
 ```
 
-> Можно использовать как постоянно работающий сервер, так и serverless-платформы, такие как **AWS Lambda** или **Google Cloud Functions**. *Смотрите папку `/examples`*
+> Можно использовать как постоянно работающий сервер, так и serverless-платформы, такие как **AWS Lambda** или **Google Cloud Functions**. Смотрите папку **[./examples](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)**
 
 ### Программируйте сложную логику
 
