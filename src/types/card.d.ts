@@ -1,15 +1,15 @@
-import { ButtonInterface } from './button'
+import { IButton } from './button'
 
 export interface Image {
   image_id: string
   title?: string
   description?: string
-  button?: ButtonInterface
+  button?: IButton
 }
 
 export interface Footer {
   text: string
-  button: ButtonInterface
+  button: IButton
 }
 
 export interface Header {
@@ -21,7 +21,7 @@ export interface BigImageCard {
   image_id: string
   title?: string
   description?: string
-  button?: ButtonInterface
+  button?: IButton
   footer?: Footer
 }
 

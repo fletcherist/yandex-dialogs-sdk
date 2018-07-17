@@ -1,10 +1,9 @@
 import { WebhookRequest, WebhookResponse } from './webhook'
-// import { SessionInterface } from './types/session'
 import ReplyBuilder from '../replyBuilder'
 import ButtonBuilder from '../buttonBuilder'
 import { EventEmitterInterface } from './eventEmitter'
 
-export interface CtxInterface {
+export interface IContext {
   req: WebhookRequest
   sessionId: string
   messageId: string

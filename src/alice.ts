@@ -3,7 +3,7 @@ import Commands from './commands'
 import { Sessions } from './sessions'
 
 import Scene from './scene'
-import Ctx from './ctx'
+import Context from './context'
 import ImagesApi from './imagesApi'
 import fetch from 'node-fetch'
 
@@ -20,11 +20,12 @@ import {
 } from './middlewares'
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
-import { configInterface } from './types/alice'
-import { CommandInterface } from './types/command'
-import { WebhookResponse, WebhookRequest } from './types/webhook'
+
+import { IConfig } from './types/alice'
+import { ICommand } from './types/command'
+import { IContext } from './types/context'
+import { WebhookResponse, WebhookRequest } from 'webhook'
 import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
-import { CtxInterface } from './types/ctx'
 import eventEmitter from './eventEmitter'
 
 import {
@@ -37,9 +38,9 @@ const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не усп�
 const DEFAULT_RESPONSE_TIMEOUT = 1200
 
 export default class Alice {
-  private anyCallback: (ctx: CtxInterface) => void
-  private welcomeCallback: (ctx: CtxInterface) => void
-  private timeoutCallback: (ctx: CtxInterface) => void
+  private anyCallback: (ctx: IContext) => void
+  private welcomeCallback: (ctx: IContext) => void
+  private timeoutCallback: (ctx: IContext) => void
   private commands: Commands
   private middlewares: any[]
   private scenes: Scene[]
@@ -49,10 +50,10 @@ export default class Alice {
   private server: {
     close: () => void,
   }
-  private config: configInterface
   private eventEmitter: EventEmitterInterface
+  private config: IConfig
 
-  constructor(config: configInterface = {}) {
+  constructor(config: IConfig = {}) {
     this.anyCallback = null
     this.welcomeCallback = null
     this.commands = new Commands(config.fuseOptions || null)
@@ -145,7 +146,7 @@ export default class Alice {
       middlewares: this.middlewares,
       eventEmitter,
     }
-    const ctxInstance = new Ctx(ctxDefaultParams)
+    const ctxInstance = new Context(ctxDefaultParams)
     const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
 
     eventEmitter.dispatch(EVENT_MESSAGE_RECIEVED, {
@@ -223,7 +224,7 @@ export default class Alice {
      * Запускаем её обработчик.
      */
     if (requestedCommands.length !== 0) {
-      const requestedCommand: CommandInterface = requestedCommands[0]
+      const requestedCommand: ICommand = requestedCommands[0]
       ctxWithMiddlewares.command = requestedCommand
       return await requestedCommand.callback(ctxWithMiddlewares)
     }
@@ -253,13 +254,13 @@ export default class Alice {
       this.config.devServerUrl
         ? await this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
         : await this.handleRequestBody(req, sendResponse),
-        rejectsIn(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT),
+      rejectsIn(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT),
     ]
     return await Promise.race(executors)
       .then((result) => result)
       .catch(async (error) => {
         eventEmitter.dispatch(EVENT_MESSAGE_NOT_SENT)
-        this.timeoutCallback(new Ctx({ req, sendResponse }))
+        this.timeoutCallback(new Context({ req, sendResponse }))
       })
   }
   /*

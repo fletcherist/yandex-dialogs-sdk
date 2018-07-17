@@ -7,7 +7,7 @@ export interface ButtonParams {
   payload?: {}
 }
 
-export interface ButtonInterface {
+export interface IButton {
   title: string,
   tts?: string,
   url?: string,

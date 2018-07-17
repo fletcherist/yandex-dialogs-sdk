@@ -1,4 +1,4 @@
-export interface configInterface {
+export interface IConfig {
   fuseOptions?: {}
   sessionsLimit?: number
   oAuthToken?: string

@@ -5,9 +5,9 @@ import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 
 import { WebhookResponse, WebhookRequest } from './types/webhook'
-import { CtxInterface } from './types/ctx'
-import { CommandInterface } from './types/command'
 import { EventEmitterInterface } from './types/eventEmitter'
+import { IContext } from './types/context'
+import { ICommand } from './types/command'
 import { BigImageCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
 import reply from './reply'
@@ -15,7 +15,7 @@ import eventEmitter from './eventEmitter'
 
 import { EVENT_MESSAGE_SENT } from './constants'
 
-export default class Ctx implements CtxInterface {
+export default class Context implements IContext {
   public req: WebhookRequest
   public sessionId: string
   public messageId: string
@@ -25,7 +25,7 @@ export default class Ctx implements CtxInterface {
   public session: Session
   public eventEmitter: EventEmitterInterface
 
-  public command?: CommandInterface
+  public command?: ICommand
 
   public replyBuilder: ReplyBuilder
   public buttonBuilder: ButtonBuilder

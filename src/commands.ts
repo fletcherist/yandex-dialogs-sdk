@@ -9,12 +9,12 @@ import {
   TYPE_FIGURE,
   TYPE_MATCHER,
 } from './constants'
-import { CommandsInterface } from './types/commands'
-import { CommandInterface } from './types/command'
-import { CtxInterface } from 'ctx'
+import { ICommands } from './types/commands'
+import { ICommand } from './types/command'
+import { IContext } from 'context'
 
-export default class Commands implements CommandsInterface {
-  public commands: CommandInterface[]
+export default class Commands implements ICommands {
+  public commands: ICommand[]
   public fuseOptions: {}
   constructor(config = null) {
     this.commands = []
@@ -45,7 +45,7 @@ export default class Commands implements CommandsInterface {
     return this.commands.filter((command) => command.type === TYPE_REGEXP)
   }
 
-  public async search(ctx: CtxInterface) {
+  public async search(ctx: IContext) {
     const matchedStrings = this._searchStrings(ctx.message)
     const matchedRegexps = this._searchRegexps(ctx.message)
     const matchedFigures = this._searchFigures(ctx.message)
@@ -82,7 +82,7 @@ export default class Commands implements CommandsInterface {
     this.commands = []
   }
 
-  private async _searchMatchers(ctx: CtxInterface) {
+  private async _searchMatchers(ctx: IContext) {
     const matchers = this._matchers
     for (const matcher of matchers) {
       if (await matcher.name(ctx)) {

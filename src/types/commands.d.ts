@@ -1,5 +1,5 @@
-import { CommandInterface } from './command'
-export interface CommandsInterface {
-  commands: CommandInterface[]
+import { ICommand } from './command'
+export interface ICommands {
+  commands: ICommand[]
   fuseOptions?: {}
 }
