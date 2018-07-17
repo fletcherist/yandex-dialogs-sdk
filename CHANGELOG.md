@@ -1,5 +1,25 @@
+<a name="1.4.5"></a>
+## [1.4.5](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.4...v1.4.5) (2018-07-17)
+
+
+### Bug Fixes
+
+* bug in package.json ([af5cc1c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/af5cc1c))
+* bug with delayed executor ([850bd7f](https://github.com/fletcherist/yandex-dialogs-sdk/commit/850bd7f))
+
+
+### Features
+
+* add logger example ([5411769](https://github.com/fletcherist/yandex-dialogs-sdk/commit/5411769))
+* implement logger ([d0e9c7d](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d0e9c7d))
+* implement sent/recieved logs ([624a590](https://github.com/fletcherist/yandex-dialogs-sdk/commit/624a590))
+* improve logger after code review ([b178ff2](https://github.com/fletcherist/yandex-dialogs-sdk/commit/b178ff2))
+* improve readme.md ([96e2976](https://github.com/fletcherist/yandex-dialogs-sdk/commit/96e2976))
+
+
+
 <a name="1.4.4"></a>
-## [1.4.4](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.3.6...v1.4.4) (2018-07-16)
+## [1.4.4](https://github.com/fletcherist/yandex-dialogs-sdk/compare/1.4.4...v1.4.4) (2018-07-16)
 
 
 ### Bug Fixes
@@ -36,6 +56,8 @@
 ### Features
 
 * add match docs ([c0cac58](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c0cac58))
+* Implement event queue ([52c09b6](https://github.com/fletcherist/yandex-dialogs-sdk/commit/52c09b6))
+* rename eventQueue to eventEmitter, improve API ([c8b349c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c8b349c))
 
 
 
