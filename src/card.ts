@@ -1,5 +1,5 @@
 import { ItemsListCard, BigImageCard, Image, Footer, Header } from './types/card'
-import { ButtonInterface } from './types/button'
+import { IButton } from './types/button'
 
 export const image = (params: string | Image): Image => {
   if (typeof params === 'string') {
@@ -25,7 +25,7 @@ export const header = (text: string): Header => {
   }
 }
 
-export const footer = (text: string, button: ButtonInterface): Footer => {
+export const footer = (text: string, button: IButton): Footer => {
   return {
     text,
     button,

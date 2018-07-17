@@ -5,17 +5,16 @@ import {
     TYPE_ARRAY,
     TYPE_MATCHER,
 } from './constants'
-import Ctx from './ctx'
+import Context from './context'
 import {
-    CommandInterface,
+    ICommand,
     CallbackType,
     CommandType,
     CommandNameType,
 } from './types/command'
-import { CtxInterface } from './types/ctx'
 import { isFunction } from './utils'
 
-export default class Command implements CommandInterface {
+export default class Command implements ICommand {
     public name: CommandNameType
     public type: CommandType
     public callback: CallbackType

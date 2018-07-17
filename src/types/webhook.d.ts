@@ -1,4 +1,4 @@
-import { ButtonInterface } from './button'
+import { IButton } from './button'
 import { ItemsListCard, BigImageCard } from './card'
 export interface WebhookRequest {
   meta: {
@@ -29,7 +29,7 @@ export interface WebhookResponse {
   response: {
       text: string
       tts?: string
-      buttons?: ButtonInterface[]
+      buttons?: IButton[]
       end_session?: boolean
       card?: BigImageCard | ItemsListCard
   }

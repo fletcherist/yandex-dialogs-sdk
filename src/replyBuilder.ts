@@ -3,7 +3,7 @@ import {
   ALICE_PROTOCOL_VERSION,
 } from './constants'
 
-interface ReplyInterface {
+interface IReply {
   response: {
     text?: string,
     tts?: string,
@@ -14,7 +14,7 @@ interface ReplyInterface {
   session?: {},
 }
 export default class ReplyBuilder {
-  public reply: ReplyInterface
+  public reply: IReply
   constructor(request) {
     this.reply = {
       response: {

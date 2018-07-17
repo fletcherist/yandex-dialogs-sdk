@@ -5,13 +5,13 @@ import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 
 import { WebhookResponse, WebhookRequest } from './types/webhook'
-import { CtxInterface } from './types/ctx'
-import { CommandInterface } from './types/command'
+import { IContext } from './types/context'
+import { ICommand } from './types/command'
 import { BigImageCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
 import reply from './reply'
 
-export default class Ctx implements CtxInterface {
+export default class Context implements IContext {
   public req: WebhookRequest
   public sessionId: string
   public messageId: string
@@ -20,7 +20,7 @@ export default class Ctx implements CtxInterface {
   public message: string
   public session: Session
 
-  public command?: CommandInterface
+  public command?: ICommand
 
   public replyBuilder: ReplyBuilder
   public buttonBuilder: ButtonBuilder
