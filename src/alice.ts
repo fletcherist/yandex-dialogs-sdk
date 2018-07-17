@@ -5,7 +5,6 @@ import { Sessions } from './sessions'
 import Scene from './scene'
 import Ctx from './ctx'
 import ImagesApi from './imagesApi'
-import Logger from './logger'
 import fetch from 'node-fetch'
 
 import {
@@ -38,7 +37,6 @@ const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не усп�
 const DEFAULT_RESPONSE_TIMEOUT = 1200
 
 export default class Alice {
-  public logger: object
   private anyCallback: (ctx: CtxInterface) => void
   private welcomeCallback: (ctx: CtxInterface) => void
   private timeoutCallback: (ctx: CtxInterface) => void
@@ -63,7 +61,6 @@ export default class Alice {
     this.currentScene = null
     this.sessions = new Sessions()
     this.config = config
-    this.logger = new Logger()
     this.imagesApi = new ImagesApi({
       oAuthToken: this.config.oAuthToken,
       skillId: this.config.skillId,
@@ -257,7 +254,7 @@ export default class Alice {
         ? await this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
         : await this.handleRequestBody(req, sendResponse),
         rejectsIn(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT),
-    ].filter(Boolean)
+    ]
     return await Promise.race(executors)
       .then((result) => result)
       .catch(async (error) => {

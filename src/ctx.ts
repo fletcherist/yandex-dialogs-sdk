@@ -41,7 +41,6 @@ export default class Ctx implements CtxInterface {
 
       enterScene,
       leaveScene,
-      eventEmitter,
 
       command,
     } = params
