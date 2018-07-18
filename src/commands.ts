@@ -66,8 +66,8 @@ export default class Commands implements ICommands {
   public getByName(name) {
     if (!name) { throw new Error('Name is not specified') }
     return this._strings.find((command) => {
-      return command.name.toLowerCase() === name.toLowerCase()
-    })
+        return typeof command.name === 'string' && command.name.toLowerCase() === name.toLowerCase()
+      })
   }
 
   get length() {
