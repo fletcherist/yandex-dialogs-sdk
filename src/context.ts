@@ -81,9 +81,6 @@ export default class Context implements IContext {
     }
 
     const message = this._createReply(replyMessage)
-    eventEmitter.dispatch(EVENT_MESSAGE_SENT, {
-      data: message.response.text, session: this.req.session,
-    })
     return this._sendReply(message)
   }
 
@@ -99,6 +96,17 @@ export default class Context implements IContext {
 
   public async replyWithGallery() {
 
+  }
+
+  public async goodbye(replyMessage: string | {}) {
+    if (typeof replyMessage === 'undefined') {
+      throw new Error('Message should be string or result of ReplayBuilder.get')
+    }
+
+    const message = this._createReply(replyMessage)
+    message.response.end_session = true;
+
+    this._sendReply(message)
   }
 
   public _createReply(replyMessage): WebhookResponse {
@@ -124,6 +132,10 @@ export default class Context implements IContext {
      * That fires when listening on port.
      */
     if (typeof this.sendResponse === 'function') {
+      eventEmitter.dispatch(EVENT_MESSAGE_SENT, {
+        data: replyMessage.response.text, session: this.req.session,
+      })
+
       return this.sendResponse(replyMessage)
     }
     return replyMessage
