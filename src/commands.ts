@@ -38,6 +38,12 @@ export default class Commands implements ICommands {
       [TYPE_STRING, TYPE_ARRAY].includes(command.type),
     )
   }
+
+  getStringCommands() {
+    return this.commands.filter((command) =>
+      [TYPE_STRING, TYPE_ARRAY].includes(command.type),
+    )  
+  }
   get _figures() {
     return this.commands.filter((command) => command.type === TYPE_FIGURE)
   }
@@ -61,13 +67,6 @@ export default class Commands implements ICommands {
     } else {
       return []
     }
-  }
-
-  public getByName(name) {
-    if (!name) { throw new Error('Name is not specified') }
-    return this._strings.find((command) => {
-        return typeof command.name === 'string' && command.name.toLowerCase() === name.toLowerCase()
-      })
   }
 
   get length() {
