@@ -3,7 +3,7 @@
 
 Создавать навыки для Алисы — это очень просто.
 
-**Телеграм-чатик**, где ответят на любой ваш вопрос по поводу **SDK** — **[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)**
+**[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)** — **Телеграм-чатик**, где ответят на любой ваш вопрос по поводу **SDK**
 
 <img height=300 src='https://camo.githubusercontent.com/0ad462b08ffb18f96ae1143f1365b60b918f4bbd/68747470733a2f2f73657470686f6e652e72752f77702d636f6e74656e742f75706c6f6164732f323031372f30372f616c6973612d383130783435362e706e67' />
 
