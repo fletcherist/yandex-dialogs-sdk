@@ -85,7 +85,9 @@ export default class Commands implements ICommands {
   private async _searchMatchers(ctx: IContext) {
     const matchers = this._matchers
     for (const matcher of matchers) {
-      if (await matcher.name(ctx)) {
+      const matchPredicate = matcher.name as (ctx: IContext) => boolean;
+
+      if (await matchPredicate(ctx)) {
         return [matcher]
       }
     }
