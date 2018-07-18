@@ -39,11 +39,6 @@ export default class Commands implements ICommands {
     )
   }
 
-  getStringCommands() {
-    return this.commands.filter((command) =>
-      [TYPE_STRING, TYPE_ARRAY].includes(command.type),
-    )  
-  }
   get _figures() {
     return this.commands.filter((command) => command.type === TYPE_FIGURE)
   }
