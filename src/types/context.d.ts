@@ -1,5 +1,5 @@
 import { WebhookRequest, WebhookResponse } from './webhook'
-import ReplyBuilder from '../replyBuilder'
+import ReplyBuilder, {IReply} from '../replyBuilder'
 import ButtonBuilder from '../buttonBuilder'
 import { EventEmitterInterface } from './eventEmitter'
 
@@ -18,7 +18,7 @@ export interface IContext {
   replyBuilder: ReplyBuilder
   buttonBuilder: ButtonBuilder
 
-  reply: (replyMessage: string | {}) => Promise<WebhookResponse>
+  reply: (replyMessage: string | IReply) => Promise<WebhookResponse>
   sendResponse: (response: WebhookResponse) => void
   enterScene: (sceneName: string) => void
   leaveScene: () => void
