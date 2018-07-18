@@ -95,7 +95,7 @@ export default class Commands implements ICommands {
   private _searchStrings(requestedCommandName: string) {
     const stringCommands = this._strings
     const fuse = new Fuse(stringCommands, this.fuseOptions)
-    return fuse.search(requestedCommandName)
+    return fuse.search<typeof stringCommands[0]>(requestedCommandName)
   }
 
   private _searchFigures(requestedCommandName: string) {
