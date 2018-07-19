@@ -21,7 +21,7 @@ import {
 
 import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 
-import { IConfig } from './types/alice'
+import { IConfig, IAlice } from './types/alice'
 import { ICommand } from './types/command'
 import { IContext } from './types/context'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
@@ -39,7 +39,7 @@ import {
 const DEFAULT_SESSIONS_LIMIT: number = 1000
 const DEFAULT_RESPONSE_TIMEOUT = 1200
 
-export default class Alice {
+export default class Alice implements IAlice {
   public scenes: Scene[]
 
   protected anyCallback: (ctx: IContext) => void
@@ -86,7 +86,7 @@ export default class Alice {
    * @param {Function} middleware - function, that receives {context}
    * and makes some modifications with it.
    */
-  public use(middleware) {
+  public use(middleware: (IContext: IContext) => IContext): void {
     if (!isFunction(middleware)) {
       throw new Error('Any middleware could only be a function.')
     }
@@ -98,14 +98,14 @@ export default class Alice {
    * @param {string | Array<string> | regex} name — Trigger for the command
    * @param {Function} callback — Handler for the command
    */
-  public command(name, callback) {
+  public command(name: ICommand, callback: (IContext) => void) {
     this.commands.add(name, callback)
   }
 
   /*
   * Стартовая команда на начало сессии
   */
-  public welcome(callback) {
+  public welcome(callback: (IContext) => void): void {
     this.welcomeCallback = callback
   }
 
@@ -114,7 +114,7 @@ export default class Alice {
    * которую запросил пользователь,
    * вызывается этот колбек
    */
-  public any(callback) {
+  public any(callback: (IContext) => void): void {
     this.anyCallback = callback
   }
 
