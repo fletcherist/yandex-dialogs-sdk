@@ -24,7 +24,7 @@ import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
 import { IConfig } from './types/alice'
 import { ICommand } from './types/command'
 import { IContext } from './types/context'
-import { WebhookResponse, WebhookRequest } from 'webhook'
+import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
 import eventEmitter from './eventEmitter'
 

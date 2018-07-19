@@ -1,4 +1,3 @@
-import { merge } from 'ramda'
 import Context from './context'
 
 export type MiddlewareType = (ctx: Context) => Context

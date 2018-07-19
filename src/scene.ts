@@ -5,7 +5,7 @@ import Context from './context'
 
 import { IConfig } from './types/alice'
 import { WebhookRequest, WebhookResponse } from './types/webhook'
-import { IContext } from 'context'
+import { IContext } from './types/context'
 
 const selectCommand = (req) => req.request.command
 

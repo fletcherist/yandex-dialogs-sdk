@@ -1,5 +1,3 @@
-import { merge } from 'ramda'
-
 export default class Session {
     public sessionId: string
     public data: {}
@@ -32,6 +30,6 @@ export default class Session {
     }
 
     public update(data) {
-        this.data = merge(this.data, data)
+        this.data = Object.assign(this.data, data)
     }
 }
