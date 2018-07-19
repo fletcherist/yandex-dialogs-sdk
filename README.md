@@ -17,6 +17,7 @@
 `yarn && npm run test && npm run dev`
 
 Typescript-приложение соберётся в ./dist <br>
+Пожалуйста, прочтите [Roadmap](https://github.com/fletcherist/yandex-dialogs-sdk/projects/1), чтобы понять, куда мы идём.
 
 
 ### Видеоуроки
