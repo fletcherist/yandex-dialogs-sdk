@@ -2,6 +2,8 @@ import {
   EVENT_MESSAGE_RECIEVED,
   EVENT_MESSAGE_SENT,
   EVENT_MESSAGE_NOT_SENT,
+  EVENT_MESSAGE_PROXIED,
+  EVENT_MESSAGE_PROXY_ERROR,
 } from '../constants'
 
 import chalk from 'chalk'
@@ -46,6 +48,8 @@ export default function createLoggingMiddleware(opts: ILogger = {}) {
     [EVENT_MESSAGE_RECIEVED]: 'info',
     [EVENT_MESSAGE_SENT]: 'info',
     [EVENT_MESSAGE_NOT_SENT]: 'warn',
+    [EVENT_MESSAGE_PROXIED]: 'info',
+    [EVENT_MESSAGE_PROXY_ERROR]: 'error',
   }
   let isInitialized = false
   return (ctx) => {
@@ -58,6 +62,8 @@ export default function createLoggingMiddleware(opts: ILogger = {}) {
     ctx.eventEmitter.subscribe(EVENT_MESSAGE_RECIEVED, logEvent)
     ctx.eventEmitter.subscribe(EVENT_MESSAGE_SENT, logEvent)
     ctx.eventEmitter.subscribe(EVENT_MESSAGE_NOT_SENT, logEvent)
+    ctx.eventEmitter.subscribe(EVENT_MESSAGE_PROXIED, logEvent)
+    ctx.eventEmitter.subscribe(EVENT_MESSAGE_PROXY_ERROR, logEvent)
 
     function logEvent(event) {
       try {

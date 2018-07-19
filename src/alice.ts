@@ -32,6 +32,8 @@ import {
   EVENT_MESSAGE_RECIEVED,
   EVENT_MESSAGE_NOT_SENT,
   DEFAULT_TIMEOUT_CALLBACK_MESSAGE,
+  EVENT_MESSAGE_PROXIED,
+  EVENT_MESSAGE_PROXY_ERROR,
 } from './constants'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
@@ -259,7 +261,6 @@ export default class Alice {
     ])
       .then((result) => result)
       .catch(async (error) => {
-        console.log(error)
         eventEmitter.dispatch(EVENT_MESSAGE_NOT_SENT)
         this.timeoutCallback(new Context({ req, sendResponse }))
       })
@@ -353,9 +354,10 @@ export default class Alice {
         body: JSON.stringify(request),
       })
       const json = await res.json()
+      eventEmitter.dispatch(EVENT_MESSAGE_PROXIED, { data: request })
       return sendResponse(json)
     } catch (error) {
-      console.error(error)
+      eventEmitter.dispatch(EVENT_MESSAGE_PROXY_ERROR, { data: request })
     }
   }
 }
