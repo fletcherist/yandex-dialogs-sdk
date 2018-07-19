@@ -1,7 +1,7 @@
 const { reversedInterpolation, selectCommand } = require('./utils')
 import Session from './session'
 
-import ReplyBuilder from './replyBuilder'
+import ReplyBuilder, {IReply} from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 
 import { WebhookResponse, WebhookRequest } from './types/webhook'
@@ -75,7 +75,7 @@ export default class Context implements IContext {
     return reversedInterpolation(this.command.name, requestText)
   }
 
-  public async reply(replyMessage: string | {}): Promise<WebhookResponse> {
+  public async reply(replyMessage: string | IReply): Promise<WebhookResponse> {
     if (typeof replyMessage === 'undefined') {
       throw new Error('Reply message could not be empty!')
     }

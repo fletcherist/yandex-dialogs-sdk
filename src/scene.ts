@@ -13,7 +13,7 @@ export default class Scene extends Alice {
   public name: string
   public enterCommand: Commands
   public leaveCommand: Commands
-  public anyCallback: (ctx: Context) => void
+  public anyCallback: (ctx: IContext) => void
   public commands: Commands
   public config: IConfig
 
@@ -74,7 +74,7 @@ export default class Scene extends Alice {
     return matched.length !== 0
   }
 
-  public async handleRequest(
+  public async handleSceneRequest(
     req: WebhookRequest,
     sendResponse: (res: WebhookResponse) => void,
     ctx: IContext,

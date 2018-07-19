@@ -38,6 +38,7 @@ export default class Commands implements ICommands {
       [TYPE_STRING, TYPE_ARRAY].includes(command.type),
     )
   }
+
   get _figures() {
     return this.commands.filter((command) => command.type === TYPE_FIGURE)
   }
@@ -63,13 +64,6 @@ export default class Commands implements ICommands {
     }
   }
 
-  public getByName(name) {
-    if (!name) { throw new Error('Name is not specified') }
-    return this._strings.find((command) => {
-      return command.name.toLowerCase() === name.toLowerCase()
-    })
-  }
-
   get length() {
     return this.commands.length
   }
@@ -85,7 +79,9 @@ export default class Commands implements ICommands {
   private async _searchMatchers(ctx: IContext) {
     const matchers = this._matchers
     for (const matcher of matchers) {
-      if (await matcher.name(ctx)) {
+      const matchPredicate = matcher.name as (ctx: IContext) => boolean;
+
+      if (await matchPredicate(ctx)) {
         return [matcher]
       }
     }
@@ -95,7 +91,7 @@ export default class Commands implements ICommands {
   private _searchStrings(requestedCommandName: string) {
     const stringCommands = this._strings
     const fuse = new Fuse(stringCommands, this.fuseOptions)
-    return fuse.search(requestedCommandName)
+    return fuse.search<typeof stringCommands[0]>(requestedCommandName)
   }
 
   private _searchFigures(requestedCommandName: string) {

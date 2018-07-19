@@ -8,9 +8,4 @@ test('adding a command', () => {
 
   commands.add('Привет, алиса!', cb)
   expect(commands.length).toBe(1)
-  expect(commands.getByName('Привет, алиса!')).toEqual({
-    name: 'Привет, алиса!',
-    callback: cb,
-    type: 'string',
-  })
 })

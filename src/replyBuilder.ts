@@ -3,7 +3,7 @@ import {
   ALICE_PROTOCOL_VERSION,
 } from './constants'
 
-interface IReply {
+export interface IReply {
   response: {
     text?: string,
     tts?: string,

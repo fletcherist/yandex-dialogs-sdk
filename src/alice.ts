@@ -31,19 +31,22 @@ import eventEmitter from './eventEmitter'
 import {
   EVENT_MESSAGE_RECIEVED,
   EVENT_MESSAGE_NOT_SENT,
+  DEFAULT_TIMEOUT_CALLBACK_MESSAGE,
+  EVENT_MESSAGE_PROXIED,
+  EVENT_MESSAGE_PROXY_ERROR,
 } from './constants'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
-const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
 const DEFAULT_RESPONSE_TIMEOUT = 1200
 
 export default class Alice {
+  public scenes: Scene[]
+
   private anyCallback: (ctx: IContext) => void
   private welcomeCallback: (ctx: IContext) => void
   private timeoutCallback: (ctx: IContext) => void
   private commands: Commands
   private middlewares: any[]
-  private scenes: Scene[]
   private currentScene: Scene | null
   private sessions: Sessions
   private imagesApi: ImagesApi
@@ -121,7 +124,7 @@ export default class Alice {
    * @param {Object} req — JSON request from the client
    * @param {Function} sendResponse — Express res function while listening on port.
    */
-  public async handleRequestBody(req, sendResponse) {
+  public async handleRequestBody(req, sendResponse): Promise<any> {
     /* clear old sessions */
     if (this.sessions.length > (this.config.sessionsLimit || DEFAULT_SESSIONS_LIMIT)) {
       this.sessions.flush()
@@ -170,12 +173,12 @@ export default class Alice {
        */
       if (matchedScene) {
         if (await matchedScene.isLeaveCommand(ctxWithMiddlewares)) {
-          await matchedScene.handleRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
+          await matchedScene.handleSceneRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
           session.setData('currentScene', null)
           this._handleLeaveScene()
           return true
         } else {
-          const sceneResponse = await matchedScene.handleRequest(
+          const sceneResponse = await matchedScene.handleSceneRequest(
             req, sendResponse, ctxWithMiddlewares,
           )
           if (sceneResponse) {
@@ -198,7 +201,7 @@ export default class Alice {
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
         this._handleEnterScene(matchedScene.name)
-        const sceneResponse = await matchedScene.handleRequest(
+        const sceneResponse = await matchedScene.handleSceneRequest(
           req, sendResponse, ctxWithMiddlewares, 'enter',
         )
         if (sceneResponse) {
@@ -249,14 +252,13 @@ export default class Alice {
     req: WebhookRequest,
     sendResponse?: (res: WebhookResponse) => void,
   ): Promise<any> {
-    const executors = [
+    return await Promise.race([
       /* proxy request to dev server, if enabled */
       this.config.devServerUrl
         ? await this.handleProxyRequest(req, this.config.devServerUrl, sendResponse)
         : await this.handleRequestBody(req, sendResponse),
       rejectsIn(this.config.responseTimeout || DEFAULT_RESPONSE_TIMEOUT),
-    ]
-    return await Promise.race(executors)
+    ])
       .then((result) => result)
       .catch(async (error) => {
         eventEmitter.dispatch(EVENT_MESSAGE_NOT_SENT)
@@ -352,9 +354,10 @@ export default class Alice {
         body: JSON.stringify(request),
       })
       const json = await res.json()
+      eventEmitter.dispatch(EVENT_MESSAGE_PROXIED, { data: request })
       return sendResponse(json)
     } catch (error) {
-      console.error(error)
+      eventEmitter.dispatch(EVENT_MESSAGE_PROXY_ERROR, { data: request })
     }
   }
 }
