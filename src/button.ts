@@ -1,5 +1,5 @@
-import { ButtonParams, IButton } from './types/button'
-const button = (params: ButtonParams | string): IButton => {
+import { IButton } from './types/button'
+const button = (params: IButton | string): IButton => {
   // Button has been created from string
   if (typeof params === 'string') {
     return {
@@ -10,19 +10,18 @@ const button = (params: ButtonParams | string): IButton => {
   if (typeof params === 'object') {
     const {
       title,
-      text,
       tts,
       url,
       hide = false,
       payload,
     } = params
 
-    if (!title && !text) {
+    if (!title) {
       throw new Error('text is a required parameter')
     }
 
     return {
-      title: title || text,
+      title: title,
       tts,
       url,
       hide,

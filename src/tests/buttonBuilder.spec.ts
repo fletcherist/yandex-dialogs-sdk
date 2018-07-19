@@ -15,7 +15,7 @@ test('common test for buttonBuilder', () => {
 
   // test using button builder factory
   button
-    .text(expected.title)
+    .title(expected.title)
     .url(expected.url)
     .shouldHide(expected.hide)
     .payload(expected.payload)
@@ -25,5 +25,5 @@ test('common test for buttonBuilder', () => {
   // test using button builder constructor
 
   const button2 = new ButtonBuilder(expected)
-  expect(button2).toEqual(expected)
+  expect(button2.get()).toEqual(expected)
 })

@@ -1,39 +1,18 @@
+import { IButton } from './types/button'
 
-interface ButtonConstructor {
-  title?: string // title and text — same
-  text?: string
-}
 export default class ButtonBuilder {
-  public button: {
-    title?: string,
-    url?: string,
-    hide?: boolean,
-    payload?: {},
-  }
-  constructor(buttonConstructor?: ButtonConstructor) {
+  button: IButton
+  constructor(buttonConstructor?: IButton) {
     /* No button object passed to the constructor */
     if (!buttonConstructor) {
-      this.button = {}
+      this.button = {
+        title: ''
+      }
       return this
     }
 
-    /* Object-constructor passed */
-    if (typeof buttonConstructor !== 'object') {
-      throw new Error('Invalid ButtonBuilder constructor type. Should be object')
-    }
-    const {
-      title, text,
-    } = buttonConstructor
-    if (!title && !text) {
-      throw new Error('Button [title] or [text] is required for ButtonBuilder constructor.')
-    }
-
     this.button = buttonConstructor
-    return this.button
-  }
-
-  public text(text) {
-    return this._setTitle(text)
+    return this
   }
 
   public title(title) {
