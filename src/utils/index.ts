@@ -1,5 +1,3 @@
-import { resolve } from 'path'
-
 const formatToken = (token) => token
   .replace('$', '')
   .replace('{', '')
@@ -44,7 +42,7 @@ export function reversedInterpolation(template: string, searchString: string) {
   return connectTokensWithFigures(tokens, figures)
 }
 
-export const selectCommand = (req) => req.request.command
+export const selectCommand = (req): string => req.request.command
 export const selectSession = (req) => req.session
 export const selectSessionId = (req) => selectSession(req).session_id
 export const selectUserId = (req) => selectSession(req).user_id

@@ -1,7 +1,7 @@
-const { reversedInterpolation, selectCommand } = require('./utils')
+import { reversedInterpolation, selectCommand } from './utils'
 import Session from './session'
 
-import ReplyBuilder, {IReply} from './replyBuilder'
+import ReplyBuilder, { IReply } from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
 
 import { WebhookResponse, WebhookRequest } from './types/webhook'
@@ -72,33 +72,38 @@ export default class Context implements IContext {
 
   get body() {
     const requestText = selectCommand(this.req)
-    return reversedInterpolation(this.command.name, requestText)
+    if (typeof this.command.name === 'string') {
+      return reversedInterpolation(this.command.name, requestText)
+    }
+
+    return null
   }
 
-  public async reply(replyMessage: string | IReply): Promise<WebhookResponse> {
+  public reply(replyMessage: string | IReply): void {
     if (typeof replyMessage === 'undefined') {
       throw new Error('Reply message could not be empty!')
     }
 
     const message = this._createReply(replyMessage)
-    return this._sendReply(message)
+    this._sendReply(message)
   }
 
-  public async replyWithImage(params: string | BigImageCard) {
-    if (typeof params === 'string') {
-      const message = this._createReply(reply(bigImageCard(image(params))))
-      return this._sendReply(message)
-    } else {
-      const message = this._createReply(bigImageCard(params))
-      return this._sendReply(message)
-    }
-  }
+  // public async replyWithImage(params: string | BigImageCard) {
+  //   if (typeof params === 'string') {
+  //     // @TODO: fix this please anybody, doesnt work at all
+  //     const message = this._createReply(reply(bigImageCard(image(params))))
+  //     return this._sendReply(message)
+  //   } else {
+  //     const message = this._createReply(bigImageCard(params))
+  //     return this._sendReply(message)
+  //   }
+  // }
 
-  public async replyWithGallery() {
+  // public async replyWithGallery() {
 
-  }
+  // }
 
-  public async goodbye(replyMessage: string | {}) {
+  public goodbye(replyMessage: string | IReply): void {
     if (typeof replyMessage === 'undefined') {
       throw new Error('Message should be string or result of ReplayBuilder.get')
     }

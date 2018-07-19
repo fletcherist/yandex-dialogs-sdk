@@ -18,7 +18,8 @@ export interface IContext {
   replyBuilder: ReplyBuilder
   buttonBuilder: ButtonBuilder
 
-  reply: (replyMessage: string | IReply) => Promise<WebhookResponse>
+  reply: (replyMessage: string | IReply) => void
+  goodbye: (replyMessage: string | IReply) => void
   sendResponse: (response: WebhookResponse) => void
   enterScene: (sceneName: string) => void
   leaveScene: () => void

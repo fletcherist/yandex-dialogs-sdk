@@ -46,7 +46,7 @@ export default class Commands implements ICommands {
     return this.commands.filter((command) => command.type === TYPE_REGEXP)
   }
 
-  public async search(ctx: IContext) {
+  public async search(ctx: IContext): Promise<ICommand[]> {
     const matchedStrings = this._searchStrings(ctx.message)
     const matchedRegexps = this._searchRegexps(ctx.message)
     const matchedFigures = this._searchFigures(ctx.message)
