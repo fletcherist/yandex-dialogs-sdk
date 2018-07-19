@@ -1,22 +1,19 @@
 import Alice from './alice'
 import Commands from './commands'
 import Command from './command'
-import Context from './context'
 
 import { IConfig } from './types/alice'
 import { WebhookRequest, WebhookResponse } from './types/webhook'
 import { IContext } from './types/context'
 
-const selectCommand = (req) => req.request.command
-
 export default class Scene extends Alice {
   public name: string
   public enterCommand: Commands
   public leaveCommand: Commands
-  public anyCallback: (ctx: IContext) => void
-  public commands: Commands
-  public config: IConfig
-
+  protected commands: Commands
+  protected config: IConfig
+  protected anyCallback: (ctx: IContext) => void
+  
   constructor(name, config: IConfig = {}) {
     super()
     this.name = name

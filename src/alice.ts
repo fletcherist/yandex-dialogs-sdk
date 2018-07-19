@@ -42,10 +42,10 @@ const DEFAULT_RESPONSE_TIMEOUT = 1200
 export default class Alice {
   public scenes: Scene[]
 
-  private anyCallback: (ctx: IContext) => void
+  protected anyCallback: (ctx: IContext) => void
   private welcomeCallback: (ctx: IContext) => void
   private timeoutCallback: (ctx: IContext) => void
-  private commands: Commands
+  protected commands: Commands
   private middlewares: any[]
   private currentScene: Scene | null
   private sessions: Sessions
@@ -54,7 +54,7 @@ export default class Alice {
     close: () => void,
   }
   private eventEmitter: EventEmitterInterface
-  private config: IConfig
+  protected config: IConfig
 
   constructor(config: IConfig = {}) {
     this.anyCallback = null
