@@ -3,25 +3,26 @@
 
 Создавать навыки для Алисы — это очень просто.
 
-**[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)** — **Телеграм-чатик**, где ответят на любой ваш вопрос по поводу **SDK**
+**[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)** — телеграм-чатик, где ответят на любой ваш вопрос по поводу **SDK**
 
-<img height=300 src='https://camo.githubusercontent.com/0ad462b08ffb18f96ae1143f1365b60b918f4bbd/68747470733a2f2f73657470686f6e652e72752f77702d636f6e74656e742f75706c6f6164732f323031372f30372f616c6973612d383130783435362e706e67' />
+<img height=200 src='https://camo.githubusercontent.com/0ad462b08ffb18f96ae1143f1365b60b918f4bbd/68747470733a2f2f73657470686f6e652e72752f77702d636f6e74656e742f75706c6f6164732f323031372f30372f616c6973612d383130783435362e706e67' />
 
 ### Установите SDK
-`npm i yandex-dialogs-sdk`
-
-`yarn add yandex-dialogs-sdk`
+`npm i yandex-dialogs-sdk --save`
 
 
 ### Если вы собрались помочь в разработке
 `git clone`
 
 `yarn && npm run test && npm run dev`
-> typescript-приложение соберётся в ./dist
+
+Typescript-приложение соберётся в ./dist <br>
+Пожалуйста, прочтите [ROADMAP.md](), чтобы понять, куда мы движемся.
 
 
 ### Видеоуроки
-- [Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
+- [Роман Парадеев — Доклад с конференции «В гостях у Алисы»](https://youtu.be/qqHTk2QLyEQ?t=3h13m22s)
+- [Фил Романов — Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
 
 ### Создайте своё первое приложение
 
@@ -30,19 +31,12 @@ const Alice = require('yandex-dialogs-sdk')
 const alice = new Alice()
 
 const { loggingMiddleware, button } = Alice
-
 alice.use(loggingMiddleware({
   level: 1 // Optional. DEFAULT 0. see https://github.com/pimterry/loglevel
 }))
 
-alice.welcome(async (ctx) => {
-  ctx.reply('Привет! Смотри, что я могу')
-})
-
-alice.command('дай совет', async (ctx) => {
-  ctx.reply('Make const not var')
-})
-
+alice.welcome(async (ctx) => ctx.reply('Привет! Смотри, что я могу'))
+alice.command('дай совет', async (ctx) => ctx.reply('Make const not var'))
 alice.command(['билет в кино', 'что посмотреть', 'что показывают'], ctx => {
   ctx.reply({
     text: 'Есть «2001 a space odyssey»',
@@ -51,16 +45,12 @@ alice.command(['билет в кино', 'что посмотреть', 'что 
 })
 
 alice.command(/(https?:\/\/[^\s]+)/g, ctx => ctx.reply('Matched a link!'))
-
-alice.any(async (ctx) => {
-  ctx.reply('О чём это вы?')
-})
-
-alice.listen('/', 80)
+alice.any(async (ctx) => ctx.reply('О чём это вы?'))
+alice.listen('/', 3000)
 
 ```
 
-> Можно использовать как постоянно работающий сервер, так и serverless-платформы, такие как **AWS Lambda** или **Google Cloud Functions**. Смотрите папку **[./examples](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)**
+> Можно использовать как постоянно работающий сервер, так и serverless-платформы, такие как **AWS Lambda** или **Google Cloud Functions**. Больше примеров в папке **[./examples](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)**
 
 ### Программируйте сложную логику
 
@@ -125,7 +115,7 @@ alice.command('купить слона', async (ctx) => {
 
 # API
 
-API очень простой и удобный.
+- [Протокол Yandex Dialogs](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/)
 
 # Ctx
 
@@ -167,11 +157,6 @@ API очень простой и удобный.
 /* example */
 ctx.replyBuilder.addButton(btn1).addButton(btn2)
 ```
-```json
-"response": {
-  "buttons": ["<btn1>", "<btn2>"],
-},
-```
 
 ### .shouldEndSession(flag: boolean)
 > Default — false
@@ -192,20 +177,6 @@ const replyMessage = ctx.replyBuilder
   .addButton(btn1)
   .addButton(btn2)
   .get()
-```
-```json
-{
-  "response": {
-    "buttons": ["<btn1>", "<btn2>"],
-    "end_session": false,
-    "text": "Вы что, из Англии?",
-    "tts": "Вы что, из Англии?"
-  },
-  "session": {
-     "some": "session..."
-  },
-  "version": "1.0"
-}
 ```
 
 
@@ -257,6 +228,7 @@ const buyBtn = ctx.buttonBuilder
 Бот подскажет, что где находится, если вы перед этим расскажете ему об этом
 - [uraljs-alice-bot](https://github.com/sameoldmadness/uraljs-alice-bot)
 Навык Алисы UralJS
+- присылайте PR, чтобы оказаться здесь
 
 
 # Contributors
