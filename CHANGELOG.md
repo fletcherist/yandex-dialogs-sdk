@@ -1,3 +1,31 @@
+<a name="1.4.7"></a>
+## [1.4.7](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.6...v1.4.7) (2018-07-19)
+
+
+### Bug Fixes
+
+* CommandNameType type declaration. ([4ac4f03](https://github.com/fletcherist/yandex-dialogs-sdk/commit/4ac4f03))
+* Commands.getByName type error. ([42952f5](https://github.com/fletcherist/yandex-dialogs-sdk/commit/42952f5))
+* Commands.search type inferring ([a554c1c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/a554c1c))
+* Context.replay arguments type. ([daba639](https://github.com/fletcherist/yandex-dialogs-sdk/commit/daba639))
+* fixed a few mistakes & fix tests ([44a1dab](https://github.com/fletcherist/yandex-dialogs-sdk/commit/44a1dab))
+* remove dead code ([cf5843c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/cf5843c))
+* remove dead code ([b5cbc97](https://github.com/fletcherist/yandex-dialogs-sdk/commit/b5cbc97))
+* ts errors ([7611b5d](https://github.com/fletcherist/yandex-dialogs-sdk/commit/7611b5d))
+
+
+### Features
+
+* exclude jest test from compiler engine ([5ed69aa](https://github.com/fletcherist/yandex-dialogs-sdk/commit/5ed69aa))
+* fix some ts errors ([9756ca3](https://github.com/fletcherist/yandex-dialogs-sdk/commit/9756ca3))
+* fixed few typescript errors ([5ca6b01](https://github.com/fletcherist/yandex-dialogs-sdk/commit/5ca6b01))
+* log proxy events ([ad7b08b](https://github.com/fletcherist/yandex-dialogs-sdk/commit/ad7b08b))
+* update readme ([d38b2ae](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d38b2ae))
+* update readme ([6f4f4c2](https://github.com/fletcherist/yandex-dialogs-sdk/commit/6f4f4c2))
+* update readme.md ([77f5fb4](https://github.com/fletcherist/yandex-dialogs-sdk/commit/77f5fb4))
+
+
+
 <a name="1.4.6"></a>
 ## [1.4.6](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.4...v1.4.6) (2018-07-17)
 
