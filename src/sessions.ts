@@ -1,4 +1,3 @@
-import { merge } from 'ramda'
 import Session from './session'
 
 class Sessions {
