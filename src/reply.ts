@@ -5,6 +5,7 @@ import {
 } from './constants'
 import { ButtonParams } from './types/button'
 import { WebhookResponse } from './types/webhook'
+import { BigImageCard, ItemsListCard } from './types/card'
 
 interface ReplyType {
   response: {
@@ -22,8 +23,9 @@ interface ParamsType {
   shouldEndSession?: boolean,
   endSession?: boolean,
   end_session?: boolean,
-  session: {},
-  buttons: any[]
+  session?: {},
+  buttons?: any[],
+  card?: BigImageCard | ItemsListCard
 }
 export const reply = (params: ParamsType): WebhookResponse => {
   const data: WebhookResponse = {
@@ -43,18 +45,18 @@ export const reply = (params: ParamsType): WebhookResponse => {
     const {
       text,
       tts,
-      shouldEndSession,
       endSession,
       end_session,
       session,
       buttons,
     } = params
 
+    data.response = Object.assign(data.response, params)
     if (text) { data.response.text = text }
     if (tts) { data.response.tts = tts }
     if (buttons) { data.response.buttons = buttons }
-    if (shouldEndSession || end_session || endSession) {
-      data.response.end_session = shouldEndSession || end_session || endSession
+    if (end_session || endSession) {
+      data.response.end_session = end_session || endSession
     }
     if (session) { data.session = session }
 

@@ -1,3 +1,4 @@
+import { compose } from 'ramda'
 import { reversedInterpolation, selectCommand } from './utils'
 import Session from './session'
 
@@ -90,16 +91,24 @@ export default class Context implements IContext {
     this._sendReply(message)
   }
 
-  // public async replyWithImage(params: string | BigImageCard) {
-  //   if (typeof params === 'string') {
-  //     // @TODO: fix this please anybody, doesnt work at all
-  //     const message = this._createReply(reply(bigImageCard(image(params))))
-  //     return this._sendReply(message)
-  //   } else {
-  //     const message = this._createReply(bigImageCard(params))
-  //     return this._sendReply(message)
-  //   }
-  // }
+  public async replyWithImage(params: string | BigImageCard) {
+    if (typeof params === 'string') {
+      const message = this._createReply(
+        reply({
+          text: 'ᅠ ', // empty symbol
+          card: compose(bigImageCard, image)(params)
+        })
+      )
+      return this._sendReply(message)
+    }
+    const message = this._createReply(
+      reply({
+        text: 'ᅠ ',
+        card: bigImageCard(params),
+      })
+    )
+    return this._sendReply(message)
+  }
 
   // public async replyWithGallery() {
 
@@ -107,7 +116,7 @@ export default class Context implements IContext {
 
   public goodbye(replyMessage: string | IReply): void {
     if (typeof replyMessage === 'undefined') {
-      throw new Error('Message should be string or result of ReplayBuilder.get')
+      throw new Error('Message should be string or result of ReplyBuilder.get')
     }
 
     const message = this._createReply(replyMessage)
@@ -116,7 +125,7 @@ export default class Context implements IContext {
     this._sendReply(message)
   }
 
-  public _createReply(replyMessage): WebhookResponse {
+  private _createReply(replyMessage): WebhookResponse {
     /*
     * Если @replyMessage — string,
     * то заворачиваем в стандартную форму.
