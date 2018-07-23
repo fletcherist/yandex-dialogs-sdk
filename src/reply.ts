@@ -49,12 +49,13 @@ export const reply = (params: ParamsType): WebhookResponse => {
       end_session,
       session,
       buttons,
+      card
     } = params
 
-    data.response = Object.assign(data.response, params)
     if (text) { data.response.text = text }
     if (tts) { data.response.tts = tts }
     if (buttons) { data.response.buttons = buttons }
+    if (card) { data.response.card = card }
     if (end_session || endSession) {
       data.response.end_session = end_session || endSession
     }
