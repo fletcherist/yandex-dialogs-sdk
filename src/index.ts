@@ -8,24 +8,12 @@ import button from './button'
 // for java-lovers
 import ReplyBuilder from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
-// const button = require('./button')
-// const reply = require('./reply')
+
 import loggingMiddleware from './middlewares/loggingMiddleware'
 
-export default Alice
-export {
-  Alice,
-  Scene,
-  button,
-  reply,
-
-  ButtonBuilder,
-  ReplyBuilder,
-
-  loggingMiddleware,
-}
-
 module.exports = Alice
+module.exports.default = Alice
+module.exports.Alice = Alice
 module.exports.Scene = Scene
 module.exports.button = button
 module.exports.reply = reply
