@@ -11,6 +11,7 @@ export interface IContext {
   payload: {}
   message: string
   session: {}
+  originalUtterance: string
   eventEmitter: EventEmitterInterface
 
   // command?: Command

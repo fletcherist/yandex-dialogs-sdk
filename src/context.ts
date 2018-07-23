@@ -23,6 +23,7 @@ export default class Context implements IContext {
   public payload: {}
   public message: string
   public session: Session
+  public originalUtterance: string
   public eventEmitter: EventEmitterInterface
 
   public command?: ICommand
@@ -53,6 +54,7 @@ export default class Context implements IContext {
     this.userId = req.session.user_id
     this.payload = req.request.payload
     this.message = req.request.command
+    this.originalUtterance = req.request.original_utterance
 
     this.session = session
 
