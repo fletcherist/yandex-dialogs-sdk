@@ -107,24 +107,36 @@ alice.command('купить слона', async (ctx) => {
 
 - [Протокол Yandex Dialogs](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/)
 
-# Ctx
+
+## Alice 
+
+- `alice.command` - Установить обработчик команды
+- `alice.welcome` - Приветственный метод. Вызывается в начале пользовательской сессии.
+- `alice.uploadImage` - Загрузить картинку.
+- `alice.getImages` - Получить список загруженных изображений.
+
+## Ctx
 
 Сущность для управления состоянием ответа. Есть следующие методы и свойства:
 
 #### Свойства
 
-* **ctx.message** — Полное сообщение от пользователя.
-* **ctx.body** — объект с данными после парсина ([подробнее](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples/ctxBody.js))
-* **ctx.sessionId** — ID сессии.
-* **ctx.messageId** — ID сообщения.
-* **ctx.userId** — ID пользователя.
-* **ctx.payload** — Произвольный JSON, который присылается обработчику, если какая-то кнопка будет нажата.
+- `[ctx.message]` — Команда от пользователя.
+- `[ctx.originalUtterance]` - shortcut for `ctx.req.request.original_utterance`
+- `[ctx.body]` — Объект с данными после интент-обработки ([подробнее](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples/ctxBody.js))
+- `[ctx.sessionId]` — ID сессии.
+- `[ctx.messageId` — ID сообщения.
+- `[ctx.userId` — ID пользователя.
+- `[ctx.payload]` — Произвольный JSON, который присылается обработчику, если какая-то кнопка будет нажата.
 
 
 #### Методы
 
-* **ctx.replyBuilder** — фабрика для создания ответа на запрос. О ней — дальше.
-* **ctx.buttonBuilder** — фабрика для создания кнопок. О ней — дальше.
+- `ctx.reply` - Ответить на пользовательский запрос.
+- `ctx.replyWithImage` — Ответить картинкой.
+- `ctx.goodbye` - Ответь и завершить сессию (выйти из навыка).
+- `ctx.replyBuilder` — фабрика для создания ответа на запрос. О ней — дальше.
+- `ctx.buttonBuilder` — фабрика для создания кнопок. О ней — дальше.
 
 
 # ReplyBuilder
