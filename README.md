@@ -10,16 +10,6 @@
 ### Установите SDK
 `npm i yandex-dialogs-sdk --save`
 
-
-### Если вы собрались помочь в разработке
-`git clone`
-
-`yarn && npm run test && npm run dev`
-
-Typescript-приложение соберётся в ./dist <br>
-Пожалуйста, прочтите [Roadmap](https://github.com/fletcherist/yandex-dialogs-sdk/projects/1), чтобы понять, куда мы идём.
-
-
 ### Видеоуроки
 - [Роман Парадеев — Доклад с конференции «В гостях у Алисы»](https://youtu.be/qqHTk2QLyEQ?t=3h13m22s)
 - [Фил Романов — Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
@@ -230,16 +220,19 @@ const buyBtn = ctx.buttonBuilder
 Навык Алисы UralJS
 - присылайте PR, чтобы оказаться здесь
 
+## Если вы собрались помочь в разработке
+`git clone`
 
-# Contributors
+`yarn && npm run test && npm run dev`
+
+Typescript-приложение соберётся в ./dist <br>
+Пожалуйста, прочтите [Roadmap](https://github.com/fletcherist/yandex-dialogs-sdk/projects/1), чтобы понять, куда мы идём.
+
+## Contributors
 Спасибо всем этим замечательным людям за библиотеку:
 
 | [<img src="https://avatars1.githubusercontent.com/u/3027126?s=400&v=4" width="100px;"/><br /><sub><b>Stanislav Popov</b></sub>](http://blog.popstas.ru)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=popstas "Documentation")| [<img src="https://avatars0.githubusercontent.com/u/22147027?s=400&v=4" width="100px;"/><br /><sub><b>Nikita Rogozhin</b></sub>](http://rogoda.ru)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=rogodec "Documentation") | [<img src="https://avatars0.githubusercontent.com/u/1537724?s=400&v=4" width="100px;"/><br /><sub><b>Roman Paradeev</b></sub>](https://github.com/sameoldmadness)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=sameoldmadness "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/10712045?s=400&v=4" width="100px;"/><br /><sub><b>Vanya Klimenko</b></sub>](http://vanyaklimenko.ru)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=vanyaklimenko "Documentation") | 
 | :---: | :---: | :---: | :---: |
-
-
-### Присылайте пулл-реквесты!
-Давайте вместе сделаем библиотеку ещё удобнее для разработчиков.
 
 
 Phil Romanov © MIT 2018
