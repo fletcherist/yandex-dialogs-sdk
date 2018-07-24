@@ -68,4 +68,20 @@ test('ctx body', async (done) => {
   )
 })
 
-// TODO: write a test for registerScene()
+test('handling command resolve with callback', async (done) => {
+  const alice = new Alice()
+  const MOCK_MSG = 'Hello world'
+  alice.any(ctx => ctx.reply(MOCK_MSG))
+  alice.handleRequest(generateRequest('hi!'), response => {
+    expect(response.response.text).toBe(MOCK_MSG)
+    done()
+  })
+})
+
+test('handling command resolve with promise', async () => {
+  const alice = new Alice()
+  const MOCK_MSG = 'Hello world'
+  alice.any(ctx => ctx.reply(MOCK_MSG))
+  const response = await alice.handleRequest(generateRequest('hi!'))
+  expect(response.response.text).toBe(MOCK_MSG)
+})
