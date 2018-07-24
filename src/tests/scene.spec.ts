@@ -42,23 +42,32 @@ test('register scene and enter in', async () => {
   expect(res.response.text).toBe('leave')
 })
 
-// test('changing scene', async () => {
-//   const alice = new Alice()
-//   const scene1 = new Scene('scene1')
-//   const scene2 = new Scene('scene2')
-//   scene1.enter('keyword', ctx => {
-//     ctx.reply('test')
-//     // ctx.leaveScene()
-//     // ctx.enterScene(scene2)
-//   })
-//   scene2.any(ctx => ctx.reply('wazzup'))
+test('changing scene', async () => {
+  const alice = new Alice()
+  const scene1 = new Scene('scene1')
+  const scene2 = new Scene('scene2')
+  scene1.enter('keyword', ctx => {
+    ctx.enterScene(scene2)
+    return ctx.reply('scene1')
+  })
+  scene2.any(ctx => {
+    ctx.leaveScene()
+    return ctx.reply('scene2')
+  })
 
-//   alice.registerScene([scene1, scene2])
-//   alice.any(ctx => ctx.reply('1'))
+  alice.registerScene([scene1, scene2])
+  alice.any(ctx => ctx.reply('main'))
 
-//   let data
-//   data = await alice.handleRequest(generateRequest('keyword'))
-//   expect(data.response.text).toBe('1')
-//   console.log(data)
-// })
+  let data
+  data = await alice.handleRequest(generateRequest('hello'))
+  expect(data.response.text).toBe('main')
+  // Test scene1 change scene method (ctx.enterScene)
+  data = await alice.handleRequest(generateRequest('keyword'))
+  expect(data.response.text).toBe('scene1')
+  // Test scene2 leave method
+  data = await alice.handleRequest(generateRequest('hello'))
+  expect(data.response.text).toBe('scene2')
+  data = await alice.handleRequest(generateRequest('hello'))
+  expect(data.response.text).toBe('main')
+})
 

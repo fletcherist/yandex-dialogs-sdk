@@ -2,6 +2,7 @@ import { WebhookRequest, WebhookResponse } from './webhook'
 import ReplyBuilder, {IReply} from '../replyBuilder'
 import ButtonBuilder from '../buttonBuilder'
 import { EventEmitterInterface } from './eventEmitter'
+import Scene from '../scene'
 
 export interface IContext {
   req: WebhookRequest
@@ -22,6 +23,6 @@ export interface IContext {
   reply: (replyMessage: string | IReply) => void
   goodbye: (replyMessage: string | IReply) => void
   sendResponse: (response: WebhookResponse) => void
-  enterScene: (sceneName: string) => void
+  enterScene: (scene: Scene) => void
   leaveScene: () => void
 }

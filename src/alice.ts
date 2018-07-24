@@ -71,8 +71,6 @@ export default class Alice implements IAlice {
     })
 
     this.timeoutCallback = async (ctx) => ctx.reply(DEFAULT_TIMEOUT_CALLBACK_MESSAGE)
-    this._handleEnterScene = this._handleEnterScene.bind(this)
-    this._handleLeaveScene = this._handleLeaveScene.bind(this)
   }
 
   /* @TODO: Implement watchers (errors, messages) */
@@ -142,18 +140,19 @@ export default class Alice implements IAlice {
       session,
       sendResponse: sendResponse || null,
       /*
-       * if Alice is listening on express.js port, add this server instance
-       * to the context
-       */
-      server: this.server || null,
+      * if Alice is listening on express.js port, add this server instance
+      * to the context
+      */
+     server: this.server || null,
+     scenes: this.scenes,
       middlewares: this.middlewares,
       eventEmitter,
     }
     const ctxInstance = new Context(ctxDefaultParams)
-    const ctxWithMiddlewares = await applyMiddlewares(this.middlewares, ctxInstance)
+    const context = await applyMiddlewares(this.middlewares, ctxInstance)
 
     eventEmitter.dispatch(EVENT_MESSAGE_RECIEVED, {
-      data: ctxWithMiddlewares.message, session: ctxWithMiddlewares.session,
+      data: context.message, session: context.session,
     })
 
     /* check whether current scene is not defined */
@@ -172,14 +171,13 @@ export default class Alice implements IAlice {
        * activation trigger
        */
       if (matchedScene) {
-        if (await matchedScene.isLeaveCommand(ctxWithMiddlewares)) {
-          const sceneResponse = await matchedScene.handleSceneRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
+        if (await matchedScene.isLeaveCommand(context)) {
+          const sceneResponse = await matchedScene.handleSceneRequest(req, sendResponse, context, 'leave')
           session.setData('currentScene', null)
-          this._handleLeaveScene()
           return sceneResponse
         } else {
           const sceneResponse = await matchedScene.handleSceneRequest(
-            req, sendResponse, ctxWithMiddlewares,
+            req, sendResponse, context,
           )
           if (sceneResponse) {
             return sceneResponse
@@ -192,7 +190,7 @@ export default class Alice implements IAlice {
        */
       let matchedScene = null
       for (const scene of this.scenes) {
-        const result = await scene.isEnterCommand(ctxWithMiddlewares)
+        const result = await scene.isEnterCommand(context)
         if (result) {
           matchedScene = scene
         }
@@ -200,9 +198,8 @@ export default class Alice implements IAlice {
 
       if (matchedScene) {
         session.setData('currentScene', matchedScene.name)
-        this._handleEnterScene(matchedScene.name)
         const sceneResponse = await matchedScene.handleSceneRequest(
-          req, sendResponse, ctxWithMiddlewares, 'enter',
+          req, sendResponse, context, 'enter',
         )
         if (sceneResponse) {
           return sceneResponse
@@ -210,7 +207,7 @@ export default class Alice implements IAlice {
       }
     }
 
-    const requestedCommands = await this.commands.search(ctxWithMiddlewares)
+    const requestedCommands = await this.commands.search(context)
     /*
     * Если новая сессия, то запускаем стартовую команду
     */
@@ -219,7 +216,7 @@ export default class Alice implements IAlice {
        * Patch context with middlewares
        */
       if (this.welcomeCallback) {
-        return await this.welcomeCallback(ctxWithMiddlewares)
+        return await this.welcomeCallback(context)
       }
     }
     /*
@@ -228,8 +225,8 @@ export default class Alice implements IAlice {
      */
     if (requestedCommands.length !== 0) {
       const requestedCommand: ICommand = requestedCommands[0]
-      ctxWithMiddlewares.command = requestedCommand
-      return await requestedCommand.callback(ctxWithMiddlewares)
+      context.command = requestedCommand
+      return await requestedCommand.callback(context)
     }
 
     /*
@@ -242,7 +239,7 @@ export default class Alice implements IAlice {
         'to catch anything that not matches with commands',
       ].join('\n'))
     }
-    return await this.anyCallback(ctxWithMiddlewares)
+    return await this.anyCallback(context)
   }
 
   /*
@@ -333,13 +330,6 @@ export default class Alice implements IAlice {
     if (this.server && this.server.close) {
       this.server.close()
     }
-  }
-
-  protected _handleEnterScene(sceneName) {
-    this.currentScene = sceneName
-  }
-  protected _handleLeaveScene() {
-    this.currentScene = null
   }
 
   private async handleProxyRequest(
