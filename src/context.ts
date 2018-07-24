@@ -1,6 +1,7 @@
 import { compose } from 'ramda'
 import { reversedInterpolation, selectCommand } from './utils'
 import Session from './session'
+import Scene from './scene'
 
 import ReplyBuilder, { IReply } from './replyBuilder'
 import ButtonBuilder from './buttonBuilder'
@@ -33,21 +34,22 @@ export default class Context implements IContext {
   public buttonBuilder: ButtonBuilder
 
   public sendResponse: (response: WebhookResponse) => void
-  public enterScene: (sceneName: string) => void
-  public leaveScene: () => void
+
+  private _isReplied: boolean // forbids to send reply twice
+  private scenes: Scene[]
+
   constructor(params) {
     const {
       req,
       sendResponse,
       session,
-
-      enterScene,
-      leaveScene,
+      scenes,
 
       command,
     } = params
 
     this.req = req
+    this.scenes = scenes
     this.sendResponse = sendResponse
 
     this.sessionId = req.session.session_id
@@ -63,10 +65,7 @@ export default class Context implements IContext {
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()
 
-    if (enterScene && leaveScene) {
-      this.enterScene = enterScene
-      this.leaveScene = leaveScene
-    }
+    this._isReplied = false
 
     if (command) {
       this.command = command
@@ -82,13 +81,13 @@ export default class Context implements IContext {
     return null
   }
 
-  public reply(replyMessage: string | IReply): void {
+  public reply(replyMessage: string | IReply): WebhookResponse {
     if (typeof replyMessage === 'undefined') {
       throw new Error('Reply message could not be empty!')
     }
 
     const message = this._createReply(replyMessage)
-    this._sendReply(message)
+    return this._sendReply(message)
   }
 
   public async replyWithImage(params: string | BigImageCard) {
@@ -111,8 +110,18 @@ export default class Context implements IContext {
   }
 
   // public async replyWithGallery() {
-
+  // @TODO
   // }
+
+  public enterScene(scene: Scene): void {
+    if (!scene) throw new Error('Please provide scene you want to enter in')
+    const matchedScene = this.scenes.find(candidateScene => candidateScene.name === scene.name)
+    this.session.setData('currentScene', matchedScene.name)
+  }
+
+  public leaveScene(): void {
+    this.session.setData('currentScene', null)
+  }
 
   public goodbye(replyMessage: string | IReply): void {
     if (typeof replyMessage === 'undefined') {
@@ -143,7 +152,9 @@ export default class Context implements IContext {
     return replyMessage
   }
 
-  private _sendReply(replyMessage: WebhookResponse) {
+  private _sendReply(replyMessage: WebhookResponse): any {
+    if (this._isReplied) return
+    this._isReplied = true
     /*
      * That fires when listening on port.
      */

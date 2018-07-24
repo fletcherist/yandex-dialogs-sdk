@@ -79,8 +79,6 @@ export default class Scene extends Alice {
   ): Promise<any> {
 
     ctx.sendResponse = sendResponse
-    ctx.leaveScene = super._handleLeaveScene
-    ctx.enterScene = super._handleEnterScene
 
     let requestedCommands = []
 
