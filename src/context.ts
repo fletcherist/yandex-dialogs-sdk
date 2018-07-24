@@ -110,11 +110,9 @@ export default class Context implements IContext {
   }
 
   // public async replyWithGallery() {
-
+  // @TODO
   // }
 
-  // public enterScene: (sceneName: string) => void
-  // public leaveScene: () => void
   public enterScene(scene: Scene): void {
     if (!scene) throw new Error('Please provide scene you want to enter in')
     const matchedScene = this.scenes.find(candidateScene => candidateScene.name === scene.name)
