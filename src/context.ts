@@ -35,6 +35,9 @@ export default class Context implements IContext {
   public sendResponse: (response: WebhookResponse) => void
   public enterScene: (sceneName: string) => void
   public leaveScene: () => void
+
+  private _isReplied: boolean // forbids to send reply twice
+
   constructor(params) {
     const {
       req,
@@ -63,6 +66,8 @@ export default class Context implements IContext {
     this.replyBuilder = new ReplyBuilder(this.req)
     this.buttonBuilder = new ButtonBuilder()
 
+    this._isReplied = false
+
     if (enterScene && leaveScene) {
       this.enterScene = enterScene
       this.leaveScene = leaveScene
@@ -82,13 +87,13 @@ export default class Context implements IContext {
     return null
   }
 
-  public reply(replyMessage: string | IReply): void {
+  public reply(replyMessage: string | IReply): WebhookResponse {
     if (typeof replyMessage === 'undefined') {
       throw new Error('Reply message could not be empty!')
     }
 
     const message = this._createReply(replyMessage)
-    this._sendReply(message)
+    return this._sendReply(message)
   }
 
   public async replyWithImage(params: string | BigImageCard) {
@@ -143,7 +148,9 @@ export default class Context implements IContext {
     return replyMessage
   }
 
-  private _sendReply(replyMessage: WebhookResponse) {
+  private _sendReply(replyMessage: WebhookResponse): any {
+    if (this._isReplied) return
+    this._isReplied = true
     /*
      * That fires when listening on port.
      */

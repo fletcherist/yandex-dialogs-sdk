@@ -1,6 +1,6 @@
-import Alice from '../alice';
-
-const Scene = require('../scene')
+import Alice from '../alice'
+import Scene from '../scene'
+import { generateRequest } from './testUtils'
 
 test('creating scene with name', () => {
   const scene = new Scene('testName')
@@ -17,4 +17,48 @@ test('registering an array of scenes', () => {
   // yup it's a private method but who cares whatsoever?..
   expect(alice.scenes.length).toBe(2)
 })
+
+test('register scene and enter in', async () => {
+  const alice = new Alice()
+  const scene = new Scene('123')
+  scene.enter('1', ctx => ctx.reply('enter'))
+  scene.any(ctx => ctx.reply('scene-any'))
+  scene.command('3', ctx => ctx.reply('command'))
+  scene.leave('2', ctx => ctx.reply('leave'))
+
+  alice.registerScene(scene)
+  alice.any(ctx => ctx.reply('hi'))
+
+  let res
+  res = await alice.handleRequest(generateRequest('hello'))
+  expect(res.response.text).toBe('hi')
+
+  res = await alice.handleRequest(generateRequest('1'))
+  expect(res.response.text).toBe('enter')
+  res = await alice.handleRequest(generateRequest('blablabla'))
+  expect(res.response.text).toBe('scene-any')
+
+  res = await alice.handleRequest(generateRequest('2'))
+  expect(res.response.text).toBe('leave')
+})
+
+// test('changing scene', async () => {
+//   const alice = new Alice()
+//   const scene1 = new Scene('scene1')
+//   const scene2 = new Scene('scene2')
+//   scene1.enter('keyword', ctx => {
+//     ctx.reply('test')
+//     // ctx.leaveScene()
+//     // ctx.enterScene(scene2)
+//   })
+//   scene2.any(ctx => ctx.reply('wazzup'))
+
+//   alice.registerScene([scene1, scene2])
+//   alice.any(ctx => ctx.reply('1'))
+
+//   let data
+//   data = await alice.handleRequest(generateRequest('keyword'))
+//   expect(data.response.text).toBe('1')
+//   console.log(data)
+// })
 

@@ -173,16 +173,16 @@ export default class Alice implements IAlice {
        */
       if (matchedScene) {
         if (await matchedScene.isLeaveCommand(ctxWithMiddlewares)) {
-          await matchedScene.handleSceneRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
+          const sceneResponse = await matchedScene.handleSceneRequest(req, sendResponse, ctxWithMiddlewares, 'leave')
           session.setData('currentScene', null)
           this._handleLeaveScene()
-          return true
+          return sceneResponse
         } else {
           const sceneResponse = await matchedScene.handleSceneRequest(
             req, sendResponse, ctxWithMiddlewares,
           )
           if (sceneResponse) {
-            return true
+            return sceneResponse
           }
         }
       }
@@ -205,7 +205,7 @@ export default class Alice implements IAlice {
           req, sendResponse, ctxWithMiddlewares, 'enter',
         )
         if (sceneResponse) {
-          return true
+          return sceneResponse
         }
       }
     }
