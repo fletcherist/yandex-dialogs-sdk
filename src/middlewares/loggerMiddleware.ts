@@ -43,7 +43,7 @@ interface ILogger {
   level?: number
 }
 
-export default function createLoggingMiddleware(opts: ILogger = {}) {
+export default function createLoggerMiddleware(opts: ILogger = {}) {
   const eventTypes = {
     [EVENT_MESSAGE_RECIEVED]: 'info',
     [EVENT_MESSAGE_SENT]: 'info',
