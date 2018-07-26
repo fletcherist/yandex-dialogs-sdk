@@ -1,22 +1,16 @@
 import Alice from './alice'
-import Scene from './scene'
 
-// fp
-import reply from './reply'
-import button from './button'
-
-// for java-lovers
-import ReplyBuilder from './replyBuilder'
-import ButtonBuilder from './buttonBuilder'
-
-import loggingMiddleware from './middlewares/loggingMiddleware'
-
+/**
+ * Для совместимости с commonjs
+ * @example const Alice = require('yandex-dialogs-sdk')
+ */
 module.exports = Alice
-module.exports.default = Alice
-module.exports.Alice = Alice
-module.exports.Scene = Scene
-module.exports.button = button
-module.exports.reply = reply
-module.exports.ButtonBuilder = ButtonBuilder
-module.exports.ReplyBuilder = ReplyBuilder
-module.exports.loggingMiddleware = loggingMiddleware
+exports = module.exports
+
+export default Alice
+export { default as Scene } from './scene'
+export { default as reply } from './reply'
+export { default as button } from './button'
+export { default as ReplyBuilder } from './replyBuilder'
+export { default as ButtonBuilder } from './buttonBuilder'
+export { default as loggingMiddleware } from './middlewares/loggingMiddleware'
