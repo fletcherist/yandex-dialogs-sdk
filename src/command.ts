@@ -1,17 +1,6 @@
-import {
-    TYPE_STRING,
-    TYPE_FIGURE,
-    TYPE_REGEXP,
-    TYPE_ARRAY,
-    TYPE_MATCHER,
-} from './constants'
+import { TYPE_STRING, TYPE_FIGURE, TYPE_REGEXP, TYPE_ARRAY, TYPE_MATCHER } from './constants'
 import Context from './context'
-import {
-    ICommand,
-    CallbackType,
-    CommandType,
-    CommandNameType,
-} from './types/command'
+import { ICommand, CallbackType, CommandType, CommandNameType } from './types/command'
 import { isFunction } from './utils'
 
 export default class Command implements ICommand {
@@ -20,7 +9,9 @@ export default class Command implements ICommand {
     public callback: CallbackType
 
     constructor(name: CommandNameType, callback: CallbackType) {
-        if (name === undefined) { throw new Error('Command name is not specified') }
+        if (name === undefined) {
+            throw new Error('Command name is not specified')
+        }
         this.name = name
         this.callback = callback
         this.type = this._defineCommandType(this.name)
