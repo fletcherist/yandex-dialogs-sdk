@@ -2,7 +2,9 @@ export default class Session {
     public sessionId: string
     public data: {}
     constructor(sessionId: string, data = {}) {
-        if (!sessionId) { throw new Error('Cant create new session. Missed {sessionId}') }
+        if (!sessionId) {
+            throw new Error('Cant create new session. Missed {sessionId}')
+        }
         this.sessionId = sessionId
         this.data = data
     }
@@ -20,7 +22,7 @@ export default class Session {
 
     public set(data) {
         if (typeof data !== 'object') {
-        throw new Error(`Can't set data. Data should be an object`)
+            throw new Error(`Can't set data. Data should be an object`)
         }
         this.data = data
     }
