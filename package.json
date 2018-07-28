@@ -1,6 +1,6 @@
 {
   "name": "yandex-dialogs-sdk",
-  "version": "1.4.9",
+  "version": "1.5.0",
   "description": "Build your skill for Alice with ease.",
   "main": "dist/index.js",
   "scripts": {
@@ -23,7 +23,10 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts}": ["prettier --write", "git add"]
+    "*.{js,ts}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "keywords": [
     "Alice",
