@@ -45,13 +45,18 @@ interface ILogger {
     level?: number
 }
 
-export default function createLoggingMiddleware(opts: ILogger = {}) {
-    const eventTypes = {
-        [EVENT_MESSAGE_RECIEVED]: 'info',
-        [EVENT_MESSAGE_SENT]: 'info',
-        [EVENT_MESSAGE_NOT_SENT]: 'warn',
-        [EVENT_MESSAGE_PROXIED]: 'info',
-        [EVENT_MESSAGE_PROXY_ERROR]: 'error',
+export default function createLoggerMiddleware(opts: ILogger = {}) {
+  const eventTypes = {
+    [EVENT_MESSAGE_RECIEVED]: 'info',
+    [EVENT_MESSAGE_SENT]: 'info',
+    [EVENT_MESSAGE_NOT_SENT]: 'warn',
+    [EVENT_MESSAGE_PROXIED]: 'info',
+    [EVENT_MESSAGE_PROXY_ERROR]: 'error',
+  }
+  let isInitialized = false
+  return (ctx) => {
+    if (isInitialized) {
+      return ctx
     }
     let isInitialized = false
     return ctx => {

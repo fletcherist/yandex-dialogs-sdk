@@ -10,12 +10,12 @@ import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { EventEmitterInterface } from './types/eventEmitter'
 import { IContext } from './types/context'
 import { ICommand } from './types/command'
-import { BigImageCard } from './types/card'
+import { BigImageCard, ItemsListCard } from './types/card'
 import { image, bigImageCard, itemsListCard } from './card'
 import reply from './reply'
 import eventEmitter from './eventEmitter'
 
-import { EVENT_MESSAGE_SENT } from './constants'
+import { EVENT_MESSAGE_SENT, EMPTY_SYMBOL } from './constants'
 
 export default class Context implements IContext {
     public req: WebhookRequest
@@ -90,11 +90,17 @@ export default class Context implements IContext {
         return this._sendReply(message)
     }
 
-    public async replyWithImage(params: string | BigImageCard) {
+    public enterScene(scene: Scene): void {
+        if (!scene) throw new Error('Please provide scene you want to enter in')
+        const matchedScene = this.scenes.find(candidateScene => candidateScene.name === scene.name)
+        this.session.setData('currentScene', matchedScene.name)
+    }
+
+    public replyWithImage(params: string | BigImageCard) {
         if (typeof params === 'string') {
             const message = this._createReply(
                 reply({
-                    text: 'ᅠ ', // empty symbol
+                    text: EMPTY_SYMBOL,
                     card: compose(
                         bigImageCard,
                         image
@@ -105,21 +111,21 @@ export default class Context implements IContext {
         }
         const message = this._createReply(
             reply({
-                text: 'ᅠ ',
+                text: EMPTY_SYMBOL,
                 card: bigImageCard(params),
             })
         )
         return this._sendReply(message)
     }
 
-    // public async replyWithGallery() {
-    // @TODO
-    // }
-
-    public enterScene(scene: Scene): void {
-        if (!scene) throw new Error('Please provide scene you want to enter in')
-        const matchedScene = this.scenes.find(candidateScene => candidateScene.name === scene.name)
-        this.session.setData('currentScene', matchedScene.name)
+    public replyWithItemsList(params: ItemsListCard) {
+        const message = this._createReply(
+            reply({
+                text: EMPTY_SYMBOL,
+                card: itemsListCard(params),
+            })
+        )
+        return this._sendReply(message)
     }
 
     public leaveScene(): void {
