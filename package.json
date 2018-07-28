@@ -17,6 +17,14 @@
     "type": "git",
     "url": "git+https://github.com/fletcherist/yandex-dialogs-sdk.git"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,ts}": ["prettier --write", "git add"]
+  },
   "keywords": [
     "Alice",
     "yandex-dialogs",
@@ -60,7 +68,9 @@
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
     "jest": "^23.2.0",
+    "prettier": "^1.13.7",
     "ts-jest": "^23.0.0",
     "tslint": "^5.10.0",
     "typescript": "^2.9.2",

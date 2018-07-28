@@ -6,7 +6,7 @@ export type CommandNameType = ((ctx: IContext) => boolean) | any[] | string | Re
 export type CommandType = 'string' | 'figure' | 'regexp' | 'array' | 'matcher'
 
 export interface ICommand {
-  callback: CallbackType
-  name: CommandNameType
-  type: CommandType
+    callback: CallbackType
+    name: CommandNameType
+    type: CommandType
 }

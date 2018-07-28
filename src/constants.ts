@@ -14,7 +14,8 @@ export const EVENT_MESSAGE_NOT_SENT = 'messageNotSent'
 export const EVENT_MESSAGE_PROXIED = 'messageProxied'
 export const EVENT_MESSAGE_PROXY_ERROR = 'messageProxyError'
 
-export const DEFAULT_TIMEOUT_CALLBACK_MESSAGE = 'Извините, но я не успела найти ответ за отведенное время.'
+export const DEFAULT_TIMEOUT_CALLBACK_MESSAGE =
+    'Извините, но я не успела найти ответ за отведенное время.'
 export const EMPTY_SYMBOL = 'ᅠ '
 
 module.exports.ALICE_PROTOCOL_VERSION = '1.0'
