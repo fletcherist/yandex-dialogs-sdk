@@ -1,9 +1,10 @@
-<a name="1.5.0"></a>
-# [1.5.0](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.8...v1.5.0) (2018-07-28)
+<a name="1.5.1"></a>
+## [1.5.1](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.8...v1.5.1) (2018-07-28)
 
 
 ### Bug Fixes
 
+* logger middlewares ([b418657](https://github.com/fletcherist/yandex-dialogs-sdk/commit/b418657))
 * remove unnecessary code ([2106957](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2106957))
 
 
