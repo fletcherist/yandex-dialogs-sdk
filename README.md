@@ -20,8 +20,8 @@
 const Alice = require('yandex-dialogs-sdk')
 const alice = new Alice()
 
-const { loggingMiddleware, button } = Alice
-alice.use(loggingMiddleware({
+const { loggerMiddleware, button } = Alice
+alice.use(loggerMiddleware({
   level: 1 // Optional. DEFAULT 0. see https://github.com/pimterry/loglevel
 }))
 
