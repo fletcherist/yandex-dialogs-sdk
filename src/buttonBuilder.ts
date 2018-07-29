@@ -44,4 +44,3 @@ export default class ButtonBuilder {
     }
 }
 
-module.exports = ButtonBuilder

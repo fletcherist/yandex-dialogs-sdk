@@ -27,5 +27,4 @@ const button = (params: IButton | string): IButton => {
     throw new Error('Invalid button constructor argument. Use String or Object instead.')
 }
 
-module.exports = button
 export default button
