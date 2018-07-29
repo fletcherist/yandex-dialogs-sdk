@@ -101,7 +101,4 @@ export default class Commands implements ICommands {
     }
 }
 
-module.exports = Commands
-module.exports.Command = Command
-
 export { Command }

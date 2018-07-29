@@ -59,5 +59,3 @@ export default class ReplyBuilder {
         return this.reply
     }
 }
-
-module.exports = ReplyBuilder

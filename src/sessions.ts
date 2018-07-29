@@ -56,9 +56,5 @@ class Sessions {
     }
 }
 
-module.exports = Sessions
-module.exports.Sessions = Sessions
-module.exports.Session = Session
-
 export default Sessions
 export { Sessions, Session }

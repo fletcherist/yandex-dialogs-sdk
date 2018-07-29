@@ -1,5 +1,6 @@
 // Module test for commands class
-const Commands = require('../commands')
+import Commands from '../commands'
+
 test('adding a command', () => {
     const commands = new Commands()
 

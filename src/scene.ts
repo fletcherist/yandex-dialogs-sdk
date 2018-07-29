@@ -110,4 +110,3 @@ export default class Scene extends Alice {
     }
 }
 
-module.exports = Scene

@@ -24,7 +24,8 @@ interface ParamsType {
     buttons?: any[]
     card?: BigImageCard | ItemsListCard
 }
-export const reply = (params: ParamsType): WebhookResponse => {
+
+export function reply(params: ParamsType): WebhookResponse {
     const data: WebhookResponse = {
         response: {
             text: '',
@@ -67,4 +68,3 @@ export const reply = (params: ParamsType): WebhookResponse => {
 }
 
 export default reply
-module.exports = reply
