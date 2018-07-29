@@ -3,19 +3,13 @@
 	"extends": ["tslint:recommended"],
 	"jsRules": {},
 	"rules": {
-		// We handle this manually
 		"interface-name": [true, "always-prefix"],
-
-		// There are some dependencies we have (e.g. shallowequal) that need to be var-required because
-		// the available typings aren't great
 		"no-var-requires": false,
-
-		// These rules are super annoying in this project
 		"object-literal-sort-keys": false,
 		"ordered-imports": false,
 		"semicolon": [true, "never"],
 		"quotemark": [true, "single"],
-		"indent": [true, "spaces", 2],
+		"indent": [true, "spaces", 2]
 	},
 	"rulesDirectory": []
 }

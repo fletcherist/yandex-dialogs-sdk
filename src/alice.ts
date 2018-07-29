@@ -11,7 +11,7 @@ import { selectCommand, selectSessionId, isFunction, delay, rejectsIn } from './
 
 import { applyMiddlewares } from './middlewares'
 
-import aliceStateMiddleware from './middlewares/aliceStateMiddleware'
+import stateMiddleware from './middlewares/stateMiddleware'
 
 import { IConfig, IAlice } from './types/alice'
 import { ICommand } from './types/command'
@@ -52,7 +52,7 @@ export default class Alice implements IAlice {
         this.anyCallback = null
         this.welcomeCallback = null
         this.commands = new Commands(config.fuseOptions || null)
-        this.middlewares = [aliceStateMiddleware()]
+        this.middlewares = [stateMiddleware()]
         this.scenes = []
         this.currentScene = null
         this.sessions = new Sessions()
