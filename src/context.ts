@@ -103,9 +103,9 @@ export default class Context implements IContext {
                     text: EMPTY_SYMBOL,
                     card: compose(
                         bigImageCard,
-                        image
+                        image,
                     )(params),
-                })
+                }),
             )
             return this._sendReply(message)
         }
@@ -113,7 +113,7 @@ export default class Context implements IContext {
             reply({
                 text: EMPTY_SYMBOL,
                 card: bigImageCard(params),
-            })
+            }),
         )
         return this._sendReply(message)
     }
@@ -123,7 +123,7 @@ export default class Context implements IContext {
             reply({
                 text: EMPTY_SYMBOL,
                 card: itemsListCard(params),
-            })
+            }),
         )
         return this._sendReply(message)
     }

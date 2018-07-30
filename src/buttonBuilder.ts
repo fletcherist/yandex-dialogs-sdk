@@ -1,7 +1,7 @@
 import { IButton } from './types/button'
 
 export default class ButtonBuilder {
-    button: IButton
+    private button: IButton
     constructor(buttonConstructor?: IButton) {
         /* No button object passed to the constructor */
         if (!buttonConstructor) {

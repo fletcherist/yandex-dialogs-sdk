@@ -4,6 +4,8 @@ import {
     EVENT_MESSAGE_NOT_SENT,
     EVENT_MESSAGE_PROXIED,
     EVENT_MESSAGE_PROXY_ERROR,
+    EVENT_SERVER_STARTED,
+    EVENT_SERVER_STOPPED,
 } from '../constants'
 
 import chalk from 'chalk'
@@ -22,7 +24,7 @@ prefix.reg(log)
 prefix.apply(log, {
     format(level, name, timestamp) {
         return `${chalk.gray(`[${timestamp}]`)} ${colors[level.toUpperCase()](level)} ${chalk.green(
-            `${name}:`
+            `${name}:`,
         )}`
     },
 })
@@ -52,6 +54,8 @@ export default function createLoggerMiddleware(opts: ILogger = {}) {
         [EVENT_MESSAGE_NOT_SENT]: 'warn',
         [EVENT_MESSAGE_PROXIED]: 'info',
         [EVENT_MESSAGE_PROXY_ERROR]: 'error',
+        [EVENT_SERVER_STARTED]: 'info',
+        [EVENT_SERVER_STOPPED]: 'info',
     }
     let isInitialized = false
     return ctx => {
@@ -66,11 +70,13 @@ export default function createLoggerMiddleware(opts: ILogger = {}) {
         ctx.eventEmitter.subscribe(EVENT_MESSAGE_NOT_SENT, logEvent)
         ctx.eventEmitter.subscribe(EVENT_MESSAGE_PROXIED, logEvent)
         ctx.eventEmitter.subscribe(EVENT_MESSAGE_PROXY_ERROR, logEvent)
+        ctx.eventEmitter.subscribe(EVENT_SERVER_STARTED, logEvent)
+        ctx.eventEmitter.subscribe(EVENT_SERVER_STOPPED, logEvent)
 
         function logEvent(event) {
             try {
                 log[eventTypes[event.type]](
-                    [`{${chalk.cyan(event.type)}}`, event.data].filter(Boolean).join(' ')
+                    [`{${chalk.cyan(event.type)}}`, event.data].filter(Boolean).join(' '),
                 )
             } catch (error) {
                 log.error(`Cant log "${event.type}"`)
