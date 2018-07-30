@@ -57,6 +57,9 @@ export const isFunction = (fn: (args: any) => any) => fn && typeof fn === 'funct
 export const delay = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms))
 export const rejectsIn = (ms: number) => new Promise((resolve, reject) => setTimeout(reject, ms))
 
+export const compose = (...fns) =>
+    fns.reduceRight((prevFn, nextFn) => (...args) => nextFn(prevFn(...args)), value => value)
+
 export default {
     getFiguresRegexp,
     selectCommand,

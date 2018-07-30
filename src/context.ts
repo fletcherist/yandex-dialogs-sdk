@@ -1,5 +1,4 @@
-import { compose } from 'ramda'
-import { reversedInterpolation, selectCommand } from './utils'
+import { reversedInterpolation, selectCommand, compose } from './utils'
 import Session from './session'
 import Scene from './scene'
 
@@ -91,7 +90,9 @@ export default class Context implements IContext {
     }
 
     public enterScene(scene: Scene): void {
-        if (!scene) throw new Error('Please provide scene you want to enter in')
+        if (!scene) {
+            throw new Error('Please provide scene you want to enter in')
+        }
         const matchedScene = this.scenes.find(candidateScene => candidateScene.name === scene.name)
         this.session.setData('currentScene', matchedScene.name)
     }
