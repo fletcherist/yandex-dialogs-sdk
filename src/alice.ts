@@ -1,24 +1,22 @@
-import express from 'express'
+import http from 'http'
+import fetch from 'node-fetch'
 import Commands from './commands'
 import { Sessions } from './sessions'
 
 import Scene from './scene'
 import Context from './context'
 import ImagesApi from './imagesApi'
-import fetch from 'node-fetch'
 
-import { selectCommand, selectSessionId, isFunction, delay, rejectsIn } from './utils'
-
+import { selectSessionId, isFunction, rejectsIn } from './utils'
 import { applyMiddlewares } from './middlewares'
-
 import stateMiddleware from './middlewares/stateMiddleware'
+import eventEmitter from './eventEmitter'
 
 import { IConfig, IAlice } from './types/alice'
 import { ICommand } from './types/command'
 import { IContext } from './types/context'
 import { WebhookResponse, WebhookRequest } from './types/webhook'
 import { EventInterface, EventEmitterInterface } from './types/eventEmitter'
-import eventEmitter from './eventEmitter'
 
 import {
     EVENT_MESSAGE_RECIEVED,
@@ -26,6 +24,8 @@ import {
     DEFAULT_TIMEOUT_CALLBACK_MESSAGE,
     EVENT_MESSAGE_PROXIED,
     EVENT_MESSAGE_PROXY_ERROR,
+    EVENT_SERVER_STARTED,
+    EVENT_SERVER_STOPPED,
 } from './constants'
 
 const DEFAULT_SESSIONS_LIMIT: number = 1000
@@ -35,9 +35,10 @@ export default class Alice implements IAlice {
     public scenes: Scene[]
 
     protected anyCallback: (ctx: IContext) => void
+    protected config: IConfig
+    protected commands: Commands
     private welcomeCallback: (ctx: IContext) => void
     private timeoutCallback: (ctx: IContext) => void
-    protected commands: Commands
     private middlewares: any[]
     private currentScene: Scene | null
     private sessions: Sessions
@@ -46,7 +47,6 @@ export default class Alice implements IAlice {
         close: () => void
     }
     private eventEmitter: EventEmitterInterface
-    protected config: IConfig
 
     constructor(config: IConfig = {}) {
         this.anyCallback = null
@@ -83,27 +83,16 @@ export default class Alice implements IAlice {
         this.middlewares.push(middleware)
     }
 
-    /**
-     * Set up the command
-     * @param {string | Array<string> | regex} name — Trigger for the command
-     * @param {Function} callback — Handler for the command
-     */
-    public command(name: ICommand, callback: (IContext) => void) {
-        this.commands.add(name, callback)
-    }
-
-    /**
-     * Стартовая команда на начало сессии
-     */
+    // Handler for every new session
     public welcome(callback: (IContext) => void): void {
         this.welcomeCallback = callback
     }
 
-    /**
-     * Если среди команд не нашлось той,
-     * которую запросил пользователь,
-     * вызывается этот колбек
-     */
+    public command(name: ICommand, callback: (IContext) => void) {
+        this.commands.add(name, callback)
+    }
+
+    // If no matches, this fn will be invoked
     public any(callback: (IContext) => void): void {
         this.anyCallback = callback
     }
@@ -169,7 +158,7 @@ export default class Alice implements IAlice {
                         req,
                         sendResponse,
                         context,
-                        'leave'
+                        'leave',
                     )
                     session.setData('currentScene', null)
                     return sceneResponse
@@ -177,7 +166,7 @@ export default class Alice implements IAlice {
                     const sceneResponse = await matchedScene.handleSceneRequest(
                         req,
                         sendResponse,
-                        context
+                        context,
                     )
                     if (sceneResponse) {
                         return sceneResponse
@@ -185,9 +174,7 @@ export default class Alice implements IAlice {
                 }
             }
         } else {
-            /**
-             * Looking for scene's activational phrases
-             */
+            // Looking for scene's activational phrases
             let matchedScene = null
             for (const scene of this.scenes) {
                 const result = await scene.isEnterCommand(context)
@@ -202,7 +189,7 @@ export default class Alice implements IAlice {
                     req,
                     sendResponse,
                     context,
-                    'enter'
+                    'enter',
                 )
                 if (sceneResponse) {
                     return sceneResponse
@@ -211,48 +198,35 @@ export default class Alice implements IAlice {
         }
 
         const requestedCommands = await this.commands.search(context)
-        /**
-         * Если новая сессия, то запускаем стартовую команду
-         */
         if (req.session.new && this.welcomeCallback) {
-            /**
-             * Patch context with middlewares
-             */
             if (this.welcomeCallback) {
                 return await this.welcomeCallback(context)
             }
         }
-        /**
-         * Команда нашлась в списке.
-         * Запускаем её обработчик.
-         */
+
+        // It's a match with registered command
         if (requestedCommands.length !== 0) {
             const requestedCommand: ICommand = requestedCommands[0]
             context.command = requestedCommand
             return await requestedCommand.callback(context)
         }
 
-        /**
-         * Такой команды не было зарегестрировано.
-         * Переходим в обработчик исключений
-         */
+        // No matches with commands
         if (!this.anyCallback) {
             throw new Error(
                 [
                     `alice.any(ctx => ctx.reply('404')) Method must be defined`,
                     'to catch anything that not matches with commands',
-                ].join('\n')
+                ].join('\n'),
             )
         }
         return await this.anyCallback(context)
     }
 
-    /**
-     * Same as handleRequestBody, but syntax shorter
-     */
+    // same as handleRequestBody, syntax sugar
     public async handleRequest(
         req: WebhookRequest,
-        sendResponse?: (res: WebhookResponse) => void
+        sendResponse?: (res: WebhookResponse) => void,
     ): Promise<any> {
         return await Promise.race([
             /* proxy request to dev server, if enabled */
@@ -267,49 +241,46 @@ export default class Alice implements IAlice {
                 this.timeoutCallback(new Context({ req, sendResponse }))
             })
     }
-    /**
-     * Метод создаёт сервер, который слушает указанный порт.
-     * Когда на указанный URL приходит POST запрос, управление
-     * передаётся в @handleRequestBody
-     *
-     * При получении ответа от @handleRequestBody, результат
-     * отправляется обратно.
-     */
+
     public async listen(webhookPath = '/', port = 80, callback?: () => void) {
         return new Promise(resolve => {
-            const app = express()
-            app.use(express.json())
-            app.post(webhookPath, async (req, res) => {
-                if (this.config.oAuthToken) {
-                    res.setHeader('Authorization', this.config.oAuthToken)
-                }
-                res.setHeader('Content-type', 'application/json')
-
-                let responseAlreadySent = false
-                const handleResponseCallback = (response: WebhookResponse) => {
-                    /* dont answer twice */
-                    if (responseAlreadySent) {
-                        return false
+            this.server = http
+                .createServer(async (request, response) => {
+                    const body = []
+                    request
+                        .on('data', chunk => {
+                            body.push(chunk)
+                        })
+                        .on('end', async () => {
+                            const requestData = Buffer.concat(body).toString()
+                            if (request.method === 'POST' && request.url === webhookPath) {
+                                const handleResponseCallback = (responseBody: WebhookResponse) => {
+                                    response.statusCode = 200
+                                    response.setHeader('Content-Type', 'application/json')
+                                    response.end(JSON.stringify(responseBody))
+                                }
+                                try {
+                                    const requestBody = JSON.parse(requestData)
+                                    return await this.handleRequest(
+                                        requestBody,
+                                        handleResponseCallback,
+                                    )
+                                } catch (error) {
+                                    throw new Error(error)
+                                }
+                            } else {
+                                response.statusCode = 400
+                                response.end()
+                            }
+                        })
+                })
+                .listen(port, () => {
+                    eventEmitter.dispatch(EVENT_SERVER_STARTED)
+                    if (isFunction(callback)) {
+                        return callback()
                     }
-                    res.send(response)
-                    responseAlreadySent = true
-                }
-                try {
-                    return await this.handleRequest(req.body, handleResponseCallback)
-                } catch (error) {
-                    throw new Error(error)
-                }
-            })
-            this.server = app.listen(port, () => {
-                // Resolves with callback function
-                if (isFunction(callback)) {
-                    return callback.call(this)
-                }
-
-                // If no callback specified, resolves as a promise.
-                return resolve()
-                // Resolves with promise if no callback set
-            })
+                    return resolve()
+                })
         })
     }
 
@@ -330,16 +301,17 @@ export default class Alice implements IAlice {
         return await this.imagesApi.getImages()
     }
 
-    public stopListening() {
+    public stopListening(): void {
         if (this.server && this.server.close) {
             this.server.close()
+            eventEmitter.dispatch(EVENT_SERVER_STOPPED)
         }
     }
 
     private async handleProxyRequest(
         request: WebhookRequest,
         devServerUrl: string,
-        sendResponse?: (res: WebhookResponse) => void
+        sendResponse?: (res: WebhookResponse) => void,
     ) {
         try {
             const res = await fetch(devServerUrl, {

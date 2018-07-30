@@ -15,7 +15,7 @@ const button = (params: IButton | string): IButton => {
         }
 
         return {
-            title: title,
+            title,
             tts,
             url,
             hide,
