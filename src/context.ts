@@ -144,10 +144,10 @@ export default class Context implements IContext {
     }
 
     private _createReply(replyMessage): WebhookResponse {
-        /*
-    * Если @replyMessage — string,
-    * то заворачиваем в стандартную форму.
-    */
+        /**
+         * Если @replyMessage — string,
+         * то заворачиваем в стандартную форму.
+         */
         if (typeof replyMessage === 'string') {
             replyMessage = this.replyBuilder
                 .text(replyMessage)
@@ -162,11 +162,13 @@ export default class Context implements IContext {
     }
 
     private _sendReply(replyMessage: WebhookResponse): any {
-        if (this._isReplied) return
+        if (this._isReplied) {
+            return
+        }
         this._isReplied = true
-        /*
-     * That fires when listening on port.
-     */
+        /**
+         * That fires when listening on port.
+         */
         if (typeof this.sendResponse === 'function') {
             eventEmitter.dispatch(EVENT_MESSAGE_SENT, {
                 data: replyMessage.response.text,

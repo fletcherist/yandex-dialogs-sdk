@@ -48,9 +48,9 @@ class Sessions {
         return false
     }
 
-    /*
-   * Remove all sessions
-   */
+    /**
+     * Remove all sessions
+     */
     public flush() {
         this.sessions = {}
     }

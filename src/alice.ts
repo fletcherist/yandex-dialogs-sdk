@@ -71,11 +71,11 @@ export default class Alice implements IAlice {
         eventEmitter.subscribe(event, callback)
     }
 
-    /*
-   * Attach alice middleware to the application
-   * @param {Function} middleware - function, that receives {context}
-   * and makes some modifications with it.
-   */
+    /**
+     * Attach alice middleware to the application
+     * @param {Function} middleware - function, that receives {context}
+     * and makes some modifications with it.
+     */
     public use(middleware: (IContext: IContext) => IContext): void {
         if (!isFunction(middleware)) {
             throw new Error('Any middleware could only be a function.')
@@ -83,37 +83,37 @@ export default class Alice implements IAlice {
         this.middlewares.push(middleware)
     }
 
-    /*
-   * Set up the command
-   * @param {string | Array<string> | regex} name — Trigger for the command
-   * @param {Function} callback — Handler for the command
-   */
+    /**
+     * Set up the command
+     * @param {string | Array<string> | regex} name — Trigger for the command
+     * @param {Function} callback — Handler for the command
+     */
     public command(name: ICommand, callback: (IContext) => void) {
         this.commands.add(name, callback)
     }
 
-    /*
-  * Стартовая команда на начало сессии
-  */
+    /**
+     * Стартовая команда на начало сессии
+     */
     public welcome(callback: (IContext) => void): void {
         this.welcomeCallback = callback
     }
 
-    /*
-   * Если среди команд не нашлось той,
-   * которую запросил пользователь,
-   * вызывается этот колбек
-   */
+    /**
+     * Если среди команд не нашлось той,
+     * которую запросил пользователь,
+     * вызывается этот колбек
+     */
     public any(callback: (IContext) => void): void {
         this.anyCallback = callback
     }
 
-    /*
-   * Match the request with action handler,
-   * compose and return a reply.
-   * @param {Object} req — JSON request from the client
-   * @param {Function} sendResponse — Express res function while listening on port.
-   */
+    /**
+     * Match the request with action handler,
+     * compose and return a reply.
+     * @param {Object} req — JSON request from the client
+     * @param {Function} sendResponse — Express res function while listening on port.
+     */
     public async handleRequestBody(req, sendResponse): Promise<any> {
         /* clear old sessions */
         if (this.sessions.length > (this.config.sessionsLimit || DEFAULT_SESSIONS_LIMIT)) {
@@ -124,17 +124,17 @@ export default class Alice implements IAlice {
         const sessionId = selectSessionId(req)
         const session = this.sessions.findOrCreate(sessionId)
 
-        /*
-     * Initializing context of the request
-     */
+        /**
+         * Initializing context of the request
+         */
         const ctxDefaultParams = {
             req,
             session,
             sendResponse: sendResponse || null,
-            /*
-      * if Alice is listening on express.js port, add this server instance
-      * to the context
-      */
+            /**
+             * if Alice is listening on express.js port, add this server instance
+             * to the context
+             */
             server: this.server || null,
             scenes: this.scenes,
             middlewares: this.middlewares,
@@ -159,10 +159,10 @@ export default class Alice implements IAlice {
                 return scene.name === session.getData('currentScene')
             })
 
-            /*
-       * Checking whether that's the leave scene
-       * activation trigger
-       */
+            /**
+             * Checking whether that's the leave scene
+             * activation trigger
+             */
             if (matchedScene) {
                 if (await matchedScene.isLeaveCommand(context)) {
                     const sceneResponse = await matchedScene.handleSceneRequest(
@@ -185,9 +185,9 @@ export default class Alice implements IAlice {
                 }
             }
         } else {
-            /*
-       * Looking for scene's activational phrases
-       */
+            /**
+             * Looking for scene's activational phrases
+             */
             let matchedScene = null
             for (const scene of this.scenes) {
                 const result = await scene.isEnterCommand(context)
@@ -211,31 +211,31 @@ export default class Alice implements IAlice {
         }
 
         const requestedCommands = await this.commands.search(context)
-        /*
-    * Если новая сессия, то запускаем стартовую команду
-    */
+        /**
+         * Если новая сессия, то запускаем стартовую команду
+         */
         if (req.session.new && this.welcomeCallback) {
-            /*
-       * Patch context with middlewares
-       */
+            /**
+             * Patch context with middlewares
+             */
             if (this.welcomeCallback) {
                 return await this.welcomeCallback(context)
             }
         }
-        /*
-     * Команда нашлась в списке.
-     * Запускаем её обработчик.
-     */
+        /**
+         * Команда нашлась в списке.
+         * Запускаем её обработчик.
+         */
         if (requestedCommands.length !== 0) {
             const requestedCommand: ICommand = requestedCommands[0]
             context.command = requestedCommand
             return await requestedCommand.callback(context)
         }
 
-        /*
-     * Такой команды не было зарегестрировано.
-     * Переходим в обработчик исключений
-     */
+        /**
+         * Такой команды не было зарегестрировано.
+         * Переходим в обработчик исключений
+         */
         if (!this.anyCallback) {
             throw new Error(
                 [
@@ -247,9 +247,9 @@ export default class Alice implements IAlice {
         return await this.anyCallback(context)
     }
 
-    /*
-   * Same as handleRequestBody, but syntax shorter
-   */
+    /**
+     * Same as handleRequestBody, but syntax shorter
+     */
     public async handleRequest(
         req: WebhookRequest,
         sendResponse?: (res: WebhookResponse) => void
@@ -267,15 +267,14 @@ export default class Alice implements IAlice {
                 this.timeoutCallback(new Context({ req, sendResponse }))
             })
     }
-    /*
-   * Метод создаёт сервер, который слушает указанный порт.
-
-   * Когда на указанный URL приходит POST запрос, управление
-   * передаётся в @handleRequestBody
-   *
-   * При получении ответа от @handleRequestBody, результат
-   * отправляется обратно.
-   */
+    /**
+     * Метод создаёт сервер, который слушает указанный порт.
+     * Когда на указанный URL приходит POST запрос, управление
+     * передаётся в @handleRequestBody
+     *
+     * При получении ответа от @handleRequestBody, результат
+     * отправляется обратно.
+     */
     public async listen(webhookPath = '/', port = 80, callback?: () => void) {
         return new Promise(resolve => {
             const app = express()

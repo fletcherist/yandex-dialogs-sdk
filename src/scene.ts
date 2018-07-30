@@ -33,9 +33,9 @@ export default class Scene extends Alice {
         /* enter, leave, etc */
     }
 
-    /*
-   * Trigger to activate the scene
-   */
+    /**
+     * Trigger to activate the scene
+     */
     public enter(name, callback) {
         if (!name) {
             throw new Error('Enter command name is not specified')
@@ -44,9 +44,9 @@ export default class Scene extends Alice {
         this.enterCommand.add(name, callback)
     }
 
-    /*
-   * Trigger to leave the scene
-   */
+    /**
+     * Trigger to leave the scene
+     */
     public leave(name, callback) {
         if (!name) {
             throw new Error('Leave command name is not specified')
@@ -109,4 +109,3 @@ export default class Scene extends Alice {
         return Promise.resolve()
     }
 }
-
