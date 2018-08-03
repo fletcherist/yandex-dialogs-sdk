@@ -1,58 +1,72 @@
-import { ALICE_API_URL } from './constants'
-import fetch from 'node-fetch'
+import fetch from 'node-fetch';
+import { ALICE_API_URL } from './constants';
+import {
+  IApiImageUploadResponse,
+  IApiImageItem,
+  IApiImageListResponse,
+} from './api/image';
 
-export function getHeaders({ oAuthToken }) {
-    return {
-        Authorization: `OAuth ${oAuthToken}`,
-        'Content-type': 'application/json',
-    }
+export interface IImagesApiConfig {
+  oAuthToken: string;
+  skillId: string;
 }
 
-export default class ImagesApi {
-    public skillId: string
-    public oAuthToken: string
-    constructor({ oAuthToken, skillId }) {
-        this.oAuthToken = oAuthToken
-        this.skillId = skillId
-    }
+interface IImagesApiRequestParams {
+  path: string;
+  method?: 'GET' | 'POST';
+  body?: Object;
+}
 
-    public async uploadImage(imageUrl: string) {
-        try {
-            this.checkProps()
-            const res = await fetch(`${ALICE_API_URL}/${this.skillId}/images`, {
-                method: 'POST',
-                headers: getHeaders({ oAuthToken: this.oAuthToken }),
-                body: JSON.stringify({
-                    url: imageUrl,
-                }),
-            })
-            const json = await res.json()
-            return json
-        } catch (error) {
-            return error
-        }
-    }
+export interface IImagesApi {
+  uploadImageByUrl(url: string): Promise<IApiImageItem>;
+  uploadImageFile(): Promise<IApiImageItem>;
+  getImages(): Promise<IApiImageItem[]>;
+}
 
-    public async getImages() {
-        this.checkProps()
-        try {
-            const res = await fetch(`${ALICE_API_URL}/${this.skillId}/images`, {
-                method: 'GET',
-                headers: getHeaders({ oAuthToken: this.oAuthToken }),
-            })
-            const json = await res.json()
-            return json
-        } catch (error) {
-            return error
-        }
-    }
+export class ImagesApi implements IImagesApi {
+  private readonly _skillId: string;
+  private readonly _oAuthToken: string;
 
-    private checkProps() {
-        if (!this.skillId) {
-            throw new Error('Please, provide {skillId} to alice constructor')
-        }
-        if (!this.oAuthToken) {
-            throw new Error('Please, provide {oAuthToken} to alice constructor')
-        }
-    }
+  constructor(params: IImagesApiConfig) {
+    this._skillId = params.oAuthToken;
+    this._oAuthToken = params.skillId;
+  }
+
+  public async uploadImageByUrl(url: string): Promise<IApiImageItem> {
+    const response = await this._makeRequest<IApiImageUploadResponse>({
+      path: 'images',
+      method: 'POST',
+      body: { url },
+    });
+    return response.image;
+  }
+
+  public async uploadImageFile(): Promise<IApiImageItem> {
+    throw new Error('Not implemented');
+  }
+
+  public async getImages(): Promise<IApiImageItem[]> {
+    const response = await this._makeRequest<IApiImageListResponse>({
+      path: 'images',
+      method: 'GET',
+    });
+    return response.images;
+  }
+
+  private async _makeRequest<TResult>(
+    params: IImagesApiRequestParams,
+  ): Promise<TResult> {
+    const url = `${ALICE_API_URL}/${this._skillId}/${params.path}`;
+    const method = params.method || 'GET';
+    const body = params.body ? JSON.stringify(params.body) : undefined;
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        Authorization: `OAuth ${this._oAuthToken}`,
+        'Content-type': 'application/json',
+      },
+      body: body,
+    });
+    return <TResult>await response.json();
+  }
 }
