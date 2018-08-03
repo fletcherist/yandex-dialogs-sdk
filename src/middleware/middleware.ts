@@ -15,4 +15,4 @@ export type Middleware<
 > = (
   context: TContextFrom,
   next: MiddlewareNext<TContextTo> | null,
-) => IMiddlewareResult | null | Promise<IMiddlewareResult | null>;
+) => IMiddlewareResult | Promise<IMiddlewareResult | null>;
