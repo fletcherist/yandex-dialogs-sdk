@@ -1,4 +1,4 @@
-import { WebhookRequest } from '../types/webhook'
+import { WebhookRequest } from '../yandex/response'
 export const generateRequest = (commandText, utteranceText?): WebhookRequest => ({
     meta: {
         client_id: 'Developer Console',
