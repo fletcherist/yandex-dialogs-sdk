@@ -1,9 +1,10 @@
-<a name="1.5.1"></a>
-## [1.5.1](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.8...v1.5.1) (2018-07-28)
+<a name="1.5.2"></a>
+## [1.5.2](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.8...v1.5.2) (2018-08-03)
 
 
 ### Bug Fixes
 
+* jsdoc & comments ([03a7e20](https://github.com/fletcherist/yandex-dialogs-sdk/commit/03a7e20))
 * logger middlewares ([b418657](https://github.com/fletcherist/yandex-dialogs-sdk/commit/b418657))
 * remove unnecessary code ([2106957](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2106957))
 
@@ -18,8 +19,12 @@
 * apply autofix ([13ceb68](https://github.com/fletcherist/yandex-dialogs-sdk/commit/13ceb68))
 * described two ways command resolve ([969bf06](https://github.com/fletcherist/yandex-dialogs-sdk/commit/969bf06))
 * implement autoformatting pre-hook ([d68dba2](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d68dba2))
+* Implement safe require test (for commonjs & typescript) ([60e2488](https://github.com/fletcherist/yandex-dialogs-sdk/commit/60e2488))
 * implement scene switcher ([542d778](https://github.com/fletcherist/yandex-dialogs-sdk/commit/542d778))
 * implement scene test ([0615599](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0615599))
+* remove redundant dev-dependencies & rename state middleware ([7d16620](https://github.com/fletcherist/yandex-dialogs-sdk/commit/7d16620))
+* remove redundant ramda ([cb2bb9d](https://github.com/fletcherist/yandex-dialogs-sdk/commit/cb2bb9d))
+* replace express server with native http server ([2cad4f2](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2cad4f2))
 
 
 
