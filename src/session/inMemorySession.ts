@@ -1,4 +1,4 @@
-import { ISession } from "./session";
+import { ISession } from './session';
 
 export class InMemorySession implements ISession {
   public readonly id: string;

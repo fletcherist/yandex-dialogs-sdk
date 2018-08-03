@@ -17,7 +17,7 @@
         "paths": {
             "*": ["node_modules/*"]
         },
-        "types": ["node", "jest", "express"],
+        "types": ["node", "jest"],
         "typeRoots": [
             "node_modules/@types"
         ]

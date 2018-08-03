@@ -1,5 +1,5 @@
-import { IApiRequest } from "./api/request";
+import { IApiRequest } from './api/request';
 
 export interface IContext {
-  readonly data: IApiRequest,
+  readonly data: IApiRequest;
 }

@@ -1,16 +1,14 @@
-import { IApiResponseItemsListCardHeader } from "../../api/response";
+import { IApiResponseItemsListCardHeader } from '../../api/response';
 
 export interface IItemsListCardHeaderReply {
   text: string;
 }
 
-export type ItemsListCardHeaderDeclaration =
-  IItemsListCardHeaderReply |
-  string;
+export type ItemsListCardHeaderDeclaration = IItemsListCardHeaderReply | string;
 
 export class ItemsListCardHeaderBuilder {
   public static createItemsListCardHeader(
-    declaration: ItemsListCardHeaderDeclaration
+    declaration: ItemsListCardHeaderDeclaration,
   ): IApiResponseItemsListCardHeader {
     if (typeof declaration === 'object') {
       return declaration;
@@ -24,7 +22,7 @@ export class ItemsListCardHeaderBuilder {
 
     throw new Error(
       'Items list card header declaration is not of proper type. ' +
-      'Could be only string or object.');
+        'Could be only string or object.',
+    );
   }
 }
-

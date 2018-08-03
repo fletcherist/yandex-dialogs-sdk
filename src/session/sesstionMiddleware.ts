@@ -1,14 +1,10 @@
-import {
-  Middleware,
-  IMiddlewareResult,
-} from '../middleware/middleware'
+import { Middleware, IMiddlewareResult } from '../middleware/middleware';
 import { ISessionStorage } from './session';
 import { IContext } from '../context';
 import { ISessionContext } from './sessionContext';
 
-
 export function sessionMiddleware(
-    storage: ISessionStorage
+  storage: ISessionStorage,
 ): Middleware<IContext, ISessionContext> {
   return async function(context, next): Promise<IMiddlewareResult | null> {
     const id = context.data.session.session_id;
@@ -19,5 +15,5 @@ export function sessionMiddleware(
     };
 
     return next ? next(sessionContext) : null;
-  }
+  };
 }

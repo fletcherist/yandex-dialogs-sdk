@@ -1,6 +1,10 @@
-import fetch from 'node-fetch'
-import { ALICE_API_URL } from './constants'
-import { IApiImageUploadResponse, IApiImageItem, IApiImageListResponse } from './api/image';
+import fetch from 'node-fetch';
+import { ALICE_API_URL } from './constants';
+import {
+  IApiImageUploadResponse,
+  IApiImageItem,
+  IApiImageListResponse,
+} from './api/image';
 
 export interface IImagesApiConfig {
   oAuthToken: string;
@@ -29,7 +33,7 @@ export class ImagesApi implements IImagesApi {
   }
 
   private async _makeRequest<TResult>(
-      params: IImagesApiRequestParams
+    params: IImagesApiRequestParams,
   ): Promise<TResult> {
     const url = `${ALICE_API_URL}/${this._skillId}/${params.path}`;
     const method = params.method || 'GET';
@@ -37,19 +41,19 @@ export class ImagesApi implements IImagesApi {
     const response = await fetch(url, {
       method: method,
       headers: {
-        'Authorization': `OAuth ${this._oAuthToken}`,
+        Authorization: `OAuth ${this._oAuthToken}`,
         'Content-type': 'application/json',
       },
       body: body,
     });
-    return <TResult>(await response.json());
+    return <TResult>await response.json();
   }
 
   public async uploadImageByUrl(url: string): Promise<IApiImageItem> {
     const response = await this._makeRequest<IApiImageUploadResponse>({
       path: 'images',
       method: 'POST',
-      body: {url},
+      body: { url },
     });
     return response.image;
   }

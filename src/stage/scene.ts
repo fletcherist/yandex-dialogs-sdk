@@ -3,24 +3,23 @@ import {
   CommandCallback,
   CommandDeclaration,
   CommandCallbackResult,
-} from '../command/command'
-import {
-  ICommandsGroup,
-  CommandsGroup,
-} from '../command/commandsGroup'
+} from '../command/command';
+import { ICommandsGroup, CommandsGroup } from '../command/commandsGroup';
 
 import { IStageContext } from './stageContext';
 
 export interface IScene<TContext extends IStageContext = IStageContext> {
   readonly name: string;
   command(
-      declaration: CommandDeclaration<TContext>,
-      callback: CommandCallback<TContext>);
+    declaration: CommandDeclaration<TContext>,
+    callback: CommandCallback<TContext>,
+  );
   any(callback: CommandCallback<TContext>);
-  run(context: TContext): Promise<CommandCallbackResult>
+  run(context: TContext): Promise<CommandCallbackResult>;
 }
 
-export class Scene<TContext extends IStageContext = IStageContext> implements IScene<TContext> {
+export class Scene<TContext extends IStageContext = IStageContext>
+  implements IScene<TContext> {
   public readonly name: string;
   private readonly _commands: ICommandsGroup<TContext>;
   private _anyCommand: Command<TContext>;
@@ -32,16 +31,13 @@ export class Scene<TContext extends IStageContext = IStageContext> implements IS
   }
 
   public command(
-      declaration: CommandDeclaration<TContext>,
-      callback: CommandCallback<TContext>
+    declaration: CommandDeclaration<TContext>,
+    callback: CommandCallback<TContext>,
   ): void {
-    this._commands.add(
-        Command.createCommand(declaration, callback));
+    this._commands.add(Command.createCommand(declaration, callback));
   }
 
-  public any(
-      callback: CommandCallback<TContext>
-  ): void {
+  public any(callback: CommandCallback<TContext>): void {
     this._anyCommand = new Command(Command.createMatcherAlways(), callback);
   }
 
@@ -59,4 +55,4 @@ export class Scene<TContext extends IStageContext = IStageContext> implements IS
   }
 }
 
-module.exports = Scene
+module.exports = Scene;

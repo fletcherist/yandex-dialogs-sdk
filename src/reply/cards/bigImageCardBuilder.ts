@@ -1,6 +1,6 @@
-import { IApiResponseBigImageCard } from "../../api/response";
-import { CardFooterDeclaration, CardFooterBuilder } from "./cardFooterBuilder";
-import { CardButtonDeclaration, CardButtonBuilder } from "./cardButtonBuilder";
+import { IApiResponseBigImageCard } from '../../api/response';
+import { CardFooterDeclaration, CardFooterBuilder } from './cardFooterBuilder';
+import { CardButtonDeclaration, CardButtonBuilder } from './cardButtonBuilder';
 
 export interface IBigImageCardReply {
   image_id: string;
@@ -10,13 +10,11 @@ export interface IBigImageCardReply {
   footer?: CardFooterDeclaration;
 }
 
-export type BigImageCardDeclaration =
-  IBigImageCardReply |
-  string;
+export type BigImageCardDeclaration = IBigImageCardReply | string;
 
 export class BigImageCardBuilder {
   public static createBigImageCard(
-    declaration: BigImageCardDeclaration
+    declaration: BigImageCardDeclaration,
   ): IApiResponseBigImageCard {
     if (typeof declaration === 'object') {
       const result: IApiResponseBigImageCard = {
@@ -43,6 +41,7 @@ export class BigImageCardBuilder {
 
     throw new Error(
       'Big image card declaration is not of proper type. ' +
-      'Could be only string or object.');
+        'Could be only string or object.',
+    );
   }
 }

@@ -1,4 +1,4 @@
-import { IApiResponseCardButton } from "../../api/response";
+import { IApiResponseCardButton } from '../../api/response';
 
 export interface ICardButtonReply {
   text: string;
@@ -6,13 +6,11 @@ export interface ICardButtonReply {
   payload?: Object;
 }
 
-export type CardButtonDeclaration =
-  ICardButtonReply |
-  string;
+export type CardButtonDeclaration = ICardButtonReply | string;
 
 export class CardButtonBuilder {
   public static createCardButton(
-    declaration: CardButtonDeclaration
+    declaration: CardButtonDeclaration,
   ): IApiResponseCardButton {
     if (typeof declaration === 'object') {
       return declaration;
@@ -21,13 +19,13 @@ export class CardButtonBuilder {
     if (typeof declaration === 'string') {
       return {
         text: declaration,
-        payload: {text: declaration},
+        payload: { text: declaration },
       };
     }
 
     throw new Error(
       'Card button declaration is not of proper type. ' +
-      'Could be only string or object.');
+        'Could be only string or object.',
+    );
   }
 }
-

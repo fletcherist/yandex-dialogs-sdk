@@ -1,6 +1,5 @@
-
-import { IApiResponseItemsListCardImage } from "../../api/response";
-import { CardButtonDeclaration, CardButtonBuilder } from "./cardButtonBuilder";
+import { IApiResponseItemsListCardImage } from '../../api/response';
+import { CardButtonDeclaration, CardButtonBuilder } from './cardButtonBuilder';
 
 export interface IItemsListCardImageReply {
   image_id: string;
@@ -9,13 +8,11 @@ export interface IItemsListCardImageReply {
   button?: CardButtonDeclaration;
 }
 
-export type ItemsListCardImageDeclaration =
-  IItemsListCardImageReply |
-  string;
+export type ItemsListCardImageDeclaration = IItemsListCardImageReply | string;
 
 export class ItemsListCardImageBuilder {
   public static createItemsListCardImage(
-    declaration: ItemsListCardImageDeclaration
+    declaration: ItemsListCardImageDeclaration,
   ): IApiResponseItemsListCardImage {
     if (typeof declaration === 'object') {
       const result: IApiResponseItemsListCardImage = {
@@ -37,7 +34,7 @@ export class ItemsListCardImageBuilder {
 
     throw new Error(
       'Items list card header declaration is not of proper type. ' +
-      'Could be only string or object.');
+        'Could be only string or object.',
+    );
   }
 }
-

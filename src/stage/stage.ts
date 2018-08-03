@@ -1,8 +1,8 @@
-import { IScene } from "./scene";
-import { Middleware, IMiddlewareResult } from "../middleware/middleware";
-import { ISessionContext } from "../session/sessionContext";
-import { IStageContext } from "./stageContext";
-import { StageСompere } from "./compere";
+import { IScene } from './scene';
+import { Middleware, IMiddlewareResult } from '../middleware/middleware';
+import { ISessionContext } from '../session/sessionContext';
+import { IStageContext } from './stageContext';
+import { StageСompere } from './compere';
 
 export interface IStage {
   addScene(scene: IScene): void;
@@ -42,25 +42,26 @@ export class Stage implements IStage {
       }
 
       const sceneName =
-          context.session.get(Stage.CURRENT_SCENE_SESSION_KEY) ||
-          Stage.DEFAULT_SCENE_NAME;
-      const scene =
-          this._scenes.has(sceneName) ? this._scenes.get(sceneName) :
-          this._scenes.has(Stage.DEFAULT_SCENE_NAME) ? this._scenes.get(sceneName) :
-          null;
+        context.session.get(Stage.CURRENT_SCENE_SESSION_KEY) ||
+        Stage.DEFAULT_SCENE_NAME;
+      const scene = this._scenes.has(sceneName)
+        ? this._scenes.get(sceneName)
+        : this._scenes.has(Stage.DEFAULT_SCENE_NAME)
+          ? this._scenes.get(sceneName)
+          : null;
       if (scene) {
         const stageContext: IStageContext = {
           ...context,
           compere: new StageСompere(context),
-        }
+        };
 
         const result = await scene.run(stageContext);
         return {
           responseBody: result,
-        }
+        };
       }
 
       return next ? next(context) : null;
-    }
+    };
   }
 }

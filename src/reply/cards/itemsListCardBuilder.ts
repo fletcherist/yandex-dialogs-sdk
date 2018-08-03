@@ -1,7 +1,13 @@
-import { IApiResponseItemsListCard } from "../../api/response";
-import { CardFooterDeclaration, CardFooterBuilder } from "./cardFooterBuilder";
-import { ItemsListCardHeaderDeclaration, ItemsListCardHeaderBuilder } from "./itemsListCardHeaderBuilder";
-import { ItemsListCardImageDeclaration, ItemsListCardImageBuilder } from "./itemsListCardImageBuilder";
+import { IApiResponseItemsListCard } from '../../api/response';
+import { CardFooterDeclaration, CardFooterBuilder } from './cardFooterBuilder';
+import {
+  ItemsListCardHeaderDeclaration,
+  ItemsListCardHeaderBuilder,
+} from './itemsListCardHeaderBuilder';
+import {
+  ItemsListCardImageDeclaration,
+  ItemsListCardImageBuilder,
+} from './itemsListCardImageBuilder';
 
 export interface IItemsListCardReply {
   header?: ItemsListCardHeaderDeclaration;
@@ -10,52 +16,56 @@ export interface IItemsListCardReply {
 }
 
 export type ItemsListCardDeclaration =
-  IItemsListCardReply |
-  ItemsListCardImageDeclaration[]
+  | IItemsListCardReply
+  | ItemsListCardImageDeclaration[];
 
 function isItemsListCard(
-  declaration: ItemsListCardDeclaration
+  declaration: ItemsListCardDeclaration,
 ): declaration is IItemsListCardReply {
   return (<IItemsListCardReply>declaration).items !== undefined;
 }
 
 function isItemsListImageArray(
-  declaration: ItemsListCardDeclaration
+  declaration: ItemsListCardDeclaration,
 ): declaration is ItemsListCardImageDeclaration[] {
   return Array.isArray(declaration);
 }
 
 export class ItemsListCardBuilder {
   public static createItemsListCard(
-    declaration: ItemsListCardDeclaration
+    declaration: ItemsListCardDeclaration,
   ): IApiResponseItemsListCard {
     if (isItemsListImageArray(declaration)) {
       return {
         type: 'ItemsList',
-        items: declaration.map(
-            item => ItemsListCardImageBuilder.createItemsListCardImage(item)),
-      }
+        items: declaration.map(item =>
+          ItemsListCardImageBuilder.createItemsListCardImage(item),
+        ),
+      };
     }
 
     if (isItemsListCard(declaration)) {
-      declaration
+      declaration;
       const result: IApiResponseItemsListCard = {
         type: 'ItemsList',
-        items: declaration.items.map(
-            item => ItemsListCardImageBuilder.createItemsListCardImage(item)),
+        items: declaration.items.map(item =>
+          ItemsListCardImageBuilder.createItemsListCardImage(item),
+        ),
       };
       if (declaration.footer) {
         result.footer = CardFooterBuilder.createCardFooter(declaration.footer);
       }
       if (declaration.header) {
         result.header = ItemsListCardHeaderBuilder.createItemsListCardHeader(
-            declaration.header);
+          declaration.header,
+        );
       }
       return result;
     }
 
     throw new Error(
       'Card button declaration is not of proper type. ' +
-      'Could be only array or object.');
+        'Could be only array or object.',
+    );
   }
 }

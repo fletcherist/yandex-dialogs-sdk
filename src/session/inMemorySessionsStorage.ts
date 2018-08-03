@@ -7,8 +7,8 @@ interface IInMemorySessionsStorageItem {
 }
 
 export interface IInMemorySessionsStorageParams {
-  ttl?: number,
-};
+  ttl?: number;
+}
 
 export class InMemorySessionsStorage implements ISessionStorage {
   private readonly _ttl: number;
@@ -40,7 +40,7 @@ export class InMemorySessionsStorage implements ISessionStorage {
     sessionItem = {
       creationTime: Date.now(),
       session: new InMemorySession(id),
-    }
+    };
     this._sessions.set(id, sessionItem);
     return sessionItem.session;
   }

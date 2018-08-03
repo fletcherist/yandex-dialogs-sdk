@@ -1,19 +1,17 @@
-import { IImagesApiConfig, IImagesApi, ImagesApi } from "./imagesApi";
-import { Middleware, IMiddlewareResult } from "./middleware/middleware";
-import { IApiRequest } from "./api/request";
-import { IContext } from "./context";
-import { IApiResponse } from "./api/response";
-import { ALICE_PROTOCOL_VERSION } from "./constants";
-import { Reply } from "./reply/reply";
+import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
+import { Middleware, IMiddlewareResult } from './middleware/middleware';
+import { IApiRequest } from './api/request';
+import { IContext } from './context';
+import { IApiResponse } from './api/response';
+import { ALICE_PROTOCOL_VERSION } from './constants';
+import { Reply } from './reply/reply';
 
-export interface IAliceConfig extends IImagesApiConfig {
-
-}
+export interface IAliceConfig extends IImagesApiConfig {}
 
 export interface IAlice {
   readonly imagesApi: IImagesApi;
   handleRequest(data: IApiRequest): Promise<IApiResponse>;
-  use(middleware: Middleware): void
+  use(middleware: Middleware): void;
 }
 
 export class Alice implements IAlice {
@@ -30,11 +28,11 @@ export class Alice implements IAlice {
   private _buildContext(request: IApiRequest): IContext {
     return {
       data: request,
-    }
+    };
   }
 
   private async _runMiddlewares(
-    context: IContext
+    context: IContext,
   ): Promise<IMiddlewareResult | null> {
     const middlewares = Array.from(this._middlewares);
     if (middlewares.length <= 0) {
@@ -42,11 +40,13 @@ export class Alice implements IAlice {
     }
 
     let index = middlewares.length - 1;
-    const next = async (context: IContext): Promise<IMiddlewareResult | null> => {
+    const next = async (
+      context: IContext,
+    ): Promise<IMiddlewareResult | null> => {
       const middleware = middlewares[index];
       index--;
       return middleware(context, index <= 0 ? null : next);
-    }
+    };
     return next(context);
   }
 
@@ -63,8 +63,11 @@ export class Alice implements IAlice {
     const result = await this._runMiddlewares(context);
     if (!result) {
       throw new Error(
-          'No response for request ' + context.data.request.command + ' ' +
-          'Try add command for it or add default command');
+        'No response for request ' +
+          context.data.request.command +
+          ' ' +
+          'Try add command for it or add default command',
+      );
     }
 
     return {
@@ -75,7 +78,7 @@ export class Alice implements IAlice {
         user_id: data.session.user_id,
       },
       version: ALICE_PROTOCOL_VERSION,
-    }
+    };
   }
 
   public use(middleware: Middleware): void {

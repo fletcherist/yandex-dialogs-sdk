@@ -1,9 +1,9 @@
-import { ISessionContext } from "../session/sessionContext";
-import { Stage } from "./stage";
+import { ISessionContext } from '../session/sessionContext';
+import { Stage } from './stage';
 
 export interface IStageСompere {
   enter(name: string): void;
-  leave(): void
+  leave(): void;
 }
 
 export class StageСompere implements IStageСompere {

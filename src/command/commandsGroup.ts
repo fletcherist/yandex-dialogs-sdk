@@ -1,8 +1,6 @@
-import {
-  ICommand
-} from './command'
+import { ICommand } from './command';
 
-import { IContext } from '../context'
+import { IContext } from '../context';
 
 export interface ICommandRelevance<TContext extends IContext = IContext> {
   readonly command: ICommand<TContext>;
@@ -11,21 +9,28 @@ export interface ICommandRelevance<TContext extends IContext = IContext> {
 
 export interface ICommandsGroup<TContext extends IContext = IContext> {
   add(command: ICommand): void;
-  getRelevance(context: TContext): Promise<ICommandRelevance<TContext>[] | null>;
+  getRelevance(
+    context: TContext,
+  ): Promise<ICommandRelevance<TContext>[] | null>;
   getMostRelevant(context: TContext): Promise<ICommand<TContext> | null>;
 }
 
-export class CommandsGroup<TContext extends IContext = IContext> implements ICommandsGroup<TContext> {
+export class CommandsGroup<TContext extends IContext = IContext>
+  implements ICommandsGroup<TContext> {
   private readonly _commands: ICommand<TContext>[];
 
   constructor() {
-    this._commands = []
+    this._commands = [];
   }
 
-  public async getRelevance(context: TContext): Promise<ICommandRelevance[] | null> {
-    return Promise.all(this._commands.map(async command => {
-      return {command, relevance: await command.getRelevance(context)}
-    }));
+  public async getRelevance(
+    context: TContext,
+  ): Promise<ICommandRelevance[] | null> {
+    return Promise.all(
+      this._commands.map(async command => {
+        return { command, relevance: await command.getRelevance(context) };
+      }),
+    );
   }
 
   async getMostRelevant(context: TContext): Promise<ICommand<TContext> | null> {
@@ -35,8 +40,9 @@ export class CommandsGroup<TContext extends IContext = IContext> implements ICom
     }
 
     const mostRelevant = relevances.reduce<ICommandRelevance<TContext>>(
-      (last, current) => current.relevance > last.relevance ? current : last,
-      relevances[0]);
+      (last, current) => (current.relevance > last.relevance ? current : last),
+      relevances[0],
+    );
     return mostRelevant.relevance > 0 ? mostRelevant.command : null;
   }
 
