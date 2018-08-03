@@ -22,7 +22,7 @@ export class Scene<TContext extends IStageContext = IStageContext>
   implements IScene<TContext> {
   public readonly name: string;
   private readonly _commands: ICommandsGroup<TContext>;
-  private _anyCommand: Command<TContext>;
+  private _anyCommand: Command<TContext> | null;
 
   constructor(name: string) {
     this.name = name;
@@ -41,7 +41,7 @@ export class Scene<TContext extends IStageContext = IStageContext>
     this._anyCommand = new Command(Command.createMatcherAlways(), callback);
   }
 
-  async run(context: TContext): Promise<CommandCallbackResult> {
+  private async run(context: TContext): Promise<CommandCallbackResult> {
     const command = await this._commands.getMostRelevant(context);
     if (!command) {
       return command.run(context);

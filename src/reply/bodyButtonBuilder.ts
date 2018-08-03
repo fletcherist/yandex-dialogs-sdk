@@ -3,7 +3,7 @@ import { IApiResponseBodyButton } from '../api/response';
 export interface IBodyButtonReply {
   title: string;
   url?: string;
-  payload?: Object;
+  payload?: object;
   hide?: boolean;
 }
 

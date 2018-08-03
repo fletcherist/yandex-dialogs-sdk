@@ -13,11 +13,11 @@ export class StageСompere implements IStageСompere {
     this._context = context;
   }
 
-  enter(name: string): void {
+  public enter(name: string): void {
     this._context.session.set(Stage.CURRENT_SCENE_SESSION_KEY, name);
   }
 
-  leave(): void {
+  public leave(): void {
     this._context.session.delete(Stage.CURRENT_SCENE_SESSION_KEY);
   }
 }

@@ -32,23 +32,6 @@ export class ImagesApi implements IImagesApi {
     this._oAuthToken = params.skillId;
   }
 
-  private async _makeRequest<TResult>(
-    params: IImagesApiRequestParams,
-  ): Promise<TResult> {
-    const url = `${ALICE_API_URL}/${this._skillId}/${params.path}`;
-    const method = params.method || 'GET';
-    const body = params.body ? JSON.stringify(params.body) : undefined;
-    const response = await fetch(url, {
-      method: method,
-      headers: {
-        Authorization: `OAuth ${this._oAuthToken}`,
-        'Content-type': 'application/json',
-      },
-      body: body,
-    });
-    return <TResult>await response.json();
-  }
-
   public async uploadImageByUrl(url: string): Promise<IApiImageItem> {
     const response = await this._makeRequest<IApiImageUploadResponse>({
       path: 'images',
@@ -68,5 +51,22 @@ export class ImagesApi implements IImagesApi {
       method: 'GET',
     });
     return response.images;
+  }
+
+  private async _makeRequest<TResult>(
+    params: IImagesApiRequestParams,
+  ): Promise<TResult> {
+    const url = `${ALICE_API_URL}/${this._skillId}/${params.path}`;
+    const method = params.method || 'GET';
+    const body = params.body ? JSON.stringify(params.body) : undefined;
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        Authorization: `OAuth ${this._oAuthToken}`,
+        'Content-type': 'application/json',
+      },
+      body: body,
+    });
+    return <TResult>await response.json();
   }
 }

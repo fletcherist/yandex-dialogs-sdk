@@ -1,4 +1,3 @@
-
 export interface IApiResponseCardButton {
   text: string;
   url?: string;
@@ -44,8 +43,8 @@ export interface IApiResponseItemsListCard extends IApiResponseCardBase {
 }
 
 export type IApiResponseCard =
-  IApiResponseBigImageCard |
-  IApiResponseItemsListCard;
+  | IApiResponseBigImageCard
+  | IApiResponseItemsListCard;
 
 export interface IApiResponseBodyButton {
   title: string;
@@ -60,7 +59,7 @@ export interface IApiResponseBody {
   card?: IApiResponseCard;
   buttons?: IApiResponseBodyButton[];
   end_session?: boolean;
-};
+}
 
 export interface IApiResponseSession {
   message_id: number;

@@ -14,7 +14,7 @@ export interface IApiRequesBody {
   original_utterance: string;
   type: ApiRequestBodyType;
   markup?: {
-      dangerous_context?: true;
+    dangerous_context?: true;
   };
   payload?: object;
 }
@@ -33,4 +33,3 @@ export interface IApiRequest {
   session: IApiRequesSession;
   version: string;
 }
-

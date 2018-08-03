@@ -22,7 +22,7 @@ export type ItemsListCardDeclaration =
 function isItemsListCard(
   declaration: ItemsListCardDeclaration,
 ): declaration is IItemsListCardReply {
-  return (<IItemsListCardReply>declaration).items !== undefined;
+  return (declaration as IItemsListCardReply).items !== undefined;
 }
 
 function isItemsListImageArray(
@@ -45,7 +45,6 @@ export class ItemsListCardBuilder {
     }
 
     if (isItemsListCard(declaration)) {
-      declaration;
       const result: IApiResponseItemsListCard = {
         type: 'ItemsList',
         items: declaration.items.map(item =>

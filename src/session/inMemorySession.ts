@@ -9,19 +9,19 @@ export class InMemorySession implements ISession {
     this._data = new Map<string, any>();
   }
 
-  has(key: string): boolean {
+  public has(key: string): boolean {
     return this._data.has(key);
   }
 
-  delete(key: string): void {
+  public delete(key: string): void {
     this._data.delete(key);
   }
 
-  get<TValue>(key: string): TValue {
+  public get<TValue>(key: string): TValue {
     return this._data.get(key);
   }
 
-  set<TValue>(key: string, value: TValue): void {
+  public set<TValue>(key: string, value: TValue): void {
     this._data.set(key, value);
   }
 }

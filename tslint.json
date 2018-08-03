@@ -7,9 +7,13 @@
 		"no-var-requires": false,
 		"object-literal-sort-keys": false,
 		"ordered-imports": false,
-		"semicolon": [true, "never"],
+		"semicolon": [true, "always"],
 		"quotemark": [true, "single"],
-		"indent": [true, "spaces", 2]
+		"indent": [true, "spaces", 2],
+		"variable-name": false,
+		"arrow-parens": false,
+		"object-literal-shorthand": false,
+		"only-arrow-functions": false,
 	},
 	"rulesDirectory": []
 }

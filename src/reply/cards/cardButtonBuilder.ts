@@ -3,7 +3,7 @@ import { IApiResponseCardButton } from '../../api/response';
 export interface ICardButtonReply {
   text: string;
   url?: string;
-  payload?: Object;
+  payload?: object;
 }
 
 export type CardButtonDeclaration = ICardButtonReply | string;
