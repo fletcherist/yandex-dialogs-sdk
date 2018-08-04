@@ -1,6 +1,7 @@
 import * as http from 'http';
 import _debug from 'debug';
 import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
+import { WebhookServer, IWebhookServer } from './server/webhookServer';
 import { Middleware, IMiddlewareResult } from './middleware/middleware';
 import { IApiRequest } from './api/request';
 import { IContext } from './context';
@@ -18,20 +19,18 @@ export interface IAlice {
   readonly imagesApi: IImagesApi;
   handleRequest(data: IApiRequest): Promise<IApiResponse>;
   use(middleware: Middleware): void;
-  listen(port: number, webhookUrl: string): http.Server;
+  listen(port: number, webhookUrl: string, options: object): IWebhookServer;
 }
 
 export class Alice implements IAlice {
   private readonly _config: IAliceConfig;
   private readonly _middlewares: Middleware[];
   private readonly _imagesApi: IImagesApi;
-  private _server: http.Server | null;
 
   constructor(config: IAliceConfig = {}) {
     this._config = config;
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
-    this._server = null;
   }
 
   private _buildContext(request: IApiRequest): IContext {
@@ -90,30 +89,19 @@ export class Alice implements IAlice {
     };
   }
 
-  public listen(port: number = 80, webhookUrl: string = '/'): http.Server {
-    debug(`create server on: ${port}, ${webhookUrl}`);
-    this._server = http.createServer(
-      async (request: http.ServerRequest, response: http.ServerResponse) => {
-        const body: Array<string | Buffer> = [];
-        request
-          .on('data', chunk => {
-            body.push(chunk);
-          })
-          .on('end', async () => {
-            const requestData = Buffer.from(body).toString();
-            if (request.method !== 'POST' || request.url !== webhookUrl) {
-              response.statusCode = 400;
-              return response.end();
-            }
-            const requestBody = JSON.parse(requestData);
-            const responseBody = await this.handleRequest(requestBody);
-            response.statusCode = 200;
-            response.setHeader('Content-Type', 'application/json');
-            response.end(JSON.stringify(responseBody));
-          });
-      },
-    );
-    return this._server;
+  public listen(
+    port: number = 80,
+    webhookUrl: string = '/',
+    options: object = {},
+  ): WebhookServer {
+    const server = new WebhookServer({
+      port: port,
+      webhookUrl: webhookUrl,
+      options: options,
+      handleRequest: this.handleRequest,
+    });
+    server.start();
+    return server;
   }
 
   public use(middleware: Middleware): void {
