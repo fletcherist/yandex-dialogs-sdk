@@ -9,16 +9,6 @@ export {
   CommandMatcher,
 } from './command/command';
 
-import { Alice } from './alice';
-/**
- * For compatibility with commonjs
- * @example const Alice = require('yandex-dialogs-sdk')
- */
-module.exports = Alice;
-exports = module.exports;
-
-export default Alice;
-
 export { Reply } from './reply/reply';
 
 export { InMemorySession } from './session/inMemorySession';

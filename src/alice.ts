@@ -1,14 +1,10 @@
-import * as http from 'http';
-import _debug from 'debug';
 import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
 import { WebhookServer, IWebhookServer } from './server/webhookServer';
 import { Middleware, IMiddlewareResult } from './middleware/middleware';
 import { IApiRequest } from './api/request';
 import { IContext } from './context';
 import { IApiResponse } from './api/response';
-import { ALICE_PROTOCOL_VERSION, LIBRARY_NAME } from './constants';
-
-const debug = _debug(LIBRARY_NAME);
+import { ALICE_PROTOCOL_VERSION } from './constants';
 
 export interface IAliceConfig extends IImagesApiConfig {
   oAuthToken?: string;
