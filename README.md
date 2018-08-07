@@ -1,6 +1,8 @@
 # yandex-dialogs-sdk
 [![npm version](https://badge.fury.io/js/yandex-dialogs-sdk.svg)](https://badge.fury.io/js/yandex-dialogs-sdk)
 
+This is **unofficial** client, driven 100% by *open-source* community. Be careful, it's **not** a *YANDEX LLC* product,,
+
 Создавать навыки для Алисы — это очень просто.
 
 **[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)** — телеграм-чатик, где ответят на любой ваш вопрос по поводу **SDK**
