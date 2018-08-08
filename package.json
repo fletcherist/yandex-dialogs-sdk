@@ -63,7 +63,7 @@
     "prettier": "^1.13.7",
     "ts-jest": "^23.0.0",
     "tslint": "^5.10.0",
-    "typescript": "^2.9.2",
+    "typescript": "^3.0.1",
     "typescript-eslint-parser": "^16.0.1"
   }
 }
