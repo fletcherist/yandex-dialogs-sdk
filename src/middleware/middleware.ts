@@ -1,9 +1,9 @@
 import { IContext } from '../context';
 import { IApiResponseBody } from '../api/response';
 
-export type IMiddlewareResult = {
+export interface IMiddlewareResult {
   responseBody: IApiResponseBody;
-};
+}
 
 export type MiddlewareNext<TContext extends IContext = IContext> = (
   context: TContext,

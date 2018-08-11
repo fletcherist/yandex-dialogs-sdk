@@ -1,14 +1,13 @@
 import { IContext } from '../context';
 import { IApiResponseBody } from '../api/response';
 
-// Let it be void for now, but this type can be changed in future.
 export type CommandCallbackResult = IApiResponseBody;
 export type CommandCallback<TContext extends IContext = IContext> =
   | ((context: TContext) => CommandCallbackResult)
   | ((context: TContext) => Promise<CommandCallbackResult>);
 export type CommandMatcher<TContext extends IContext = IContext> =
-  | ((ctx: TContext) => number)
-  | ((ctx: TContext) => Promise<number>);
+  | ((ctx: TContext) => boolean | number)
+  | ((ctx: TContext) => Promise<boolean | number>);
 export type CommandDeclaration<TContext extends IContext = IContext> =
   | CommandMatcher<TContext>
   | string[]

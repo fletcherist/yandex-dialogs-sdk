@@ -26,7 +26,7 @@ export { InMemorySession } from './session/inMemorySession';
 export { InMemorySessionsStorage } from './session/inMemorySessionsStorage';
 export { ISession, ISessionStorage } from './session/session';
 export { ISessionContext } from './session/sessionContext';
-export { sessionMiddleware } from './session/sesstionMiddleware';
+export { sessionMiddleware } from './session/sessionMiddleware';
 
 export { IStageСompere } from './stage/compere';
 export { IScene, Scene } from './stage/scene';

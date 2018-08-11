@@ -21,24 +21,26 @@ export class Stage implements IStage {
     this._scenes = new Map<string, IScene>();
   }
 
-  addScene(scene: IScene): void {
+  public addScene(scene: IScene): void {
     if (this._scenes.has(scene.name)) {
       throw new Error(`Duplicate scene name ${scene.name}`);
     }
     this._scenes.set(scene.name, scene);
   }
 
-  removeScene(name: string): void {
+  public removeScene(name: string): void {
     if (!this._scenes.has(name)) {
       throw new Error(`No scene with name ${name}`);
     }
     this._scenes.delete(name);
   }
 
-  getMiddleware(): Middleware<ISessionContext> {
+  public getMiddleware(): Middleware<ISessionContext> {
     return async (context, next): Promise<IMiddlewareResult> => {
       if (!context.session) {
-        throw new Error('You have to add some session middlware to use scenes');
+        throw new Error(
+          'You have to add some session middelware to use scenes',
+        );
       }
 
       const sceneName =

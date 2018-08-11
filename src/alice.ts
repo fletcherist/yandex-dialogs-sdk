@@ -5,6 +5,11 @@ import { IApiRequest } from './api/request';
 import { IContext } from './context';
 import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
+import { Stage, IStage } from './stage/stage';
+import { Scene, IScene } from './stage/scene';
+import { CommandCallback, CommandDeclaration } from './command/command';
+import { StageСompere } from './stage/compere';
+import debug from './debug';
 
 export interface IAliceConfig extends IImagesApiConfig {}
 
@@ -19,11 +24,17 @@ export class Alice implements IAlice {
   private readonly _config: IAliceConfig;
   private readonly _middlewares: Middleware[];
   private readonly _imagesApi: IImagesApi;
+  private _mainStage: IStage;
+  private _mainScene: IScene;
 
   constructor(config: IAliceConfig = {}) {
     this._config = config;
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
+    this._mainStage = new Stage();
+    this._mainScene = new Scene('main');
+    this._mainStage.addScene(this._mainScene);
+    this.use(this._mainStage.getMiddleware());
   }
 
   private _buildContext(request: IApiRequest): IContext {
@@ -59,7 +70,7 @@ export class Alice implements IAlice {
     if (data.version !== ALICE_PROTOCOL_VERSION) {
       throw new Error('Unknown protocol version');
     }
-
+    debug('>> ', data.request.command);
     const context = this._buildContext(data);
     const result = await this._runMiddlewares(context);
     if (!result) {
@@ -99,5 +110,17 @@ export class Alice implements IAlice {
 
   public use(middleware: Middleware): void {
     this._middlewares.push(middleware);
+  }
+
+  public command(
+    declaration: CommandDeclaration<IContext>,
+    callback: CommandCallback<IContext>,
+  ): void {
+    this._mainScene.command(declaration, callback);
+  }
+
+  public any(callback: CommandCallback<IContext>): void {
+    this._mainScene.any(callback);
+    // this._anyCommand = new Command(Command.createMatcherAlways(), callback);
   }
 }
