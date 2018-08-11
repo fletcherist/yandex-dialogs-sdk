@@ -6,10 +6,7 @@ import { IContext } from './context';
 import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 
-export interface IAliceConfig extends IImagesApiConfig {
-  oAuthToken?: string;
-  skillId?: string;
-}
+export interface IAliceConfig extends IImagesApiConfig {}
 
 export interface IAlice {
   readonly imagesApi: IImagesApi;

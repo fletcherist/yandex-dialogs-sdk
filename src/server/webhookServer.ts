@@ -3,13 +3,13 @@ import debug from '../debug';
 import { IApiRequest } from '../api/request';
 import { IApiResponse } from '../api/response';
 
-type handleAliceRequestType = (request: IApiRequest) => Promise<IApiResponse>;
+type HandleAliceRequestType = (request: IApiRequest) => Promise<IApiResponse>;
 
 export interface IWebhookServerConfig {
   port: number;
   webhookUrl: string;
   options: object;
-  handleRequest: handleAliceRequestType;
+  handleRequest: HandleAliceRequestType;
 }
 export interface IWebhookServer {
   start(): void;
@@ -21,7 +21,7 @@ export class WebhookServer {
   private port: number;
   private webhookUrl: string;
   private _isStarted: boolean;
-  private _handleAliceRequest: handleAliceRequestType;
+  private _handleAliceRequest: HandleAliceRequestType;
 
   constructor(config: IWebhookServerConfig) {
     this.port = config.port;
