@@ -1,7 +1,7 @@
 export interface IApiResponseCardButton {
   text: string;
   url?: string;
-  payload?: Object;
+  payload?: object;
 }
 
 export interface IApiResponseCardFooter {
@@ -49,7 +49,7 @@ export type IApiResponseCard =
 export interface IApiResponseBodyButton {
   title: string;
   url?: string;
-  payload?: Object;
+  payload?: object;
   hide?: boolean;
 }
 

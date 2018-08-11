@@ -7,14 +7,14 @@ import {
 } from './api/image';
 
 export interface IImagesApiConfig {
-  oAuthToken: string;
-  skillId: string;
+  oAuthToken?: string;
+  skillId?: string;
 }
 
 interface IImagesApiRequestParams {
   path: string;
   method?: 'GET' | 'POST';
-  body?: Object;
+  body?: object;
 }
 
 export interface IImagesApi {

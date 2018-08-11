@@ -14,6 +14,7 @@
 		"arrow-parens": false,
 		"object-literal-shorthand": false,
 		"only-arrow-functions": false,
+		"member-ordering": false
 	},
 	"rulesDirectory": []
 }

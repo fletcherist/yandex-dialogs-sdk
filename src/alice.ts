@@ -1,10 +1,10 @@
 import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
+import { WebhookServer, IWebhookServer } from './server/webhookServer';
 import { Middleware, IMiddlewareResult } from './middleware/middleware';
 import { IApiRequest } from './api/request';
 import { IContext } from './context';
 import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
-import { Reply } from './reply/reply';
 
 export interface IAliceConfig extends IImagesApiConfig {}
 
@@ -12,6 +12,7 @@ export interface IAlice {
   readonly imagesApi: IImagesApi;
   handleRequest(data: IApiRequest): Promise<IApiResponse>;
   use(middleware: Middleware): void;
+  listen(port: number, webhookUrl: string, options: object): IWebhookServer;
 }
 
 export class Alice implements IAlice {
@@ -19,7 +20,7 @@ export class Alice implements IAlice {
   private readonly _middlewares: Middleware[];
   private readonly _imagesApi: IImagesApi;
 
-  constructor(config: IAliceConfig) {
+  constructor(config: IAliceConfig = {}) {
     this._config = config;
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
@@ -35,7 +36,7 @@ export class Alice implements IAlice {
     context: IContext,
   ): Promise<IMiddlewareResult | null> {
     const middlewares = Array.from(this._middlewares);
-    if (middlewares.length <= 0) {
+    if (middlewares.length === 0) {
       return null;
     }
 
@@ -79,6 +80,21 @@ export class Alice implements IAlice {
       },
       version: ALICE_PROTOCOL_VERSION,
     };
+  }
+
+  public listen(
+    port: number = 80,
+    webhookUrl: string = '/',
+    options: object = {},
+  ): WebhookServer {
+    const server = new WebhookServer({
+      port: port,
+      webhookUrl: webhookUrl,
+      options: options,
+      handleRequest: this.handleRequest,
+    });
+    server.start();
+    return server;
   }
 
   public use(middleware: Middleware): void {
