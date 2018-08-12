@@ -18,6 +18,9 @@ export class StageСompere implements IStageСompere {
   }
 
   public leave(): void {
-    this._context.session.delete(Stage.CURRENT_SCENE_SESSION_KEY);
+    this._context.session.set(
+      Stage.CURRENT_SCENE_SESSION_KEY,
+      Stage.DEFAULT_SCENE_NAME,
+    );
   }
 }
