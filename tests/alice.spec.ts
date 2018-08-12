@@ -1,4 +1,4 @@
-import { Alice } from '../src/';
+import { Alice, Scene } from '../dist/';
 import { request, getRandomText } from './testUtils';
 
 describe('alice module', () => {
@@ -45,5 +45,9 @@ describe('alice module', () => {
     alice.command(ctx => true, ctx => ({ text: randomText }));
     const data = await alice.handleRequest(request('foo bar'));
     expect(data.response.text).toBe(randomText);
+  });
+
+  test('single scene', async () => {
+    const myScene = new Scene('random-name');
   });
 });
