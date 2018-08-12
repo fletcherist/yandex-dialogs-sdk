@@ -13,7 +13,6 @@ export function sessionMiddleware(
       ...context,
       session,
     };
-
     return next ? next(sessionContext) : null;
   };
 }

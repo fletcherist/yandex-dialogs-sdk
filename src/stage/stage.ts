@@ -12,7 +12,7 @@ export interface IStage {
 }
 
 export class Stage implements IStage {
-  public static readonly DEFAULT_SCENE_NAME = null;
+  public static readonly DEFAULT_SCENE_NAME = '__mainScene';
   public static readonly CURRENT_SCENE_SESSION_KEY = '__currentScene';
 
   private readonly _scenes: Map<string, IScene>;
@@ -42,7 +42,6 @@ export class Stage implements IStage {
           'You have to add some session middelware to use scenes',
         );
       }
-
       const sceneName =
         context.session.get(Stage.CURRENT_SCENE_SESSION_KEY) ||
         Stage.DEFAULT_SCENE_NAME;
@@ -56,7 +55,6 @@ export class Stage implements IStage {
           ...context,
           compere: new StageСompere(context),
         };
-
         const result = await scene.run(stageContext);
         return {
           responseBody: result,

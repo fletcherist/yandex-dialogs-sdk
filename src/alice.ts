@@ -5,11 +5,13 @@ import { IApiRequest } from './api/request';
 import { IContext } from './context';
 import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
-import { Stage, IStage } from './stage/stage';
-import { Scene, IScene } from './stage/scene';
 import { CommandCallback, CommandDeclaration } from './command/command';
-import { StageСompere } from './stage/compere';
+import { InMemorySessionStorage } from './session/inMemorySessionStorage';
+import { sessionMiddleware } from './session/sessionMiddleware';
 import debug from './debug';
+
+import { MainStage } from './stage/mainScene';
+import { ISessionStorage } from './session/session';
 
 export interface IAliceConfig extends IImagesApiConfig {}
 
@@ -24,23 +26,31 @@ export class Alice implements IAlice {
   private readonly _config: IAliceConfig;
   private readonly _middlewares: Middleware[];
   private readonly _imagesApi: IImagesApi;
-  private _mainStage: IStage;
-  private _mainScene: IScene;
+  private readonly _mainStage: MainStage;
 
   constructor(config: IAliceConfig = {}) {
     this._config = config;
+
+    this.handleRequest = this.handleRequest.bind(this);
+
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
-    this._mainStage = new Stage();
-    this._mainScene = new Scene('main');
-    this._mainStage.addScene(this._mainScene);
-    this.use(this._mainStage.getMiddleware());
+
+    this._mainStage = new MainStage();
+    this._initMainStage();
   }
 
   private _buildContext(request: IApiRequest): IContext {
     return {
       data: request,
     };
+  }
+
+  private _initMainStage(
+    sessionsStorage: ISessionStorage = new InMemorySessionStorage(),
+  ): void {
+    this.use(this._mainStage.middleware);
+    this.use(sessionMiddleware(sessionsStorage));
   }
 
   private async _runMiddlewares(
@@ -57,7 +67,7 @@ export class Alice implements IAlice {
     ): Promise<IMiddlewareResult | null> => {
       const middleware = middlewares[index];
       index--;
-      return middleware(context, index <= 0 ? null : next);
+      return middleware(context, index < 0 ? null : next);
     };
     return next(context);
   }
@@ -73,12 +83,12 @@ export class Alice implements IAlice {
     debug('>> ', data.request.command);
     const context = this._buildContext(data);
     const result = await this._runMiddlewares(context);
+    debug('result', result);
     if (!result) {
       throw new Error(
         'No response for request ' +
-          context.data.request.command +
-          ' ' +
-          'Try add command for it or add default command',
+          `"${context.data.request.command}"` +
+          '. Try add command for it or add default command.',
       );
     }
 
@@ -116,11 +126,10 @@ export class Alice implements IAlice {
     declaration: CommandDeclaration<IContext>,
     callback: CommandCallback<IContext>,
   ): void {
-    this._mainScene.command(declaration, callback);
+    this._mainStage.scene.command(declaration, callback);
   }
 
   public any(callback: CommandCallback<IContext>): void {
-    this._mainScene.any(callback);
-    // this._anyCommand = new Command(Command.createMatcherAlways(), callback);
+    this._mainStage.scene.any(callback);
   }
 }

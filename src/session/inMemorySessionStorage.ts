@@ -10,7 +10,7 @@ export interface IInMemorySessionsStorageParams {
   ttl?: number;
 }
 
-export class InMemorySessionsStorage implements ISessionStorage {
+export class InMemorySessionStorage implements ISessionStorage {
   private readonly _ttl: number;
   private readonly _sessions: Map<string, IInMemorySessionsStorageItem>;
 

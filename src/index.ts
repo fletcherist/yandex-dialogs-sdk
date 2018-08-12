@@ -23,7 +23,7 @@ export default Alice;
 export { Reply } from './reply/reply';
 
 export { InMemorySession } from './session/inMemorySession';
-export { InMemorySessionsStorage } from './session/inMemorySessionsStorage';
+export { InMemorySessionStorage } from './session/inMemorySessionStorage';
 export { ISession, ISessionStorage } from './session/session';
 export { ISessionContext } from './session/sessionContext';
 export { sessionMiddleware } from './session/sessionMiddleware';

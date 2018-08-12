@@ -43,7 +43,7 @@ export class WebhookServer {
     this._handleAliceRequest = config.handleRequest;
     this._isStarted = false;
 
-    debug(`server is listening: ${this.port}, ${this.webhookUrl}`);
+    debug(`starting webhook server`);
     this.server = http.createServer((request, response) =>
       this._handleRequest(request, response),
     );
