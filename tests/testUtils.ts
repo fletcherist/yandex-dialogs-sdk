@@ -1,5 +1,5 @@
-// import { WebhookRequest } from '../yandex/response';
-export const request = (commandText, utteranceText?): WebhookRequest => ({
+import { IApiRequest } from '../src/api/request';
+export const request = (commandText, utteranceText?): IApiRequest => ({
   meta: {
     client_id: 'Developer Console',
     locale: 'ru-RU',

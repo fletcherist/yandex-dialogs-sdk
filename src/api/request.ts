@@ -4,15 +4,10 @@ export interface IApiRequestMeta {
   client_id: string;
 }
 
-enum ApiRequestBodyType {
-  SimpleUtterance = 'SimpleUtterance',
-  ButtonPressed = 'ButtonPressed',
-}
-
-export interface IApiRequesBody {
+export interface IApiRequestBody {
   command: string;
   original_utterance: string;
-  type: ApiRequestBodyType;
+  type: 'SimpleUtterance' | 'ButtonPressed';
   markup?: {
     dangerous_context?: true;
   };
@@ -29,7 +24,7 @@ export interface IApiRequesSession {
 
 export interface IApiRequest {
   meta: IApiRequestMeta;
-  request: IApiRequesBody;
+  request: IApiRequestBody;
   session: IApiRequesSession;
   version: string;
 }
