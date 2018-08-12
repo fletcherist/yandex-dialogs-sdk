@@ -79,10 +79,9 @@ export class Alice implements IAlice {
     if (data.version !== ALICE_PROTOCOL_VERSION) {
       throw new Error('Unknown protocol version');
     }
-    debug('>> ', data.request.command);
+    debug(`incoming request: ${data.request.command}`);
     const context = this._buildContext(data);
     const result = await this._runMiddlewares(context);
-    debug('result', result);
     if (!result) {
       throw new Error(
         'No response for request ' +
@@ -91,6 +90,7 @@ export class Alice implements IAlice {
       );
     }
 
+    debug(`outcoming result: ${result.responseBody.text}`);
     return {
       response: result.responseBody,
       session: {

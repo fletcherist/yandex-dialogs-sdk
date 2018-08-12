@@ -53,12 +53,10 @@ export class WebhookServer {
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ): Promise<void> {
-    debug('incoming request');
     if (!isAvailableMethod(request.method) || request.url !== this.webhookUrl) {
       response.statusCode = 400;
       return response.end();
     }
-    debug('good request');
 
     const requestBody = await WebhookServer._readRequest(request);
     const responseBody = await this._handleAliceRequest(requestBody);
