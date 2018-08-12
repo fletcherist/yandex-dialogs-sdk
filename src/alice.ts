@@ -12,6 +12,7 @@ import debug from './debug';
 
 import { MainStage } from './stage/mainScene';
 import { ISessionStorage } from './session/session';
+import { IScene } from './stage/scene';
 
 export interface IAliceConfig extends IImagesApiConfig {}
 
@@ -30,12 +31,10 @@ export class Alice implements IAlice {
 
   constructor(config: IAliceConfig = {}) {
     this._config = config;
-
     this.handleRequest = this.handleRequest.bind(this);
 
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
-
     this._mainStage = new MainStage();
     this._initMainStage();
   }
@@ -131,5 +130,9 @@ export class Alice implements IAlice {
 
   public any(callback: CommandCallback<IContext>): void {
     this._mainStage.scene.any(callback);
+  }
+
+  public registerScene(scene: IScene): void {
+    this._mainStage.stage.addScene(scene);
   }
 }
