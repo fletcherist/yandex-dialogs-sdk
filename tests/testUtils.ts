@@ -1,8 +1,5 @@
-import { WebhookRequest } from '../yandex/response';
-export const generateRequest = (
-  commandText,
-  utteranceText?,
-): WebhookRequest => ({
+// import { WebhookRequest } from '../yandex/response';
+export const request = (commandText, utteranceText?): WebhookRequest => ({
   meta: {
     client_id: 'Developer Console',
     locale: 'ru-RU',
@@ -22,3 +19,13 @@ export const generateRequest = (
   },
   version: '1.0',
 });
+
+export function shuffle(arr) {
+  return arr.sort(function() {
+    return 0.5 - Math.random();
+  });
+}
+export function getRandomText() {
+  const words = ['ek', 'ong', 'kar', 'sat', 'gur', 'prasad'];
+  return shuffle(words).join(' ');
+}
