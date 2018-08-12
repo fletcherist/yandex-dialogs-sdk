@@ -22,5 +22,3 @@ export const generateRequest = (
   },
   version: '1.0',
 });
-
-module.exports.generateRequest = generateRequest;
