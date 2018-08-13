@@ -10,4 +10,8 @@ describe('alice scenes', () => {
     randomText = getRandomText();
     stage = new Stage();
   });
+
+  test('create new scene', () => {
+    const scene = new Scene('name');
+  });
 });
