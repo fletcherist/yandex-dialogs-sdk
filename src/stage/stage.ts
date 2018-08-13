@@ -3,6 +3,7 @@ import { Middleware, IMiddlewareResult } from '../middleware/middleware';
 import { ISessionContext } from '../session/sessionContext';
 import { IStageContext } from './stageContext';
 import { StageСompere } from './compere';
+import debug from '../debug';
 
 export interface IStage {
   addScene(scene: IScene): void;
@@ -25,6 +26,7 @@ export class Stage implements IStage {
     if (this._scenes.has(scene.name)) {
       throw new Error(`Duplicate scene name ${scene.name}`);
     }
+    debug(`scene added "${scene.name}"`);
     this._scenes.set(scene.name, scene);
   }
 
@@ -32,6 +34,7 @@ export class Stage implements IStage {
     if (!this._scenes.has(name)) {
       throw new Error(`No scene with name ${name}`);
     }
+    debug(`scene removed "${name}"`);
     this._scenes.delete(name);
   }
 

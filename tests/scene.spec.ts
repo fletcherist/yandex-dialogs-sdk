@@ -13,5 +13,7 @@ describe('alice scenes', () => {
 
   test('create new scene', () => {
     const scene = new Scene('name');
+    stage.addScene(scene);
+    alice.use(stage.getMiddleware());
   });
 });
