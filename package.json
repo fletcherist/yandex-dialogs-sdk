@@ -36,8 +36,7 @@
     "skills",
     "alice-sdk",
     "alice-dialogs",
-    "yandex-dialogs-sdk",
-    "imperator"
+    "yandex-dialogs-sdk"
   ],
   "files": [
     "dist"
