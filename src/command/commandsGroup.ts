@@ -11,13 +11,13 @@ export interface ICommandsGroup<TContext extends IContext = IContext> {
   add(command: ICommand): void;
   getRelevance(
     context: TContext,
-  ): Promise<ICommandRelevance<TContext>[] | null>;
+  ): Promise<Array<ICommandRelevance<TContext>> | null>;
   getMostRelevant(context: TContext): Promise<ICommand<TContext> | null>;
 }
 
 export class CommandsGroup<TContext extends IContext = IContext>
   implements ICommandsGroup<TContext> {
-  private readonly _commands: ICommand<TContext>[];
+  private readonly _commands: Array<ICommand<TContext>>;
 
   constructor() {
     this._commands = [];
@@ -33,7 +33,9 @@ export class CommandsGroup<TContext extends IContext = IContext>
     );
   }
 
-  async getMostRelevant(context: TContext): Promise<ICommand<TContext> | null> {
+  public async getMostRelevant(
+    context: TContext,
+  ): Promise<ICommand<TContext> | null> {
     const relevances = await this.getRelevance(context);
     if (!relevances || !relevances.length) {
       return null;

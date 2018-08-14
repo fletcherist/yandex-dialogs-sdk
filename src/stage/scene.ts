@@ -13,9 +13,9 @@ export interface IScene<TContext extends IStageContext = IStageContext> {
   command(
     declaration: CommandDeclaration<TContext>,
     callback: CommandCallback<TContext>,
-  );
-  any(callback: CommandCallback<TContext>);
-  run(context: TContext): Promise<CommandCallbackResult>;
+  ): void;
+  any(callback: CommandCallback<TContext>): void;
+  run(context: TContext): Promise<CommandCallbackResult | null>;
 }
 
 export class Scene<TContext extends IStageContext = IStageContext>
@@ -41,7 +41,7 @@ export class Scene<TContext extends IStageContext = IStageContext>
     this._anyCommand = new Command(Command.createMatcherAlways(), callback);
   }
 
-  private async run(context: TContext): Promise<CommandCallbackResult> {
+  public async run(context: TContext): Promise<CommandCallbackResult | null> {
     const command = await this._commands.getMostRelevant(context);
     if (command) {
       return command.run(context);
@@ -54,5 +54,3 @@ export class Scene<TContext extends IStageContext = IStageContext>
     return null;
   }
 }
-
-module.exports = Scene;

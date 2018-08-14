@@ -1,85 +1,49 @@
-import Alice from '../alice'
-import { generateRequest } from './testUtils'
+import { Alice, Scene } from '../dist/';
+import { request, getRandomText } from './testUtils';
 
-// Test for matching all command types
+describe('alice module', () => {
+  let alice = null;
+  let randomText = '';
+  beforeEach(() => {
+    alice = new Alice();
+    randomText = getRandomText();
+  });
 
-test('matching with string', async done => {
-    const alice = new Alice()
+  test('listening on port & stop listening', async done => {
+    const server = alice.listen(8123, '/');
+    setTimeout(() => {
+      server.stop();
+      done();
+    }, 0);
+  });
 
-    alice.command('Привет, как дела', ctx => done())
-    alice.handleRequest(generateRequest('Привет, как дела?'))
-})
+  test('any command', async () => {
+    alice.any(ctx => ({ text: randomText }));
+    const data = await alice.handleRequest(request('ping'));
+    expect(data.response.text).toBe(randomText);
+  });
 
-test('matching with array', async done => {
-    const alice = new Alice()
+  test('text command', async () => {
+    alice.command('foo bar', ctx => ({ text: randomText }));
+    const data = await alice.handleRequest(request('foo bar'));
+    expect(data.response.text).toBe(randomText);
+  });
 
-    alice.command(['привет', 'как дела'], ctx => done())
-    alice.handleRequest(generateRequest('Привет, как дела?'))
-})
+  test('regex command', async () => {
+    alice.command(/foo/, ctx => ({ text: randomText }));
+    const data = await alice.handleRequest(request('foo bar'));
+    expect(data.response.text).toBe(randomText);
+  });
 
-test('matching with regexp', async done => {
-    const alice = new Alice()
+  test('text array command', async () => {
+    alice.command(['foo', 'foo bar'], ctx => ({ text: randomText }));
+    const data = await alice.handleRequest(request('foo bar'));
+    expect(data.response.text).toBe(randomText);
+  });
 
-    alice.command(/[а-яё]+/i, ctx => done())
-    alice.any(ctx => ctx)
-    alice.handleRequest(generateRequest('Привет как дела'))
-})
-
-test('priority check, strings over regexps', async done => {
-    const alice = new Alice()
-
-    alice.command(/[а-яё]+/i, ctx => new Error('Error has occured'))
-    alice.command('привет', ctx => done())
-    alice.any(ctx => ctx)
-    alice.handleRequest(generateRequest('Привет как дела'))
-})
-
-test('listenining on port with callback', async done => {
-    const alice = new Alice()
-    alice.listen('/', 3000, () => {
-        alice.stopListening()
-        done()
-    })
-})
-
-test('listening on port with promise', async done => {
-    const alice = new Alice()
-    alice.listen('/', 3000).then(() => {
-        alice.stopListening()
-        done()
-    })
-})
-
-test('ctx body', async done => {
-    const alice = new Alice()
-    alice.command('забронируй встречу в ${where} на ${when}', ctx => {
-        /*
-     * Context body parses message and extract phrases
-     * in brackets!
-     */
-        expect(ctx.body).toEqual({
-            where: '7-холмов',
-            when: '18:00',
-        })
-        done()
-    })
-    alice.handleRequest(generateRequest('забронируй встречу в 7-холмов на 18:00'))
-})
-
-test('handling command resolve with callback', async done => {
-    const alice = new Alice()
-    const MOCK_MSG = 'Hello world'
-    alice.any(ctx => ctx.reply(MOCK_MSG))
-    alice.handleRequest(generateRequest('hi!'), response => {
-        expect(response.response.text).toBe(MOCK_MSG)
-        done()
-    })
-})
-
-test('handling command resolve with promise', async () => {
-    const alice = new Alice()
-    const MOCK_MSG = 'Hello world'
-    alice.any(ctx => ctx.reply(MOCK_MSG))
-    const response = await alice.handleRequest(generateRequest('hi!'))
-    expect(response.response.text).toBe(MOCK_MSG)
-})
+  test('matcher command', async () => {
+    alice.command(ctx => true, ctx => ({ text: randomText }));
+    const data = await alice.handleRequest(request('foo bar'));
+    expect(data.response.text).toBe(randomText);
+  });
+});

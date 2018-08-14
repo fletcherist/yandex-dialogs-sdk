@@ -2,11 +2,13 @@ import { IApiResponseBodyButton } from '../api/response';
 import { BodyButtonDeclaration } from './bodyButtonBuilder';
 
 export interface IExtraParams {
+  tts?: string;
   buttons?: IApiResponseBodyButton[];
   end_session?: boolean;
 }
 
 export interface IExtraParamsReply {
+  tts?: string;
   buttons?: BodyButtonDeclaration[];
   end_session?: boolean;
 }
@@ -19,7 +21,8 @@ export class ExtraParamsBuilder {
   ): IExtraParams {
     if (typeof declaration === 'object') {
       return {
-        end_session: declaration.end_session,
+        end_session: Boolean(declaration.end_session),
+        tts: declaration.tts,
       };
     }
 

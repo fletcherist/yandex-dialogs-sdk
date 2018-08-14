@@ -1,86 +1,102 @@
-import reply from '../reply'
-import { bigImageCard, image, footer } from '../card'
-import button from '../button'
-import Context from '../context'
-import { ALICE_PROTOCOL_VERSION, DEFAULT_END_SESSION } from '../constants'
-import { generateRequest } from './testUtils'
+import { Reply, Markup } from '../dist';
+import { getRandomText } from './testUtils';
 
-const MOCKED_IMAGE_ID = '213044/2a175da14f91b71df60c'
-
-test('create reply with string constructor', () => {
-    const expectedData = {
-        response: {
-            text: 'send message',
-            buttons: [],
-            end_session: DEFAULT_END_SESSION,
-        },
-        session: null,
-        version: ALICE_PROTOCOL_VERSION,
-    }
-
-    const msg = reply(expectedData.response.text)
-    expect(msg).toEqual(expectedData)
-})
-
-test('create reply with object constructor', () => {
-    const expectedData = {
-        response: {
-            text: 'send message',
-            tts: 'send m+essage',
-            buttons: [],
-            end_session: true,
-        },
-        session: null,
-        version: ALICE_PROTOCOL_VERSION,
-    }
-
-    const msg = reply({
-        text: expectedData.response.text,
-        tts: expectedData.response.tts,
-        buttons: expectedData.response.buttons,
-        endSession: expectedData.response.end_session,
-    })
-    expect(msg).toEqual(expectedData)
-})
-
-test('creating new image', () => {
-    expect(image(MOCKED_IMAGE_ID)).toEqual({
-        image_id: MOCKED_IMAGE_ID,
-    })
-})
-
-test('ctx.replyWithImage string', () => {
-    const ctx = new Context({
-        req: generateRequest('test'),
-    })
-    const mockedImageId = '213044/2a175da14f91b71df60c'
-
-    const res = ctx.replyWithImage(mockedImageId)
-    expect(res.response.card).toEqual({
+describe('Alice Reply (static method) suite', () => {
+  let text = '';
+  beforeEach(() => {
+    text = getRandomText();
+  });
+  test('Text reply', () => {
+    expect(Reply.text(text)).toEqual({
+      text: text,
+      tts: text,
+      end_session: false,
+    });
+  });
+  test('Text reply with extra params', () => {
+    const expected = {
+      text: text,
+      tts: `${text}+`,
+      end_session: true,
+    };
+    expect(
+      Reply.text(expected.text, { tts: expected.tts, end_session: true }),
+    ).toEqual({
+      text: text,
+      tts: expected.tts,
+      end_session: true,
+    });
+  });
+  test('BigImage Card reply', () => {
+    const expected = {
+      text: 'text',
+      tts: 'text',
+      card: {
         type: 'BigImage',
-        image_id: mockedImageId,
-    })
-})
+        image_id: '1',
+        title: 'title',
+        description: 'description',
+      },
+      end_session: false,
+    };
+    const reply = Reply.bigImageCard(expected.text, {
+      image_id: expected.card.image_id,
+      title: expected.card.title,
+      description: expected.card.description,
+    });
+    expect(reply).toEqual(expected);
+  });
 
-test('ctx.replyWithImage object', () => {
-    const ctx = new Context({
-        req: generateRequest('test'),
-    })
-    const mockedBigImage = {
-        image_id: MOCKED_IMAGE_ID,
-        title: '1',
-        description: '1',
-        button: button('123'),
-        footer: footer('1', button('123')),
-    }
+  test('ItemsList Card reply with array', () => {
+    const expected = {
+      text: 'text',
+      tts: 'text',
+      card: {
+        type: 'ItemsList',
+        items: [
+          {
+            image_id: '1',
+            title: 'title',
+            description: 'description',
+          },
+          {
+            image_id: '1',
+            title: 'title',
+            description: 'description',
+          },
+        ],
+      },
+      end_session: false,
+    };
+    const reply = Reply.itemsListCard(expected.text, expected.card.items);
+    expect(reply).toEqual(expected);
+    const reply2 = Reply.itemsListCard(expected.text, expected.card);
+    expect(reply2).toEqual(expected);
+  });
+});
 
-    const res = ctx.replyWithImage(mockedBigImage)
-    expect(res.response.card).toEqual({
-        type: 'BigImage',
-        image_id: MOCKED_IMAGE_ID,
-        button: button('123'),
-        title: '1',
-        description: '1',
-        footer: footer('1', button('123')),
-    })
-})
+describe('Markup suite', () => {
+  test('Markup button with text constructor', () => {
+    const expected = {
+      title: 'foo',
+      payload: {
+        title: 'foo',
+      },
+    };
+    const button = Markup.button(expected.title);
+    expect(button).toEqual(expected);
+  });
+
+  test('Markup button with object constructor', () => {
+    const expected = {
+      title: 'foo',
+      hide: true,
+      url: '',
+      payload: {
+        title: 'foo',
+      },
+    };
+    const button = Markup.button(expected);
+    expect(button).toEqual(expected);
+  });
+});
