@@ -46,8 +46,4 @@ describe('alice module', () => {
     const data = await alice.handleRequest(request('foo bar'));
     expect(data.response.text).toBe(randomText);
   });
-
-  test('single scene', async () => {
-    const myScene = new Scene('random-name');
-  });
 });
