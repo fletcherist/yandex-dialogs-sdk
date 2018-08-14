@@ -42,6 +42,7 @@ export class Scene<TContext extends IStageContext = IStageContext>
   }
 
   public async run(context: TContext): Promise<CommandCallbackResult> {
+    console.log('runnig scene', this.name);
     const command = await this._commands.getMostRelevant(context);
     if (command) {
       return command.run(context);

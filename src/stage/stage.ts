@@ -2,7 +2,7 @@ import { IScene } from './scene';
 import { Middleware, IMiddlewareResult } from '../middleware/middleware';
 import { ISessionContext } from '../session/sessionContext';
 import { IStageContext } from './stageContext';
-import { StageСompere } from './compere';
+import { StageCompere } from './compere';
 import debug from '../debug';
 
 export interface IStage {
@@ -24,22 +24,22 @@ export class Stage implements IStage {
 
   public addScene(scene: IScene): void {
     if (this._scenes.has(scene.name)) {
-      throw new Error(`Duplicate scene name ${scene.name}`);
+      throw new Error(`Duplicate scene name "${scene.name}"`);
     }
-    debug(`scene added "${scene.name}"`);
     this._scenes.set(scene.name, scene);
+    debug(`scene added "${scene.name}"`);
   }
 
   public removeScene(name: string): void {
     if (!this._scenes.has(name)) {
-      throw new Error(`No scene with name ${name}`);
+      throw new Error(`No scene with name "${name}"`);
     }
-    debug(`scene removed "${name}"`);
     this._scenes.delete(name);
+    debug(`scene removed "${name}"`);
   }
 
   public getMiddleware(): Middleware<ISessionContext> {
-    return async (context, next): Promise<IMiddlewareResult> => {
+    return async (context, next): Promise<IMiddlewareResult | null> => {
       if (!context.session) {
         throw new Error(
           'You have to add some session middelware to use scenes',
@@ -54,16 +54,18 @@ export class Stage implements IStage {
           ? this._scenes.get(sceneName)
           : null;
       if (scene) {
+        const compere = new StageCompere(context);
         const stageContext: IStageContext = {
           ...context,
-          compere: new StageСompere(context),
+          enter: (name: string) => compere.enter(name),
+          leave: () => compere.leave(),
         };
+        debug(`current scene "${scene.name}"`);
         const result = await scene.run(stageContext);
         return {
           responseBody: result,
         };
       }
-
       return next ? next(context) : null;
     };
   }

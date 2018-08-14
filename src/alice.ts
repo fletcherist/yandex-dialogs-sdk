@@ -48,8 +48,8 @@ export class Alice implements IAlice {
   private _initMainStage(
     sessionsStorage: ISessionStorage = new InMemorySessionStorage(),
   ): void {
-    this.use(this._mainStage.middleware);
     this.use(sessionMiddleware(sessionsStorage));
+    this.use(this._mainStage.middleware);
   }
 
   private async _runMiddlewares(
@@ -60,13 +60,16 @@ export class Alice implements IAlice {
       return null;
     }
 
-    let index = middlewares.length - 1;
+    let index = 0;
     const next = async (
-      context: IContext,
+      middlewareContext: IContext,
     ): Promise<IMiddlewareResult | null> => {
       const middleware = middlewares[index];
-      index--;
-      return middleware(context, index < 0 ? null : next);
+      index++;
+      return middleware(
+        middlewareContext,
+        index >= middlewares.length ? null : next,
+      );
     };
     return next(context);
   }

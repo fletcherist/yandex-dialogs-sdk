@@ -29,3 +29,7 @@ export function getRandomText() {
   const words = ['ek', 'ong', 'kar', 'sat', 'gur', 'prasad'];
   return shuffle(words).join(' ');
 }
+
+export function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
