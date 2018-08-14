@@ -46,6 +46,33 @@ describe('Alice Reply (static method) suite', () => {
     });
     expect(reply).toEqual(expected);
   });
+
+  test('ItemsList Card reply with array', () => {
+    const expected = {
+      text: 'text',
+      tts: 'text',
+      card: {
+        type: 'ItemsList',
+        items: [
+          {
+            image_id: '1',
+            title: 'title',
+            description: 'description',
+          },
+          {
+            image_id: '1',
+            title: 'title',
+            description: 'description',
+          },
+        ],
+      },
+      end_session: false,
+    };
+    const reply = Reply.itemsListCard(expected.text, expected.card.items);
+    expect(reply).toEqual(expected);
+    const reply2 = Reply.itemsListCard(expected.text, expected.card);
+    expect(reply2).toEqual(expected);
+  });
 });
 
 describe('Markup suite', () => {
