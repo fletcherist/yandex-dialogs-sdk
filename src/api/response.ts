@@ -58,7 +58,7 @@ export interface IApiResponseBody {
   tts?: string;
   card?: IApiResponseCard;
   buttons?: IApiResponseBodyButton[];
-  end_session?: boolean;
+  end_session: boolean;
 }
 
 export interface IApiResponseSession {

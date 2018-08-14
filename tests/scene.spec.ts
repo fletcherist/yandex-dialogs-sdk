@@ -1,72 +1,61 @@
-import Alice from '../alice'
-import Scene from '../scene'
-import { generateRequest } from './testUtils'
+import { Alice, Scene, Stage, sessionMiddleware, Reply } from '../dist/';
+import { request, getRandomText, delay } from './testUtils';
 
-test('creating scene with name', () => {
-    const scene = new Scene('testName')
-    expect(scene.name).toBe('testName')
-})
+describe('alice scenes', () => {
+  let alice = null;
+  let stage = null;
+  let randomText = '';
+  beforeEach(() => {
+    alice = new Alice();
+    stage = new Stage();
+    randomText = getRandomText();
+  });
 
-test('registering an array of scenes', () => {
-    const alice = new Alice()
-    const scene1 = new Scene('scene1')
-    const scene2 = new Scene('scene2')
+  test('create new scene', async done => {
+    const scene = new Scene('bar');
+    scene.any(ctx => ({ text: randomText }));
+    stage.addScene(scene);
+    // alice.use(sessionMiddleware());
+    alice.use(stage.getMiddleware());
+    alice.any(async ctx => {
+      ctx.enter('bar');
+      return { text: 'foo' };
+    });
+    // handling first request, leading to the scene "bar"
+    let data = await alice.handleRequest(request('hey!'));
+    expect(data.response.text).toBe('foo');
+    // now looking for an answer from scene
+    data = await alice.handleRequest(request('hey!'));
+    expect(data.response.text).toBe(randomText);
+    done();
+  });
 
-    alice.registerScene([scene1, scene2])
-
-    // yup it's a private method but who cares whatsoever?..
-    expect(alice.scenes.length).toBe(2)
-})
-
-test('register scene and enter in', async () => {
-    const alice = new Alice()
-    const scene = new Scene('123')
-    scene.enter('1', ctx => ctx.reply('enter'))
-    scene.any(ctx => ctx.reply('scene-any'))
-    scene.command('3', ctx => ctx.reply('command'))
-    scene.leave('2', ctx => ctx.reply('leave'))
-
-    alice.registerScene(scene)
-    alice.any(ctx => ctx.reply('hi'))
-
-    let res
-    res = await alice.handleRequest(generateRequest('hello'))
-    expect(res.response.text).toBe('hi')
-
-    res = await alice.handleRequest(generateRequest('1'))
-    expect(res.response.text).toBe('enter')
-    res = await alice.handleRequest(generateRequest('blablabla'))
-    expect(res.response.text).toBe('scene-any')
-
-    res = await alice.handleRequest(generateRequest('2'))
-    expect(res.response.text).toBe('leave')
-})
-
-test('changing scene', async () => {
-    const alice = new Alice()
-    const scene1 = new Scene('scene1')
-    const scene2 = new Scene('scene2')
-    scene1.enter('keyword', ctx => {
-        ctx.enterScene(scene2)
-        return ctx.reply('scene1')
-    })
-    scene2.any(ctx => {
-        ctx.leaveScene()
-        return ctx.reply('scene2')
-    })
-
-    alice.registerScene([scene1, scene2])
-    alice.any(ctx => ctx.reply('main'))
-
-    let data
-    data = await alice.handleRequest(generateRequest('hello'))
-    expect(data.response.text).toBe('main')
-    // Test scene1 change scene method (ctx.enterScene)
-    data = await alice.handleRequest(generateRequest('keyword'))
-    expect(data.response.text).toBe('scene1')
-    // Test scene2 leave method
-    data = await alice.handleRequest(generateRequest('hello'))
-    expect(data.response.text).toBe('scene2')
-    data = await alice.handleRequest(generateRequest('hello'))
-    expect(data.response.text).toBe('main')
-})
+  test('switch between scenes', async done => {
+    const scene1 = new Scene('1');
+    scene1.any(ctx => {
+      ctx.enter('2');
+      return { text: 'scene1' };
+    });
+    const scene2 = new Scene('2');
+    scene2.any(async ctx => {
+      ctx.leave();
+      return { text: 'scene2' };
+    });
+    stage.addScene(scene1);
+    stage.addScene(scene2);
+    alice.use(stage.getMiddleware());
+    alice.any(async ctx => {
+      ctx.enter('1');
+      return { text: 'alice' };
+    });
+    let data = await alice.handleRequest(request('baz'));
+    expect(data.response.text).toBe('alice');
+    done();
+    data = await alice.handleRequest(request('.'));
+    expect(data.response.text).toBe('scene1');
+    data = await alice.handleRequest(request('.'));
+    expect(data.response.text).toBe('scene2');
+    data = await alice.handleRequest(request('.'));
+    expect(data.response.text).toBe('alice');
+  });
+});

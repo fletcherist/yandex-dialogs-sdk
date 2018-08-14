@@ -21,14 +21,15 @@ exports = module.exports;
 export default Alice;
 
 export { Reply } from './reply/reply';
+export { Markup } from './reply/markup';
 
 export { InMemorySession } from './session/inMemorySession';
-export { InMemorySessionsStorage } from './session/inMemorySessionsStorage';
+export { InMemorySessionStorage } from './session/inMemorySessionStorage';
 export { ISession, ISessionStorage } from './session/session';
 export { ISessionContext } from './session/sessionContext';
-export { sessionMiddleware } from './session/sesstionMiddleware';
+export { sessionMiddleware } from './session/sessionMiddleware';
 
-export { IStageСompere } from './stage/compere';
+export { IStageCompere } from './stage/compere';
 export { IScene, Scene } from './stage/scene';
 export { IStage, Stage } from './stage/stage';
 export { IStageContext } from './stage/stageContext';

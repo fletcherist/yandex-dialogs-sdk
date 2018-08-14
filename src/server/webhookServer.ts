@@ -16,6 +16,20 @@ export interface IWebhookServer {
   stop(): void;
 }
 
+const isAvailableMethod = (method: string | undefined) => {
+  if (method === undefined) {
+    return false;
+  }
+  return ['POST', 'OPTIONS'].includes(method);
+};
+
+const formatWebhookUrl = (webhookUrl: string) => {
+  if (webhookUrl === '') {
+    return '/';
+  }
+  return webhookUrl;
+};
+
 export class WebhookServer {
   private server: http.Server;
   private port: number;
@@ -25,11 +39,11 @@ export class WebhookServer {
 
   constructor(config: IWebhookServerConfig) {
     this.port = config.port;
-    this.webhookUrl = config.webhookUrl;
+    this.webhookUrl = formatWebhookUrl(config.webhookUrl);
     this._handleAliceRequest = config.handleRequest;
     this._isStarted = false;
 
-    debug(`server is listening: ${this.port}, ${this.webhookUrl}`);
+    debug(`starting webhook server`);
     this.server = http.createServer((request, response) =>
       this._handleRequest(request, response),
     );
@@ -39,7 +53,7 @@ export class WebhookServer {
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ): Promise<void> {
-    if (request.method !== 'POST' || request.url !== this.webhookUrl) {
+    if (!isAvailableMethod(request.method) || request.url !== this.webhookUrl) {
       response.statusCode = 400;
       return response.end();
     }
@@ -59,7 +73,7 @@ export class WebhookServer {
           body.push(chunk);
         })
         .on('end', async () => {
-          const requestData = Buffer.from(body).toString();
+          const requestData = Buffer.concat(body).toString();
           resolve(JSON.parse(requestData));
         })
         .on('error', reject);
