@@ -22,15 +22,19 @@ export class Reply {
     const result: IApiResponseBody = {
       text: textReply.text,
       tts: textReply.tts,
+      end_session: false,
     };
     if (extraParamsDeclaration) {
       const extraParams = ExtraParamsBuilder.createExtraParams(
         extraParamsDeclaration,
       );
+      if (extraParams.tts) {
+        result.tts = extraParams.tts;
+      }
       if (extraParams.buttons) {
         result.buttons = extraParams.buttons;
       }
-      if (extraParams.end_session) {
+      if (typeof extraParams.end_session !== 'undefined') {
         result.end_session = extraParams.end_session;
       }
     }
@@ -48,6 +52,7 @@ export class Reply {
       text: textReply.text,
       tts: textReply.tts,
       card: card,
+      end_session: false,
     };
     if (extraParamsDeclaration) {
       const extraParams = ExtraParamsBuilder.createExtraParams(
@@ -56,7 +61,7 @@ export class Reply {
       if (extraParams.buttons) {
         result.buttons = extraParams.buttons;
       }
-      if (extraParams.end_session) {
+      if (typeof extraParams.end_session !== 'undefined') {
         result.end_session = extraParams.end_session;
       }
     }
@@ -74,6 +79,7 @@ export class Reply {
       text: textReply.text,
       tts: textReply.tts,
       card: card,
+      end_session: false,
     };
     if (extraParamsDeclaration) {
       const extraParams = ExtraParamsBuilder.createExtraParams(

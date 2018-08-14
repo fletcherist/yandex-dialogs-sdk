@@ -12,7 +12,10 @@ export class TextReplyBuilder {
     }
 
     if (typeof declaration === 'string') {
-      return { text: declaration };
+      return {
+        text: declaration,
+        tts: declaration,
+      };
     }
 
     throw new Error(
