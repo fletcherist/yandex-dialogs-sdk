@@ -16,7 +16,7 @@ describe('Alice Reply (static method) suite', () => {
   test('Text reply with extra params', () => {
     const expected = {
       text: text,
-      tts: text + '+',
+      tts: `${text}+`,
       end_session: true,
     };
     expect(
@@ -26,6 +26,25 @@ describe('Alice Reply (static method) suite', () => {
       tts: expected.tts,
       end_session: true,
     });
+  });
+  test('BigImage Card reply', () => {
+    const expected = {
+      text: 'text',
+      tts: 'text',
+      card: {
+        type: 'BigImage',
+        image_id: '1',
+        title: 'title',
+        description: 'description',
+      },
+      end_session: false,
+    };
+    const reply = Reply.bigImageCard(expected.text, {
+      image_id: expected.card.image_id,
+      title: expected.card.title,
+      description: expected.card.description,
+    });
+    expect(reply).toEqual(expected);
   });
 });
 
