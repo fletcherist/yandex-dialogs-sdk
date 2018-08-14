@@ -11,15 +11,6 @@ export {
 
 import { Alice } from './alice';
 
-/**
- * For compability with commonjs
- * @example const Alice = require('yandex-dialogs-sdk')
- */
-module.exports = Alice;
-exports = module.exports;
-
-export default Alice;
-
 export { Reply } from './reply/reply';
 export { Markup } from './reply/markup';
 
@@ -43,3 +34,5 @@ export {
 export { Alice, IAlice } from './alice';
 export { IContext } from './context';
 export { IImagesApi } from './imagesApi';
+
+export default Alice;
