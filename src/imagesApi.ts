@@ -24,12 +24,12 @@ export interface IImagesApi {
 }
 
 export class ImagesApi implements IImagesApi {
-  private readonly _skillId: string;
-  private readonly _oAuthToken: string;
+  private readonly _skillId: string | undefined;
+  private readonly _oAuthToken: string | undefined;
 
   constructor(params: IImagesApiConfig) {
-    this._skillId = params.oAuthToken;
-    this._oAuthToken = params.skillId;
+    this._skillId = params.skillId;
+    this._oAuthToken = params.oAuthToken;
   }
 
   public async uploadImageByUrl(url: string): Promise<IApiImageItem> {

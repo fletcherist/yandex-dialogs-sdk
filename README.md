@@ -124,23 +124,60 @@ const images = await alice.imagesApi.getImages();
 ###### Reply
 ```javascript
 const { Reply } = require('yandex-dialogs-sdk')
+IMAGE_ID = '213044/d13b0d86a41daf9de232'
+EXTRA_PARAMS = { // Extra params are optional
+  tts: 'Hi the+re',
+  buttons: ['one', Markup.button('two')],
+  end_session: true
+}
 ```
 - `Reply.text` 
 ```javascript
 // Second argument is optional
-alice.any(ctx => Reply.text('Hi there'), {
-  tts: 'Hi the+re',
-  buttons: ['one', Markup.button('two')]
-})
+alice.any(ctx => Reply.text('text'), EXTRA_PARAMS)
 ```
-- `Reply.bigImageCard` - 
-- `Reply.itemsListCard` -
+- `Reply.bigImageCard` - One big image
+```javascript
+Reply.bigImageCard('text', {
+  image_id: IMAGE_ID,
+  title: string, // optional
+  description: string, // optional
+  button: M.button('click'), // optional
+}, EXTRA_PARAMS)
+```
+- `Reply.itemsListCard` - Gallery
+```javascript
+Reply.itemsListCard('text', [IMAGE_ID, IMAGE_ID], EXTRA_PARAMS);
+Reply.itemsListCard('test', {
+    header: 'header',
+    footer: {
+      text: 'test',
+      button: Markup.button('button'),
+    },
+    items: [
+      IMAGE_ID, 
+      { image_id: IMAGE_ID, title: 'title', description: 'description' },
+    ],
+  });
+```
+
 
 ###### Markup
 ```javascript
 const { Markup } = require('yandex-dialogs-sdk')
 ```
 - `Markup.button`
+```javascript
+const M = Markup
+M.button('string')
+M.button({
+  title: string;
+  url: string;
+  payload: object;
+  hide: boolean;
+})
+```
+
 
 ## 🔨 Built with SDK
 
