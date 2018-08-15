@@ -48,7 +48,9 @@
   },
   "homepage": "https://github.com/fletcherist/yandex-dialogs-sdk#readme",
   "dependencies": {
+    "@types/fast-levenshtein": "0.0.1",
     "@types/node-fetch": "^2.1.2",
+    "fast-levenshtein": "^2.0.6",
     "node-fetch": "^2.1.2"
   },
   "devDependencies": {
