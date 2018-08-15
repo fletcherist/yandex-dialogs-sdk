@@ -79,124 +79,38 @@ alice.command('i want some drinks', ctx => {
 
 - [Yandex Dialogs Protocol](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/)
 
-
-## Alice 
-
-- `alice.command` - Установить обработчик команды
-- `alice.welcome` - Приветственный метод. Вызывается в начале пользовательской сессии.
-- `alice.uploadImage` - Загрузить картинку.
-- `alice.getImages` - Получить список загруженных изображений.
-
-## Ctx
-
-Сущность для управления состоянием ответа. Есть следующие методы и свойства:
-
-#### Свойства
-
-- `[ctx.message]` — Команда от пользователя.
-- `[ctx.originalUtterance]` - shortcut for `ctx.req.request.original_utterance`
-- `[ctx.body]` — Объект с данными после интент-обработки ([подробнее](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples/ctxBody.js))
-- `[ctx.sessionId]` — ID сессии.
-- `[ctx.messageId` — ID сообщения.
-- `[ctx.userId` — ID пользователя.
-- `[ctx.payload]` — Произвольный JSON, который присылается обработчику, если какая-то кнопка будет нажата.
-
-
-#### Методы
-
-- `ctx.reply` - Ответить на пользовательский запрос.
-- `ctx.replyWithImage` — Ответить картинкой.
-- `ctx.goodbye` - Ответь и завершить сессию (выйти из навыка).
-- `ctx.replyBuilder` — фабрика для создания ответа на запрос. О ней — дальше.
-- `ctx.buttonBuilder` — фабрика для создания кнопок. О ней — дальше.
-
-
-# ReplyBuilder
-
-Генерирует ответ для сервера, какой вы захотите.
-Метод доступен из контекста. `ctx.replyBuilder`
-
-### .text(str: string)
-Устанавливает текстовое сообщение в ответе.
-> Кстати, можно использовать эмодзи 👌
-
-### .tts(str: string)
-Устанавливает голосовое сообщение, которое произнесёт Алиса. 
-> Доступна особая разметка: например - - паузы и +ударения.
-
-### .addButton(button: buttonBuilder)
-Добавляет к ответу кнопку. Кнопки добавляются по очереди:
-
+###### Alice
 ```javascript
-/* example */
-ctx.replyBuilder.addButton(btn1).addButton(btn2)
+const { Alice } = require('yandex-dialogs-sdk')
 ```
+- `alice.command` - Set handler for command
+- `alice.uploadImage` - Upload image
+- `alice.getImages` - Get all uploaded images
 
-### .shouldEndSession(flag: boolean)
-> Default — false
+###### Context
+- `[ctx.data]` - object with request
+- `[ctx.message]` — shortcut for `ctx.data.request.command`
+- `[ctx.originalUtterance]` - shortcut for `ctx.data.request.original_utterance`
+- `[ctx.sessionId]` — shortcut for `ctx.data.session.session_id`
+- `[ctx.messageId]` — shortcut for `ctx.data.session.message_id`
+- `[ctx.userId]` — shortcut for `ctx.data.session.user_id`
+- `[ctx.payload]` — shortcut for `ctx.data.request.payload`
 
-
-Признак конца разговора. Завершать ли сессию или продолжить.
-
-
-### .get()
-Получить результат выполнения фабрики. В конце всегда вызывайте этот метод.
-
-
-**Пример**
+###### Reply
 ```javascript
-const replyMessage = ctx.replyBuilder
-  .text('Вы что, из Англии?')
-  .tts('Вы что, из Англии?')
-  .addButton(btn1)
-  .addButton(btn2)
-  .get()
+const { Reply } = require('yandex-dialogs-sdk')
 ```
+- `Reply.text` - 
+- `Reply.bigImageCard` - 
+- `Reply.itemsListCard` -
 
-
-
-# ButtonBuilder
-Метод доступен из контекста. `ctx.buttonBuilder`
-
-### .text(text: string)
-Устанавливает текст кнопки.
-
-
-### .title(title: string)
-Тоже устанавливает текст кнопки.
-> Используйте, какой больше нравится
-
-
-### .url(url: string)
-Устанавливает URL, который откроется при нажатии на кнопку.
-
-
-### .url(url: string)
-Устанавливает URL, который откроется при нажатии на кнопку.
-
-
-### .shouldHide(flag: boolean)
-Нужно ли прятать кнопку после следующей реплики пользователя?
-
-
-### .payload(payload: string | object)
-Произвольный JSON, который Яндекс.Диалоги должны отправить обработчику, если данная кнопка будет нажата. Максимум 4096 байтов.
-
-### .get()
-Получить результат выполнения фабрики. В конце всегда вызывайте этот метод.
-
-
-**Пример**
+###### Markup
 ```javascript
-const buyBtn = ctx.buttonBuilder
-  .text('Купить слона')
-  .url('example.com/buy')
-  .payload({buy: "slon"})
-  .shouldHide(true)
-  .get()
+const { Markup } = require('yandex-dialogs-sdk')
 ```
+- `Markup.button`
 
-## 🔨 Сделано с помощью SDK
+## 🔨 Built with SDK
 
 - [yandex-dialogs-whatis](https://github.com/popstas/yandex-dialogs-whatis) 
 Бот подскажет, что где находится, если вы перед этим расскажете ему об этом
@@ -204,16 +118,15 @@ const buyBtn = ctx.buttonBuilder
 Навык Алисы UralJS
 - присылайте PR, чтобы оказаться здесь
 
-## Если вы собрались помочь в разработке
+## CONTRIBUTING
 `git clone`
 
-`yarn && npm run test && npm run dev`
+`npm install && npm run test && npm run dev`
 
-Typescript-приложение соберётся в ./dist <br>
-Пожалуйста, прочтите [Roadmap](https://github.com/fletcherist/yandex-dialogs-sdk/projects/1), чтобы понять, куда мы идём.
+Typescript will be compiled into `./dist` <br>
 
 ## Contributors
-Спасибо всем этим замечательным людям за библиотеку:
+Thanks all these awesome people for this product. 
 
 | [<img src="https://avatars1.githubusercontent.com/u/3027126?s=400&v=4" width="100px;"/><br /><sub><b>Stanislav Popov</b></sub>](http://blog.popstas.ru)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=popstas "Documentation")| [<img src="https://avatars0.githubusercontent.com/u/22147027?s=400&v=4" width="100px;"/><br /><sub><b>Nikita Rogozhin</b></sub>](http://rogoda.ru)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=rogodec "Documentation") | [<img src="https://avatars0.githubusercontent.com/u/1537724?s=400&v=4" width="100px;"/><br /><sub><b>Roman Paradeev</b></sub>](https://github.com/sameoldmadness)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=sameoldmadness "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/10712045?s=400&v=4" width="100px;"/><br /><sub><b>Vanya Klimenko</b></sub>](http://vanyaklimenko.ru)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=vanyaklimenko "Documentation") | [<img src="https://avatars2.githubusercontent.com/u/577154?s=460&v=4" width="100px;"/><br /><sub><b>Dmitry Guketlev</b></sub>](https://github.com/Yavanosta)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=Yavanosta "Documentation") | [<img src="https://avatars1.githubusercontent.com/u/11800710?s=460&v=4" width="100px;"/><br /><sub><b>Alexander Karpov</b></sub>](https://github.com/alexander-karpov)<br />[📖](https://github.com/fletcherist/yandex-dialogs-sdk/commits?author=alexander-karpov "Documentation") | 
 | :---: | :---: | :---: | :---: | :---: | :---: |
