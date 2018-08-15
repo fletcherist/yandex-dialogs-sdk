@@ -42,6 +42,12 @@ export class Alice implements IAlice {
   private _buildContext(request: IApiRequest): IContext {
     return {
       data: request,
+      message: request.request.command,
+      originalUtterance: request.request.original_utterance,
+      sessionId: request.session.session_id,
+      messageId: request.session.message_id,
+      userId: request.session.user_id,
+      payload: request.request.payload,
     };
   }
 

@@ -1,4 +1,4 @@
-import { IScene } from './scene';
+import { IScene, Scene } from './scene';
 import { Middleware, IMiddlewareResult } from '../middleware/middleware';
 import { ISessionContext } from '../session/sessionContext';
 import { IStageContext } from './stageContext';
@@ -23,6 +23,11 @@ export class Stage implements IStage {
   }
 
   public addScene(scene: IScene): void {
+    if (!(scene instanceof Scene)) {
+      throw new Error(
+        'Incorrect argument scene. Please provide Scene instance',
+      );
+    }
     if (this._scenes.has(scene.name)) {
       throw new Error(`Duplicate scene name "${scene.name}"`);
     }

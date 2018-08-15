@@ -20,7 +20,6 @@ export class BodyButtonBuilder {
     if (typeof declaration === 'string') {
       return {
         title: declaration,
-        payload: { title: declaration },
       };
     }
 
