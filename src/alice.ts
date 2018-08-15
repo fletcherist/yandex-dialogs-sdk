@@ -45,6 +45,7 @@ export class Alice implements IAlice {
       message: request.request.command,
       originalUtterance: request.request.original_utterance,
       sessionId: request.session.session_id,
+      messageId: request.session.message_id,
       userId: request.session.user_id,
       payload: request.request.payload,
     };

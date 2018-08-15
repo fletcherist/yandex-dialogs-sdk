@@ -5,6 +5,7 @@ export interface IContext {
   readonly message: string;
   readonly originalUtterance: string;
   readonly sessionId: string;
+  readonly messageId: number;
   readonly userId: string;
   readonly payload: object | undefined;
 }
