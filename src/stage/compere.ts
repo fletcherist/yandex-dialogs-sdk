@@ -24,6 +24,6 @@ export class StageCompere implements IStageCompere {
       Stage.CURRENT_SCENE_SESSION_KEY,
       Stage.DEFAULT_SCENE_NAME,
     );
-    debug(`scene changed for: ${name}`);
+    debug(`scene changed for: ${Stage.DEFAULT_SCENE_NAME}`);
   }
 }

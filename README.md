@@ -21,85 +21,61 @@ Tiny zen library to create skills for Yandex.Alice
 
 ```javascript
 const { Alice, Reply, Markup } = require('yandex-dialogs-sdk')
-const alice = new Alice()
+const alice = new Alice();
 
-const M = Markup
-alice.welcome(async (ctx) => Reply.text('Look, what i can!'))
-alice.command('Give a piece of advice', async (ctx) => Reply.text('Make const not var'))
-alice.command(['What is trending now?', 'Watch films', 'Whats in the theatre?'], ctx => {
-  return {
-    text: `What about 50 Angry Men?`,
-    buttons: [M.button('Buy ticket'), M.button('What else?')]
-  } 
-})
-alice.command(/(https?:\/\/[^\s]+)/g, ctx => Reply.text('Matched a link!'))
-alice.any(async (ctx) => ctx.reply(`I don't understand`))
-const server = alice.listen(3000, '/')
-
+const M = Markup;
+alice.command('', async ctx => Reply.text('Look, what i can!'));
+alice.command('Give a piece of advice', async ctx =>
+  Reply.text('Make const not var'),
+);
+alice.command(
+  ['What is trending now?', 'Watch films', 'Whats in the theatre?'],
+  ctx => {
+    return {
+      text: `What about 50 Angry Men?`,
+      buttons: [M.button('Buy ticket'), M.button('What else?')],
+    };
+  },
+);
+alice.command(/(https?:\/\/[^\s]+)/g, ctx => Reply.text('Matched a link!'));
+alice.any(async ctx => Reply.text(`I don't understand`));
+const server = alice.listen(3001, '/');
 ```
 
 
 
-### 
+### Handle non-trivial scenarios
 
 ```javascript
 const { Alice, Scene, Stage } = require('yandex-dialogs-sdk')
+const stage = new Stage();
+const alice = new Alice();
+const SCENE_AT_BAR = 'SCENE_AT_BAR';
+const atBar = new Scene(SCENE_AT_BAR);
 
-const inBar = new Scene('at-bar')
-inBar.enter('Алиса, пойдём в бар!', ctx => ctx.reply('Пойдём.'))
-inBar.command('ты сейчас в баре?', ctx => ctx.reply('Да!'))
-inBar.leave('Пошли отсюда', ctx => ctx.reply('Уже ухожу.'))
+atBar.command('show menu', ctx =>
+  Reply.text('only vodka here', {
+    buttons: ['buy vodka', 'go away'],
+  }),
+);
+atBar.command('buy vodka', ctx => Reply.text(`you're dead`));
+atBar.command('go away', ctx => {
+  ctx.leave();
+  return Reply.text('as you want');
+});
+atBar.any(ctx => Reply.text(`no money no honey`));
 
-alice.registerScene(inBar)
-alice.command('ты сейчас в баре?', ctx => ctx.reply('Нет!'))
-
+stage.addScene(atBar);
+alice.use(stage.getMiddleware());
+alice.command('i want some drinks', ctx => {
+  ctx.enter(SCENE_AT_BAR);
+  return Reply.text('lets go into pub', {
+    buttons: ['show menu', 'go away'],
+  });
+});
 ```
 
-
-### Больше не надо парсить ответы руками
-```javascript
-alice.command('забронируй встречу в ${where} на ${when}', ctx => {
-  const { where, when } = ctx.body
-  // where — '7-холмов'
-  // when — '18:00'
-  ctx.reply(`Готово. Встреча состоится в ${where}. Тебе напомнить?`)
-})
-alice.handleRequestBody(
-  generateRequest('забронируй встречу в 7-холмов на 18:00')
-)
-```
-
-> Больше примеров в папке **[./examples](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)**
-
-
-
-Создавайте сложные конструкции с кнопками и кастомизацией с помощью фабрик:
-
-
-Создайте кнопку:
-```javascript
-const buyBtn = ctx.buttonBuilder
-  .text('Купить слона')
-  .url('example.com/buy')
-  .payload({buy: "slon"})
-  .shouldHide(true)
-  .get()
-```
-
-
-Создайте ответ:
-```javascript
-
-alice.command('купить слона', async (ctx) => {
-  const replyMessage = ctx.replyBuilder
-    .text('Вы что, серьёзно?')
-    .tts('Вы что, серьё+зно?')
-    .addButton(buyBtn)
-    .get()
-  return ctx.reply(replyMessage)
-})
-
-```
+> A lot of examples in folder **[./examples](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)**
 
 # API
 
