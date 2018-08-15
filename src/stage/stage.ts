@@ -60,7 +60,6 @@ export class Stage implements IStage {
           enter: (name: string) => compere.enter(name),
           leave: () => compere.leave(),
         };
-        debug(`current scene "${scene.name}"`);
         const result = await scene.run(stageContext);
         return {
           responseBody: result,

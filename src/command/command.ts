@@ -1,5 +1,7 @@
+import levenshtein from 'fast-levenshtein';
 import { IContext } from '../context';
 import { IApiResponseBody } from '../api/response';
+import { LEVENSHTEIN_MATCH_THRESHOLD } from '../constants';
 
 export type CommandCallbackResult = IApiResponseBody;
 export type CommandCallback<TContext extends IContext = IContext> =
@@ -18,6 +20,12 @@ export interface ICommand<TContext extends IContext = IContext> {
   run(context: TContext): Promise<CommandCallbackResult>;
   getRelevance(context: TContext): Promise<number>;
 }
+
+const inBetween = (from: number, to: number) => (value: number): number =>
+  Math.max(from, Math.min(value, to));
+
+const getLevenshteinRelevance = (a: string, b: string): number =>
+  inBetween(0, 1)(1 - levenshtein.get(a, b) / Math.max(a.length, b.length));
 
 export class Command<TContext extends IContext = IContext>
   implements ICommand<TContext> {
@@ -46,10 +54,7 @@ export class Command<TContext extends IContext = IContext>
     }
 
     if (typeof declaration === 'string') {
-      return new Command(
-        this.createMatcherFromStrings([declaration]),
-        callback,
-      );
+      return new Command(this.createMatcherFromString(declaration), callback);
     }
 
     if (Array.isArray(declaration)) {
@@ -64,6 +69,23 @@ export class Command<TContext extends IContext = IContext>
       'Command declaration is not of proper type. ' +
         'Could be only string, array of strings, RegExp or function.',
     );
+  }
+
+  public static createMatcherFromString(string: string): CommandMatcher {
+    if (!string) {
+      return () => 0;
+    }
+
+    return (context: IContext) => {
+      const commandText = context.data.request.command;
+      const lowerMessage = commandText ? commandText.toLowerCase() : '';
+      /*
+       * Calculating Levenshtein distance between 2 strings
+       * More info: https://en.wikipedia.org/wiki/Levenshtein_distance
+       */
+      const relevance = getLevenshteinRelevance(string, lowerMessage);
+      return relevance >= LEVENSHTEIN_MATCH_THRESHOLD ? relevance : 0;
+    };
   }
 
   public static createMatcherFromStrings(strings: string[]): CommandMatcher {

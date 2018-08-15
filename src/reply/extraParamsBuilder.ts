@@ -1,10 +1,11 @@
 import { IApiResponseBodyButton } from '../api/response';
 import { BodyButtonDeclaration } from './bodyButtonBuilder';
+import { BodyButtonBuilder } from './bodyButtonBuilder';
 
 export interface IExtraParams {
   tts?: string;
   buttons?: IApiResponseBodyButton[];
-  end_session?: boolean;
+  end_session: boolean;
 }
 
 export interface IExtraParamsReply {
@@ -21,6 +22,11 @@ export class ExtraParamsBuilder {
   ): IExtraParams {
     if (typeof declaration === 'object') {
       return {
+        buttons:
+          declaration.buttons &&
+          declaration.buttons.map(button =>
+            BodyButtonBuilder.createBodyButton(button),
+          ),
         end_session: Boolean(declaration.end_session),
         tts: declaration.tts,
       };
