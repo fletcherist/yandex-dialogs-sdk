@@ -13,6 +13,8 @@ Tiny zen library to create skills for Yandex.Alice
 #### Install SDK
 `npm i yandex-dialogs-sdk --save`
 
+> To enable debug mode run `DEBUG=yandex-dialogs-sdk node YOUR_APP.js`
+
 #### Videotutorials
 - [Роман Парадеев — Доклад с конференции «В гостях у Алисы»](https://youtu.be/qqHTk2QLyEQ?t=3h13m22s)
 - [Фил Романов — Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
