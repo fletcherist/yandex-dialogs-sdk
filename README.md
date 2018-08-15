@@ -3,53 +3,49 @@
 
 *Note: this is an open-source project. It is not affiliated with Yandex LLC.*
 
-Создавать навыки для Алисы — это очень просто.
+Tiny zen library to create skills for Yandex.Alice
 
-**[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)** — телеграм-чатик, где ответят на любой ваш вопрос по поводу **SDK**
+**[yandex-dialogs-sdk](https://t.me/joinchat/AeqRLxKsMmI4o1ew2lQ1Qw)** — Telegram chat, if you need help
 
 <img height=200 src='https://camo.githubusercontent.com/0ad462b08ffb18f96ae1143f1365b60b918f4bbd/68747470733a2f2f73657470686f6e652e72752f77702d636f6e74656e742f75706c6f6164732f323031372f30372f616c6973612d383130783435362e706e67' />
 
-### Установите SDK
+
+#### Install SDK
 `npm i yandex-dialogs-sdk --save`
 
-### Видеоуроки
+#### Videotutorials
 - [Роман Парадеев — Доклад с конференции «В гостях у Алисы»](https://youtu.be/qqHTk2QLyEQ?t=3h13m22s)
 - [Фил Романов — Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
 
-### Создайте своё первое приложение
+#### Getting Started
 
 ```javascript
-const Alice = require('yandex-dialogs-sdk')
+const { Alice, Reply, Markup } = require('yandex-dialogs-sdk')
 const alice = new Alice()
 
-const { loggerMiddleware, button } = Alice
-alice.use(loggerMiddleware({
-  level: 1 // Optional. DEFAULT 0. see https://github.com/pimterry/loglevel
-}))
-
-alice.welcome(async (ctx) => ctx.reply('Привет! Смотри, что я могу'))
-alice.command('дай совет', async (ctx) => ctx.reply('Make const not var'))
-alice.command(['билет в кино', 'что посмотреть', 'что показывают'], ctx => {
-  ctx.reply({
-    text: 'Есть «2001 a space odyssey»',
-    buttons: [button('Забронировать')]
-  }) 
+const M = Markup
+alice.welcome(async (ctx) => Reply.text('Look, what i can!'))
+alice.command('Give a piece of advice', async (ctx) => Reply.text('Make const not var'))
+alice.command(['What is trending now?', 'Watch films', 'Whats in the theatre?'], ctx => {
+  return {
+    text: `What about 50 Angry Men?`,
+    buttons: [M.button('Buy ticket'), M.button('What else?')]
+  } 
 })
-
-alice.command(/(https?:\/\/[^\s]+)/g, ctx => ctx.reply('Matched a link!'))
-alice.any(async (ctx) => ctx.reply('О чём это вы?'))
-alice.listen('/', 3000)
+alice.command(/(https?:\/\/[^\s]+)/g, ctx => Reply.text('Matched a link!'))
+alice.any(async (ctx) => ctx.reply(`I don't understand`))
+const server = alice.listen(3000, '/')
 
 ```
 
-> Можно использовать как постоянно работающий сервер, так и serverless-платформы, такие как **AWS Lambda** или **Google Cloud Functions**. Больше примеров в папке **[./examples](https://github.com/fletcherist/yandex-dialogs-sdk/tree/master/examples)**
 
-### Программируйте сложную логику
+
+### 
 
 ```javascript
-const Scene = require('yandex-dialogs-sdk').Scene
+const { Alice, Scene, Stage } = require('yandex-dialogs-sdk')
 
-const inBar = new Scene('in-the-bar')
+const inBar = new Scene('at-bar')
 inBar.enter('Алиса, пойдём в бар!', ctx => ctx.reply('Пойдём.'))
 inBar.command('ты сейчас в баре?', ctx => ctx.reply('Да!'))
 inBar.leave('Пошли отсюда', ctx => ctx.reply('Уже ухожу.'))
