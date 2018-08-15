@@ -84,8 +84,33 @@ alice.command('i want some drinks', ctx => {
 const { Alice } = require('yandex-dialogs-sdk')
 ```
 - `alice.command` - Set handler for command
-- `alice.uploadImage` - Upload image
-- `alice.getImages` - Get all uploaded images
+```javascript
+// if you want, everything could be async
+alice.command('text', ctx => null)
+alice.command(/regex/ig, ctx => null)
+alice.command(['array', 'of', 'strings'], ctx => null)
+// pass function which returns boolean. True means perfect match.
+alice.command(ctx => true || false, ctx => null)
+```
+
+###### Images Api
+To use this API you have to provide your auth data.
+[More info](https://tech.yandex.ru/dialogs/alice/doc/resource-upload-docpage)
+```javascript
+const alice = new Alice({
+  oAuthToken: OAUTH_TOKEN,
+  skillId: SKILL_ID
+});
+```
+- `alice.imagesApi.uploadImageByUrl` - Upload image by URL
+```javascript
+const image = await alice.imagesApi.uploadImageByUrl(IMAGE_URL);
+```
+- `alice.imagesApi.uploadImageFile` - Upload image by File Buffer **(Not implemented yet)**.
+- `alice.imagesApi.getImages` - Get all uploaded images
+```javascript
+const images = await alice.imagesApi.getImages();
+```
 
 ###### Context
 - `[ctx.data]` - object with request
@@ -100,7 +125,14 @@ const { Alice } = require('yandex-dialogs-sdk')
 ```javascript
 const { Reply } = require('yandex-dialogs-sdk')
 ```
-- `Reply.text` - 
+- `Reply.text` 
+```javascript
+// Second argument is optional
+alice.any(ctx => Reply.text('Hi there'), {
+  tts: 'Hi the+re',
+  buttons: ['one', Markup.button('two')]
+})
+```
 - `Reply.bigImageCard` - 
 - `Reply.itemsListCard` -
 
