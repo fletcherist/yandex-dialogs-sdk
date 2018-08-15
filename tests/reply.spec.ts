@@ -1,6 +1,7 @@
 import { Reply, Markup } from '../dist';
 import { getRandomText } from './testUtils';
 
+const M = Markup;
 describe('Alice Reply (static method) suite', () => {
   let text = '';
   beforeEach(() => {
@@ -18,14 +19,15 @@ describe('Alice Reply (static method) suite', () => {
       text: text,
       tts: `${text}+`,
       end_session: true,
+      buttons: [M.button('one'), M.button('two'), M.button('three')],
     };
     expect(
-      Reply.text(expected.text, { tts: expected.tts, end_session: true }),
-    ).toEqual({
-      text: text,
-      tts: expected.tts,
-      end_session: true,
-    });
+      Reply.text(expected.text, {
+        tts: expected.tts,
+        end_session: true,
+        buttons: ['one', 'two', 'three'],
+      }),
+    ).toEqual(expected);
   });
   test('BigImage Card reply', () => {
     const expected = {
