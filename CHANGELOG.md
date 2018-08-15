@@ -1,3 +1,50 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.5.2...v2.0.0) (2018-08-15)
+
+
+### Bug Fixes
+
+* add scene test ([0815500](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0815500))
+* autoformat ([bcb49ac](https://github.com/fletcherist/yandex-dialogs-sdk/commit/bcb49ac))
+* buttons and add test on button ([3740b40](https://github.com/fletcherist/yandex-dialogs-sdk/commit/3740b40))
+* issues after code review ([2143425](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2143425))
+* readme ([0f4e691](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0f4e691))
+* readme ([08de10b](https://github.com/fletcherist/yandex-dialogs-sdk/commit/08de10b))
+* remove console.log ([a115a23](https://github.com/fletcherist/yandex-dialogs-sdk/commit/a115a23))
+* remove redundant code ([380de2a](https://github.com/fletcherist/yandex-dialogs-sdk/commit/380de2a))
+* remove redundant debug ([e259ada](https://github.com/fletcherist/yandex-dialogs-sdk/commit/e259ada))
+* remove redundant tag in package.json ([231bcf8](https://github.com/fletcherist/yandex-dialogs-sdk/commit/231bcf8))
+* remove redundant test ([03d3f19](https://github.com/fletcherist/yandex-dialogs-sdk/commit/03d3f19))
+* remove redundant tests & fix type error ([3f6b5b6](https://github.com/fletcherist/yandex-dialogs-sdk/commit/3f6b5b6))
+* shuffle ([e5cb122](https://github.com/fletcherist/yandex-dialogs-sdk/commit/e5cb122))
+* some changes on code review ([bd5bf3e](https://github.com/fletcherist/yandex-dialogs-sdk/commit/bd5bf3e))
+* tests codestyle, remove redundant ([42568eb](https://github.com/fletcherist/yandex-dialogs-sdk/commit/42568eb))
+* tslint errors & some ts null check errors ([5873ef4](https://github.com/fletcherist/yandex-dialogs-sdk/commit/5873ef4))
+* update codestyle ([fb32fa6](https://github.com/fletcherist/yandex-dialogs-sdk/commit/fb32fa6))
+
+
+### Features
+
+* add change between scenes test ([c3860e9](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c3860e9))
+* add debug mode to docs ([1382016](https://github.com/fletcherist/yandex-dialogs-sdk/commit/1382016))
+* add important params to context ([7f50e65](https://github.com/fletcherist/yandex-dialogs-sdk/commit/7f50e65))
+* add messageId to context ([b38c44a](https://github.com/fletcherist/yandex-dialogs-sdk/commit/b38c44a))
+* add tests for button ([eda4471](https://github.com/fletcherist/yandex-dialogs-sdk/commit/eda4471))
+* added express example & new test suite ([3e4cfc4](https://github.com/fletcherist/yandex-dialogs-sdk/commit/3e4cfc4))
+* change head to main scene on leaving ([2b3366d](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2b3366d))
+* describe scenes test ([e206e43](https://github.com/fletcherist/yandex-dialogs-sdk/commit/e206e43))
+* fix a compere bug & update readme ([450540f](https://github.com/fletcherist/yandex-dialogs-sdk/commit/450540f))
+* fix imagesApi bug, add some docs ([e1085b6](https://github.com/fletcherist/yandex-dialogs-sdk/commit/e1085b6))
+* implement big image card test ([c373449](https://github.com/fletcherist/yandex-dialogs-sdk/commit/c373449))
+* implement levenshtein distance matching on strings ([b6cb771](https://github.com/fletcherist/yandex-dialogs-sdk/commit/b6cb771))
+* implement pure http server on listen method ([a068884](https://github.com/fletcherist/yandex-dialogs-sdk/commit/a068884))
+* implement tests for cards ([d19770b](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d19770b))
+* implement tests on text reply with additions ([791619c](https://github.com/fletcherist/yandex-dialogs-sdk/commit/791619c))
+* recover alice tests ([f71db67](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f71db67))
+* remove redundant readme ([fd6e4c1](https://github.com/fletcherist/yandex-dialogs-sdk/commit/fd6e4c1))
+
+
+
 <a name="1.5.2"></a>
 ## [1.5.2](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.4.8...v1.5.2) (2018-08-03)
 

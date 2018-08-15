@@ -81,9 +81,6 @@ describe('Markup suite', () => {
   test('Markup button with text constructor', () => {
     const expected = {
       title: 'foo',
-      payload: {
-        title: 'foo',
-      },
     };
     const button = Markup.button(expected.title);
     expect(button).toEqual(expected);
