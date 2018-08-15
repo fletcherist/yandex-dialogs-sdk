@@ -42,9 +42,7 @@ alice.any(async ctx => Reply.text(`I don't understand`));
 const server = alice.listen(3001, '/');
 ```
 
-
-
-### Handle non-trivial scenarios
+#### Handle non-trivial scenarios
 
 ```javascript
 const { Alice, Scene, Stage } = require('yandex-dialogs-sdk')
@@ -79,7 +77,7 @@ alice.command('i want some drinks', ctx => {
 
 # API
 
-- [Протокол Yandex Dialogs](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/)
+- [Yandex Dialogs Protocol](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/)
 
 
 ## Alice 
