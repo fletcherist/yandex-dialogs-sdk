@@ -122,6 +122,30 @@ const images = await alice.imagesApi.getImages();
 - `[ctx.messageId]` — shortcut for `ctx.data.session.message_id`
 - `[ctx.userId]` — shortcut for `ctx.data.session.user_id`
 - `[ctx.payload]` — shortcut for `ctx.data.request.payload`
+- `[ctx.enter]` - enters session
+```javascript
+const { Scene } = require('yandex-dialogs-sdk')
+const scene = new Scene('scene-name')
+ctx.enter('scene-name')
+```
+- `[ctx.leave]` - goes to main dialog
+```javascript
+const { Scene } = require('yandex-dialogs-sdk')
+const scene = new Scene('scene-name')
+ctx.leave()
+```
+> **[enter/leave example](https://github.com/fletcherist/yandex-dialogs-sdk/blob/master/examples/scenes.js)**
+
+###### Stage
+```javascript
+const { Stage } = require('yandex-dialogs-sdk')
+const stage = new Stage()
+```
+- `stage.addScene` - adds scene to stage
+- `stage.removeScene` - removes scene from stage
+- `stage.getMiddleware` - returns stage middleware
+> **[full scene example](https://github.com/fletcherist/yandex-dialogs-sdk/blob/master/examples/scenes.js)**
+
 
 ###### Reply
 ```javascript
