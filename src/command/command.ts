@@ -24,8 +24,11 @@ export interface ICommand<TContext extends IContext = IContext> {
 const inBetween = (from: number, to: number) => (value: number): number =>
   Math.max(from, Math.min(value, to));
 
-const getLevenshteinRelevance = (a: string, b: string): number =>
-  inBetween(0, 1)(1 - levenshtein.get(a, b) / Math.max(a.length, b.length));
+const getLevenshteinRelevance = (a: string, b: string): number => {
+  // avoid division by zero
+  const maxLength = Math.max(1, Math.max(a.length, b.length));
+  return inBetween(0, 1)(1 - levenshtein.get(a, b) / maxLength);
+};
 
 export class Command<TContext extends IContext = IContext>
   implements ICommand<TContext> {
@@ -72,14 +75,14 @@ export class Command<TContext extends IContext = IContext>
   }
 
   public static createMatcherFromString(string: string): CommandMatcher {
-    if (!string) {
+    if (typeof string === undefined) {
       return () => 0;
     }
 
     return (context: IContext) => {
       const commandText = context.data.request.command;
       const lowerMessage = commandText ? commandText.toLowerCase() : '';
-      /*
+      /**
        * Calculating Levenshtein distance between 2 strings
        * More info: https://en.wikipedia.org/wiki/Levenshtein_distance
        */
