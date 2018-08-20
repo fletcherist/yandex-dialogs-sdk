@@ -86,13 +86,15 @@ alice.command('i want some drinks', ctx => {
 const { Alice } = require('yandex-dialogs-sdk')
 ```
 - `alice.command` - Set handler for command
+- `alice.any` - Set handler if no command has been matched
 ```javascript
-// if you want, everything could be async
 alice.command('text', ctx => null)
 alice.command(/regex/ig, ctx => null)
 alice.command(['array', 'of', 'strings'], ctx => null)
 // pass function which returns boolean. True means perfect match.
 alice.command(ctx => true || false, ctx => null)
+
+alice.any('text', ctx => null)
 ```
 
 ###### Images Api
@@ -105,12 +107,10 @@ const alice = new Alice({
 });
 ```
 - `alice.imagesApi.uploadImageByUrl` - Upload image by URL
-```javascript
-const image = await alice.imagesApi.uploadImageByUrl(IMAGE_URL);
-```
 - `alice.imagesApi.uploadImageFile` - Upload image by File Buffer **(Not implemented yet)**.
 - `alice.imagesApi.getImages` - Get all uploaded images
 ```javascript
+const image = await alice.imagesApi.uploadImageByUrl(IMAGE_URL);
 const images = await alice.imagesApi.getImages();
 ```
 
@@ -123,16 +123,17 @@ const images = await alice.imagesApi.getImages();
 - `[ctx.userId]` — shortcut for `ctx.data.session.user_id`
 - `[ctx.payload]` — shortcut for `ctx.data.request.payload`
 - `[ctx.enter]` - enters session
-```javascript
-const { Scene } = require('yandex-dialogs-sdk')
-const scene = new Scene('scene-name')
-ctx.enter('scene-name')
-```
 - `[ctx.leave]` - goes to main dialog
+- `ctx.session.set` - set session value. Session is attached to `user_id`
+- `ctx.session.get` - get session value.
 ```javascript
-const { Scene } = require('yandex-dialogs-sdk')
-const scene = new Scene('scene-name')
-ctx.leave()
+// enter/leave scene
+const { Scene } = require('yandex-dialogs-sdk');
+ctx.enter('scene-name');
+ctx.leave();
+
+ctx.session.set('price', 200);
+const price = ctx.session.get('price'); // 200
 ```
 > **[enter/leave example](https://github.com/fletcherist/yandex-dialogs-sdk/blob/master/examples/scenes.js)**
 
@@ -211,7 +212,7 @@ M.button({
 Бот подскажет, что где находится, если вы перед этим расскажете ему об этом
 - [uraljs-alice-bot](https://github.com/sameoldmadness/uraljs-alice-bot)
 Навык Алисы UralJS
-- присылайте PR, чтобы оказаться здесь
+- Send PR to be here!
 
 ## CONTRIBUTING
 `git clone`
