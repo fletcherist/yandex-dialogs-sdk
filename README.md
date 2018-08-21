@@ -109,9 +109,15 @@ const alice = new Alice({
 - `alice.imagesApi.uploadImageByUrl` - Upload image by URL
 - `alice.imagesApi.uploadImageFile` - Upload image by File Buffer **(Not implemented yet)**.
 - `alice.imagesApi.getImages` - Get all uploaded images
+- `alice.imagesApi.getImagesQuota` - Get images quota
+- `alice.imagesApi.deleteImage` - Delete image
 ```javascript
 const image = await alice.imagesApi.uploadImageByUrl(IMAGE_URL);
 const images = await alice.imagesApi.getImages();
+// @example { total: 104857600, used: 25715766 }
+const quota = await alice.imagesApi.getImagesQuota();
+// @example { result: 'ok' } | { message: 'Image not found' }
+await alice.imagesApi.deleteImage('IMAGE_ID')
 ```
 
 ###### Context
@@ -147,6 +153,19 @@ const stage = new Stage()
 - `stage.getMiddleware` - returns stage middleware
 > **[full scene example](https://github.com/fletcherist/yandex-dialogs-sdk/blob/master/examples/scenes.js)**
 
+
+###### Middlewares
+```javascript
+const createMessagesCounterMiddleware = () => {
+  let count = 0
+  return async (ctx, next) => {
+    // You can do anything with context here
+    count += 1;
+    return next()
+  }
+}
+alice.use(createMessagesCounterMiddleware())
+```
 
 ###### Reply
 ```javascript

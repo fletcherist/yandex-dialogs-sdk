@@ -4,6 +4,9 @@ import {
   IApiImageUploadResponse,
   IApiImageItem,
   IApiImageListResponse,
+  IApiImageQuota,
+  IApiImageQuotaResponse,
+  IApiImageDeleteResponse,
 } from './api/image';
 
 export interface IImagesApiConfig {
@@ -12,8 +15,9 @@ export interface IImagesApiConfig {
 }
 
 interface IImagesApiRequestParams {
-  path: string;
-  method?: 'GET' | 'POST';
+  path?: string;
+  url?: string;
+  method?: 'GET' | 'POST' | 'DELETE';
   body?: object;
 }
 
@@ -21,6 +25,8 @@ export interface IImagesApi {
   uploadImageByUrl(url: string): Promise<IApiImageItem>;
   uploadImageFile(): Promise<IApiImageItem>;
   getImages(): Promise<IApiImageItem[]>;
+  getImagesQuota(): Promise<IApiImageQuota>;
+  deleteImage(imageId: string): Promise<IApiImageDeleteResponse>;
 }
 
 export class ImagesApi implements IImagesApi {
@@ -53,10 +59,32 @@ export class ImagesApi implements IImagesApi {
     return response.images;
   }
 
+  public async getImagesQuota(): Promise<IApiImageQuota> {
+    const response = await this._makeRequest<IApiImageQuotaResponse>({
+      url: `${ALICE_API_URL}/status`,
+      method: 'GET',
+    });
+    return response.images.quota;
+  }
+
+  public async deleteImage(imageId: string): Promise<IApiImageDeleteResponse> {
+    const response = await this._makeRequest<IApiImageDeleteResponse>({
+      path: `images/${imageId}`,
+      method: 'DELETE',
+    });
+    return response;
+  }
+
   private async _makeRequest<TResult>(
     params: IImagesApiRequestParams,
   ): Promise<TResult> {
-    const url = `${ALICE_API_URL}/${this._skillId}/${params.path}`;
+    if (!this._oAuthToken) {
+      throw new Error(
+        `Please, provide "oAuthToken" and "skillId" to alice constructor`,
+      );
+    }
+    const url =
+      params.url || `${ALICE_API_URL}/skills/${this._skillId}/${params.path}`;
     const method = params.method || 'GET';
     const body = params.body ? JSON.stringify(params.body) : undefined;
     const response = await fetch(url, {
