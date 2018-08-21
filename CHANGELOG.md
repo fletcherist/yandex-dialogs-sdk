@@ -6,6 +6,7 @@
 
 * add scene test ([0815500](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0815500))
 * autoformat ([bcb49ac](https://github.com/fletcherist/yandex-dialogs-sdk/commit/bcb49ac))
+* button test ([8fdd688](https://github.com/fletcherist/yandex-dialogs-sdk/commit/8fdd688))
 * buttons and add test on button ([3740b40](https://github.com/fletcherist/yandex-dialogs-sdk/commit/3740b40))
 * issues after code review ([2143425](https://github.com/fletcherist/yandex-dialogs-sdk/commit/2143425))
 * readme ([0f4e691](https://github.com/fletcherist/yandex-dialogs-sdk/commit/0f4e691))
