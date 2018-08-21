@@ -1,3 +1,20 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v2.0.0...v2.0.1) (2018-08-21)
+
+
+### Bug Fixes
+
+* bug with empty string command ([d27f5b6](https://github.com/fletcherist/yandex-dialogs-sdk/commit/d27f5b6))
+
+
+### Features
+
+* implement delete-image/get-quota api ([4131f53](https://github.com/fletcherist/yandex-dialogs-sdk/commit/4131f53))
+* implement guessNumber game example ([bc41dc4](https://github.com/fletcherist/yandex-dialogs-sdk/commit/bc41dc4))
+* update readme ([f661a0b](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f661a0b))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v1.5.2...v2.0.0) (2018-08-15)
 
