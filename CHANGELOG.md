@@ -1,5 +1,5 @@
-<a name="2.0.1"></a>
-## [2.0.1](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v2.0.0...v2.0.1) (2018-08-21)
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/fletcherist/yandex-dialogs-sdk/compare/v2.0.0...v2.0.2) (2018-08-31)
 
 
 ### Bug Fixes
@@ -11,6 +11,7 @@
 
 * implement delete-image/get-quota api ([4131f53](https://github.com/fletcherist/yandex-dialogs-sdk/commit/4131f53))
 * implement guessNumber game example ([bc41dc4](https://github.com/fletcherist/yandex-dialogs-sdk/commit/bc41dc4))
+* implement shared middlewares ([58843c5](https://github.com/fletcherist/yandex-dialogs-sdk/commit/58843c5))
 * update readme ([f661a0b](https://github.com/fletcherist/yandex-dialogs-sdk/commit/f661a0b))
 
 
