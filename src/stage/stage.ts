@@ -51,7 +51,7 @@ export class Stage implements IStage {
         );
       }
       const sceneName =
-        context.session.get(Stage.CURRENT_SCENE_SESSION_KEY) ||
+        (await context.session.get(Stage.CURRENT_SCENE_SESSION_KEY)) ||
         Stage.DEFAULT_SCENE_NAME;
       const scene = this._scenes.has(sceneName)
         ? this._scenes.get(sceneName)
