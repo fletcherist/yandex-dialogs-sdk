@@ -6,10 +6,7 @@ import { ISessionContext } from './sessionContext';
 export function sessionMiddleware(
   storage: ISessionStorage,
 ): Middleware<ISessionContext, IContext> {
-  return async function(context, next): Promise<IMiddlewareResult | null> {
-    if (context.session) {
-      return next ? next(context) : null;
-    }
+  return async (context, next): Promise<IMiddlewareResult | null> => {
     const id = context.data.session.session_id;
     const session = await storage.getOrCreate(id);
     const sessionContext: ISessionContext = {

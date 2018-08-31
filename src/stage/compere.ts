@@ -3,8 +3,8 @@ import { Stage } from './stage';
 import debug from '../debug';
 
 export interface IStageCompere {
-  enter(name: string): void;
-  leave(): void;
+  enter(name: string): Promise<void>;
+  leave(): Promise<void>;
 }
 
 export class StageCompere implements IStageCompere {
@@ -14,13 +14,13 @@ export class StageCompere implements IStageCompere {
     this._context = context;
   }
 
-  public enter(name: string): void {
-    this._context.session.set(Stage.CURRENT_SCENE_SESSION_KEY, name);
+  public async enter(name: string): Promise<void> {
+    await this._context.session.set(Stage.CURRENT_SCENE_SESSION_KEY, name);
     debug(`scene changed for: ${name}`);
   }
 
-  public leave(): void {
-    this._context.session.set(
+  public async leave(): Promise<void> {
+    await this._context.session.set(
       Stage.CURRENT_SCENE_SESSION_KEY,
       Stage.DEFAULT_SCENE_NAME,
     );

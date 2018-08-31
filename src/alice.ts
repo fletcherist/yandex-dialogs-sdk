@@ -55,13 +55,14 @@ export class Alice implements IAlice {
     sessionsStorage: ISessionStorage = new InMemorySessionStorage(),
   ): void {
     this.use(sessionMiddleware(sessionsStorage));
-    this.use(this._mainStage.middleware);
   }
 
   private async _runMiddlewares(
     context: IContext,
   ): Promise<IMiddlewareResult | null> {
     const middlewares = Array.from(this._middlewares);
+    // mainStage middleware should always be the latest one
+    middlewares.push(this._mainStage.middleware);
     if (middlewares.length === 0) {
       return null;
     }
