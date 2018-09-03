@@ -167,6 +167,11 @@ const createMessagesCounterMiddleware = () => {
 alice.use(createMessagesCounterMiddleware())
 ```
 
+###### Hot middlewares from maintainer
+
+- **[yandex-dialogs-sdk-lowdb](https://github.com/fletcherist/yandex-dialogs-sdk-lowdb)** - store your users sessions in file
+
+
 ###### Reply
 ```javascript
 const { Reply } = require('yandex-dialogs-sdk')
