@@ -44,6 +44,10 @@ alice.any(async ctx => Reply.text(`I don't understand`));
 const server = alice.listen(3001, '/');
 ```
 
+#### Hot middlewares from maintainer
+
+- **[yandex-dialogs-sdk-lowdb](https://github.com/fletcherist/yandex-dialogs-sdk-lowdb)** - store your users sessions in file
+
 #### Handle non-trivial scenarios
 
 ```javascript
@@ -166,11 +170,6 @@ const createMessagesCounterMiddleware = () => {
 }
 alice.use(createMessagesCounterMiddleware())
 ```
-
-###### Hot middlewares from maintainer
-
-- **[yandex-dialogs-sdk-lowdb](https://github.com/fletcherist/yandex-dialogs-sdk-lowdb)** - store your users sessions in file
-
 
 ###### Reply
 ```javascript
