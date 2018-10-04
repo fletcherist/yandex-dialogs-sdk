@@ -1,3 +1,5 @@
+import { IApiRequestNlu } from './nlu'
+
 export interface IApiRequestMeta {
   locale: string;
   timezone: string;
@@ -12,6 +14,7 @@ export interface IApiRequestBody {
     dangerous_context?: true;
   };
   payload?: object;
+  nlu: IApiRequestNlu
 }
 
 export interface IApiRequesSession {

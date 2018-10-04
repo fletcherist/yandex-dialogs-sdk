@@ -1,4 +1,5 @@
 import { IApiRequest } from './api/request';
+import { IApiRequestNlu } from './api/nlu'
 
 export interface IContext {
   readonly data: IApiRequest;
@@ -8,4 +9,5 @@ export interface IContext {
   readonly messageId: number;
   readonly userId: string;
   readonly payload: object | undefined;
+  readonly nlu: IApiRequestNlu
 }

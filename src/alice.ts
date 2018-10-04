@@ -48,6 +48,7 @@ export class Alice implements IAlice {
       messageId: request.session.message_id,
       userId: request.session.user_id,
       payload: request.request.payload,
+      nlu: request.request.nlu
     };
   }
 
