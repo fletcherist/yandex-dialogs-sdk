@@ -132,6 +132,7 @@ await alice.imagesApi.deleteImage('IMAGE_ID')
 - `[ctx.messageId]` — shortcut for `ctx.data.session.message_id`
 - `[ctx.userId]` — shortcut for `ctx.data.session.user_id`
 - `[ctx.payload]` — shortcut for `ctx.data.request.payload`
+- `[ctx.nlu]` - shortcut for `ctx.data.request.nlu` [(see more)](https://tech.yandex.ru/dialogs/alice/doc/nlu-docpage/)
 - `[ctx.enter]` - enters session
 - `[ctx.leave]` - goes to main dialog
 - `ctx.session.set` - set session value. Session is attached to `user_id`
