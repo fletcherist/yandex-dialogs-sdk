@@ -1,27 +1,26 @@
-const Alice = require('../dist/index')
-const alice = new Alice()
+const { Alice, Reply } = require('yandex-dialogs-sdk');
+const alice = new Alice();
 
-/*
- * Можно запросто создать свой обработчик команд.
- * 
- * Если стандартной функциональности поиска (по строке, массиву строк или регулярке)
- * вам по каким-то причинам не хватает, можно написать свой обработчик.
+/**
+ * You can easily define your own match function
  */
-
-alice.command(ctx => {
-  if (!ctx.state.number) {
-    ctx.state.number = 1
-  }
-  ctx.state.number++
-  // Срабатывает каждую чётную по счёту команду
-  return ctx.state.number % 2 === 0
-}, ctx => {
-  // Контекст сохраняется
-  ctx.reply(
-    `Я работаю каждую чётную по счёту команду:
-    сейчас по счёту ${ctx.state.number}`
-  )
-})
+alice.command(
+  ctx => {
+    if (!ctx.session.get('number')) {
+      ctx.session.set('number', 1);
+    }
+    ctx.session.set('number', ctx.session.get('number') + 1);
+    // Срабатывает каждую чётную по счёту команду
+    return ctx.session.get('number') % 2 === 0;
+  },
+  ctx => {
+    // Контекст сохраняется
+    return Reply.text(
+      `Я работаю каждую чётную по счёту команду:
+    сейчас по счёту ${ctx.session.get('number')}`,
+    );
+  },
+);
 
 /*
  * Можно также использовать асинхронные матчеры
@@ -30,10 +29,12 @@ alice.command(ctx => {
  * В этом примере пользователь всегда попадёт сюда,
  * пока он не авторизуется.
  */
-alice.command(async (ctx) => {
-  return await ctx.isAuthenticated()
-}, ctx => ctx.reply('Пожалуйста, введите кодовое слово'))
+alice.command(
+  async ctx => {
+    return await ctx.isAuthenticated();
+  },
+  ctx => Reply.text('Пожалуйста, введите кодовое слово'),
+);
 
-
-alice.any(async (ctx) => ctx.reply('А я срабатываю на все остальные'))
-alice.listen('/', 8080)
+alice.any(async ctx => Reply.text('А я срабатываю на все остальные'));
+alice.listen('/', 8080);

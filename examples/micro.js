@@ -1,20 +1,20 @@
 // Для асинхронной работы используется пакет micro.
-const { json } = require('micro')
-const Alice = require('../dist/index')
-const alice = new Alice()
+const { json } = require('micro');
+const { Alice, Reply } = require('yandex-dialogs-sdk');
+const alice = new Alice();
 
-alice.command('say my name', (ctx) => {
-  return ctx.reply('mr white') // you're goddamn right
-})
+alice.command('say my name', ctx => {
+  return Reply.text('mr white'); // you're goddamn right
+});
 
-alice.any((ctx) => ctx.reply('Я вас не поняла'))
+alice.any(ctx => Reply.text('Я вас не поняла'));
 
 // Запуск асинхронного сервиса.
 module.exports = async req => {
   // Из запроса извлекаются свойства request, session и version.
-  const request = await json(req)
+  const request = await json(req);
 
   // Обработчики пойдут наверх искать подходящую команду
   // И составлять ответ на её основе.
-  return await alice.handleRequest(request)
-}
+  return await alice.handleRequest(request);
+};

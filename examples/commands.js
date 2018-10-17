@@ -1,5 +1,5 @@
-const Alice = require('../dist/index')
-const alice = new Alice()
+const { Alice, Reply } = require('yandex-dialogs-sdk');
+const alice = new Alice();
 
 /*
  * RU:
@@ -9,33 +9,31 @@ const alice = new Alice()
  * 2. Массивы строк
  * 3. Регулярные выражения
  *
- * Для строк и массивов строк использутся fuzzysearch (fuse.js)
+ * For strings we use levenshtein distance.
  * В случае с регулярными выражениями вы пишете триггер сами.
- *
  */
 
-alice.welcome(async (ctx) => {
-  ctx.reply('Привет! Смотри, что я могу')
-})
-
 // Example for pure strings #1
-alice.command('дай совет', async (ctx) => {
-  ctx.reply('Make const not var')
-})
+alice.command('дай совет', async ctx => {
+  return Reply.text('Make const not var');
+});
 
 // Example for array of strings #2
-alice.command(['сколько стоит bitcoin', 'стоимость bitcoin', 'цена биткоина'], ctx => {
-  // Will trigger on any string above
-  ctx.reply('now 8800$')
-})
+alice.command(
+  ['сколько стоит bitcoin', 'стоимость bitcoin', 'цена биткоина'],
+  ctx => {
+    // Will trigger on any string above
+    return Reply.text('now 8800$');
+  },
+);
 
 // Example for regular expressions #3
 alice.command(/(https?:\/\/[^\s]+)/g, ctx => {
-  ctx.reply('I am matching any url you send me.')
-})
+  return Reply.text('I am matching any url you send me.');
+});
 
-alice.any(async (ctx) => {
-  ctx.reply('О чём это вы?')
-})
+alice.any(async ctx => {
+  return Reply.text('О чём это вы?');
+});
 
-alice.listen('/', 8080)
+alice.listen(8080, '/');
