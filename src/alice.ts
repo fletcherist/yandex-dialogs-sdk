@@ -7,7 +7,7 @@ import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 import { CommandCallback, CommandDeclaration } from './command/command';
 import { InMemorySessionStorage } from './session/inMemorySessionStorage';
-import { sessionMiddleware } from './session/sessionMiddleware';
+import { userSessionMiddleware } from './session/userSessionMiddleware';
 import debug from './debug';
 
 import { MainStage } from './stage/mainScene';
@@ -48,14 +48,14 @@ export class Alice implements IAlice {
       messageId: request.session.message_id,
       userId: request.session.user_id,
       payload: request.request.payload,
-      nlu: request.request.nlu
+      nlu: request.request.nlu,
     };
   }
 
   private _initMainStage(
     sessionsStorage: ISessionStorage = new InMemorySessionStorage(),
   ): void {
-    this.use(sessionMiddleware(sessionsStorage));
+    this.use(userSessionMiddleware(sessionsStorage));
   }
 
   private async _runMiddlewares(

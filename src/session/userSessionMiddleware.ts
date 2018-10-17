@@ -4,14 +4,14 @@ import { IContext } from '../context';
 import { ISessionContext } from './sessionContext';
 
 /**
- * Uses data.session.session_id as a key
+ * Uses data.session.user_id as a key
  * to store user sessions
  */
-export function sessionMiddleware(
+export function userSessionMiddleware(
   storage: ISessionStorage,
 ): Middleware<ISessionContext, IContext> {
   return async (context, next): Promise<IMiddlewareResult | null> => {
-    const id = context.data.session.session_id;
+    const id = context.data.session.user_id;
     const session = await storage.getOrCreate(id);
     const sessionContext: ISessionContext = {
       ...context,
