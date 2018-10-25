@@ -1,10 +1,10 @@
-export interface IEntityYANDEX_FIO {
+export interface IApiEntityYandexFioValue {
   first_name?: string
   patronymic_name?: string
   last_name?: string
 }
 
-export interface IEntityYANDEX_GEO {
+export interface IApiEntityYandexGeoValue {
   country?: string
   city?: string
   street?: string
@@ -12,7 +12,7 @@ export interface IEntityYANDEX_GEO {
   airport?: string
 }
 
-export interface IEntityYANDEX_DATETIME {
+export interface IApiEntityYandexDateTimeValue {
   year?: number
   month?: number
   day?: number
@@ -24,12 +24,45 @@ export interface IEntityYANDEX_DATETIME {
   minute_is_relative?: boolean
 }
 
-export type IEntityYANDEX_NUMBER = number
+export type IApiEntityYandexNumberValue = number
+
+export type IApiEntityType =
+  | 'YANDEX.FIO'
+  | 'YANDEX.GEO'
+  | 'YANDEX.DATETIME'
+  | 'YANDEX.NUMBER';
+
+export type IApiEntityBase = {
+  type: IApiEntityType,
+}
+
+export interface IApiEntityYandexFio extends IApiEntityBase {
+  type: 'YANDEX.FIO',
+  value: IApiEntityYandexFioValue,
+}
+
+export interface IApiEntityYandexGeo extends IApiEntityBase {
+  type: 'YANDEX.GEO',
+  value: IApiEntityYandexGeoValue,
+}
+
+export interface IApiEntityYandexDateTime extends IApiEntityBase {
+  type: 'YANDEX.DATETIME',
+  value: IApiEntityYandexDateTimeValue,
+}
+
+export interface IApiEntityYandexNumber extends IApiEntityBase {
+  type: 'YANDEX.NUMBER',
+  value: IApiEntityYandexNumberValue,
+}
+
+export type IApiEntity =
+  | IApiEntityYandexFio
+  | IApiEntityYandexGeo
+  | IApiEntityYandexDateTime
+  | IApiEntityYandexNumber;
 
 export interface IApiRequestNlu {
-  entities: Array<{
-    type: 'YANDEX.FIO' | 'YANDEX.GEO' | 'YANDEX.DATETIME' | 'YANDEX.NUMBER',
-    value: IEntityYANDEX_FIO | IEntityYANDEX_GEO | IEntityYANDEX_DATETIME | IEntityYANDEX_NUMBER
-  }>,
+  entities: Array<IApiEntity>,
   tokens: any
 }
