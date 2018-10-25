@@ -1,7 +1,9 @@
-import levenshtein from 'fast-levenshtein';
 import { IContext } from '../context';
 import { IApiResponseBody } from '../api/response';
-import { LEVENSHTEIN_MATCH_THRESHOLD } from '../constants';
+import {
+  ITextRelevanceProvider,
+  getLevenshteinRelevance,
+} from '../utils/textRelevance';
 
 export type CommandCallbackResult = IApiResponseBody;
 export type CommandCallback<TContext extends IContext = IContext> =
@@ -21,13 +23,8 @@ export interface ICommand<TContext extends IContext = IContext> {
   getRelevance(context: TContext): Promise<number>;
 }
 
-const inBetween = (from: number, to: number) => (value: number): number =>
-  Math.max(from, Math.min(value, to));
-
-const getLevenshteinRelevance = (a: string, b: string): number => {
-  // avoid division by zero
-  const maxLength = Math.max(1, Math.max(a.length, b.length));
-  return inBetween(0, 1)(1 - levenshtein.get(a, b) / maxLength);
+interface ICreateMatcherFromStringParams {
+  relevanceProvider?: ITextRelevanceProvider
 };
 
 export class Command<TContext extends IContext = IContext>
@@ -74,41 +71,51 @@ export class Command<TContext extends IContext = IContext>
     );
   }
 
-  public static createMatcherFromString(string: string): CommandMatcher {
-    if (typeof string === undefined) {
+  public static createMatcherFromString(
+    pattern: string,
+    params: ICreateMatcherFromStringParams = {},
+  ): CommandMatcher {
+    if (typeof pattern === undefined) {
       return () => 0;
     }
 
+    pattern = pattern ? pattern.toLowerCase() : '';
+    const {
+      relevanceProvider = getLevenshteinRelevance
+    } = params;
     return (context: IContext) => {
-      const commandText = context.data.request.command;
-      const lowerMessage = commandText ? commandText.toLowerCase() : '';
-      /**
-       * Calculating Levenshtein distance between 2 strings
-       * More info: https://en.wikipedia.org/wiki/Levenshtein_distance
-       */
-      const relevance = getLevenshteinRelevance(string, lowerMessage);
-      return relevance >= LEVENSHTEIN_MATCH_THRESHOLD ? relevance : 0;
+      const commandLower = context.data.request.command ?
+          context.data.request.command.toLowerCase() : '';
+      return relevanceProvider(pattern, commandLower);
     };
   }
 
-  public static createMatcherFromStrings(strings: string[]): CommandMatcher {
-    if (!strings || !strings.length) {
+  public static createMatcherFromStrings(
+    patterns: string[],
+    params: ICreateMatcherFromStringParams = {}
+  ): CommandMatcher {
+    if (!patterns || !patterns.length) {
       return () => 0;
     }
 
-    const lowerStrings = strings.map(s => s.toLowerCase());
+    patterns = patterns.map(s => s.toLowerCase());
+    const {
+      relevanceProvider = getLevenshteinRelevance
+    } = params;
     return (context: IContext) => {
-      const commandText = context.data.request.command;
-      const lowerMessage = commandText ? commandText.toLowerCase() : '';
-      return lowerStrings.some(s => s === lowerMessage) ? 1 : 0;
+      const commandLower = context.data.request.command ?
+          context.data.request.command.toLowerCase() : '';
+      return patterns.reduce(
+        (r, pattern) => Math.max(r, relevanceProvider(pattern, commandLower)),
+        0);
     };
   }
 
   public static createMatcherFromRegExp(regexp: RegExp): CommandMatcher {
     return (context: IContext) => {
-      const commandText = context.data.request.command;
-      const lowerMessage = commandText ? commandText.toLowerCase() : '';
-      return regexp.test(lowerMessage) ? 1 : 0;
+      const commandLower = context.data.request.command ?
+          context.data.request.command.toLowerCase() : '';
+      return regexp.test(commandLower) ? 1 : 0;
     };
   }
 
