@@ -1,20 +1,43 @@
 {
-	"defaultSeverity": "error",
-	"extends": ["tslint:recommended"],
-	"jsRules": {},
-	"rules": {
-		"interface-name": [true, "always-prefix"],
-		"no-var-requires": false,
-		"object-literal-sort-keys": false,
-		"ordered-imports": false,
-		"semicolon": [true, "always"],
-		"quotemark": [true, "single"],
-		"indent": [true, "spaces", 2],
-		"variable-name": false,
-		"arrow-parens": false,
-		"object-literal-shorthand": false,
-		"only-arrow-functions": false,
-		"member-ordering": false
-	},
-	"rulesDirectory": []
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended"],
+  "jsRules": {},
+  "rules": {
+    "arrow-parens": false,
+    "ext-variable-name": [
+      true,
+      ["class",                 "pascal"],
+      ["interface",             "pascal", {"regex": "^I.*$"}],
+      ["parameter",             "camel"],
+      ["property", "static",    "camel"],
+      ["property", "private",   "camel", "require-leading-underscore"],
+      ["property", "protected", "camel", "allow-leading-underscore"],
+      ["variable", "local",     "camel"],
+      ["variable", "const",     "upper"],
+      ["variable",              "camel"],
+      ["method", "private",     "camel", "require-leading-underscore"],
+      ["method", "protected",   "camel", "allow-leading-underscore"],
+      ["function",              "camel"],
+      ["default",               "camel"]
+    ],
+    "file-name-casing": [true, "camel-case"],
+    "indent": [true, "spaces", 2],
+    "interface-name": [true, "always-prefix"],
+    "member-ordering": false,
+    "no-var-requires": false,
+    "object-literal-shorthand": false,
+    "object-literal-sort-keys": false,
+    "only-arrow-functions": false,
+    "ordered-imports": false,
+    "quotemark": [true, "single"],
+    "semicolon": [true, "always"],
+    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ]
+  },
+  "rulesDirectory": ["node_modules/vrsource-tslint-rules/rules"]
 }

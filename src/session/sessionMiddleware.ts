@@ -8,8 +8,8 @@ import {
 } from './sessionKeyProvider';
 
 interface ISessionMiddlewareParams {
-  keyProvider?: ISessionKeyProvider
-};
+  keyProvider?: ISessionKeyProvider;
+}
 
 /**
  * Uses data.session.session_id as a key

@@ -1,12 +1,14 @@
-import { Reply, Markup } from '../dist';
-import { getRandomText } from './testUtils';
+import { Reply, Markup } from '../src/index';
+import { generateRandomText } from './utils/text';
 
 const M = Markup;
 describe('Alice Reply (static method) suite', () => {
   let text = '';
+
   beforeEach(() => {
-    text = getRandomText();
+    text = generateRandomText();
   });
+
   test('Text reply', () => {
     expect(Reply.text(text)).toEqual({
       text: text,
@@ -14,6 +16,7 @@ describe('Alice Reply (static method) suite', () => {
       end_session: false,
     });
   });
+
   test('Text reply with extra params', () => {
     const expected = {
       text: text,
@@ -29,6 +32,7 @@ describe('Alice Reply (static method) suite', () => {
       }),
     ).toEqual(expected);
   });
+
   test('BigImage Card reply', () => {
     const expected = {
       text: 'text',

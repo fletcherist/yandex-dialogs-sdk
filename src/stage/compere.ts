@@ -1,5 +1,5 @@
 import { ISessionContext } from '../session/sessionContext';
-import { Stage } from './stage';
+import { CURRENT_SCENE_SESSION_KEY, DEFAULT_SCENE_NAME } from './constants';
 import debug from '../debug';
 
 export interface IStageCompere {
@@ -15,15 +15,15 @@ export class StageCompere implements IStageCompere {
   }
 
   public async enter(name: string): Promise<void> {
-    await this._context.session.set(Stage.CURRENT_SCENE_SESSION_KEY, name);
+    await this._context.session.set(CURRENT_SCENE_SESSION_KEY, name);
     debug(`scene changed for: ${name}`);
   }
 
   public async leave(): Promise<void> {
     await this._context.session.set(
-      Stage.CURRENT_SCENE_SESSION_KEY,
-      Stage.DEFAULT_SCENE_NAME,
+      CURRENT_SCENE_SESSION_KEY,
+      DEFAULT_SCENE_NAME,
     );
-    debug(`scene changed for: ${Stage.DEFAULT_SCENE_NAME}`);
+    debug(`scene changed for: ${DEFAULT_SCENE_NAME}`);
   }
 }

@@ -3,6 +3,7 @@ import { Middleware, IMiddlewareResult } from '../middleware/middleware';
 import { ISessionContext } from '../session/sessionContext';
 import { IStageContext } from './stageContext';
 import { StageCompere } from './compere';
+import { CURRENT_SCENE_SESSION_KEY, DEFAULT_SCENE_NAME } from './constants';
 import debug from '../debug';
 
 export interface IStage {
@@ -13,8 +14,6 @@ export interface IStage {
 }
 
 export class Stage implements IStage {
-  public static readonly DEFAULT_SCENE_NAME = '__mainScene';
-  public static readonly CURRENT_SCENE_SESSION_KEY = '__currentScene';
 
   private readonly _scenes: Map<string, IScene>;
 
@@ -51,12 +50,12 @@ export class Stage implements IStage {
         );
       }
       const sceneName =
-        (await context.session.get(Stage.CURRENT_SCENE_SESSION_KEY)) ||
-        Stage.DEFAULT_SCENE_NAME;
+        (await context.session.get(CURRENT_SCENE_SESSION_KEY)) ||
+        DEFAULT_SCENE_NAME;
       const scene = this._scenes.has(sceneName)
         ? this._scenes.get(sceneName)
-        : this._scenes.has(Stage.DEFAULT_SCENE_NAME)
-          ? this._scenes.get(Stage.DEFAULT_SCENE_NAME)
+        : this._scenes.has(DEFAULT_SCENE_NAME)
+          ? this._scenes.get(DEFAULT_SCENE_NAME)
           : null;
       if (!scene) {
         return next ? next(context) : null;

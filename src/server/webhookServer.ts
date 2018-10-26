@@ -16,35 +16,35 @@ export interface IWebhookServer {
   stop(): void;
 }
 
-const isAvailableMethod = (method: string | undefined) => {
+function isAvailableMethod(method: string | undefined): boolean {
   if (method === undefined) {
     return false;
   }
   return ['POST', 'OPTIONS'].includes(method);
-};
+}
 
-const formatWebhookUrl = (webhookUrl: string) => {
+function formatWebhookUrl(webhookUrl: string): string {
   if (webhookUrl === '') {
     return '/';
   }
   return webhookUrl;
-};
+}
 
 export class WebhookServer {
-  private server: http.Server;
-  private port: number;
-  private webhookUrl: string;
+  private _server: http.Server;
+  private _port: number;
+  private _webhookUrl: string;
   private _isStarted: boolean;
   private _handleAliceRequest: HandleAliceRequestType;
 
   constructor(config: IWebhookServerConfig) {
-    this.port = config.port;
-    this.webhookUrl = formatWebhookUrl(config.webhookUrl);
+    this._port = config.port;
+    this._webhookUrl = formatWebhookUrl(config.webhookUrl);
     this._handleAliceRequest = config.handleRequest;
     this._isStarted = false;
 
     debug(`starting webhook server`);
-    this.server = http.createServer((request, response) =>
+    this._server = http.createServer((request, response) =>
       this._handleRequest(request, response),
     );
   }
@@ -53,7 +53,8 @@ export class WebhookServer {
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ): Promise<void> {
-    if (!isAvailableMethod(request.method) || request.url !== this.webhookUrl) {
+    if (!isAvailableMethod(request.method) ||
+        request.url !== this._webhookUrl) {
       response.statusCode = 400;
       return response.end();
     }
@@ -96,8 +97,8 @@ export class WebhookServer {
     if (this._isStarted) {
       throw new Error(`Server is already started`);
     }
-    this.server.listen(this.port, () => {
-      debug(`server is listening on ${this.port}, '${this.webhookUrl}'`);
+    this._server.listen(this._port, () => {
+      debug(`server is listening on ${this._port}, '${this._webhookUrl}'`);
       this._isStarted = true;
     });
   }
@@ -107,7 +108,7 @@ export class WebhookServer {
       return;
     }
     debug(`stopping webhook server`);
-    this.server.close();
+    this._server.close();
     this._isStarted = false;
   }
 }

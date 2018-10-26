@@ -90,11 +90,11 @@ export class ImagesApi implements IImagesApi {
     const response = await fetch(url, {
       method: method,
       headers: {
-        Authorization: `OAuth ${this._oAuthToken}`,
+        'Authorization': `OAuth ${this._oAuthToken}`,
         'Content-type': 'application/json',
       },
       body: body,
     });
-    return <TResult>await response.json();
+    return await response.json() as TResult;
   }
 }
