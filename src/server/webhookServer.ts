@@ -67,9 +67,13 @@ export class WebhookServer {
     request: http.IncomingMessage,
   ): Promise<IApiRequest> {
     return new Promise((resolve, reject) => {
-      const body: Array<string | Buffer> = [];
+      const body: Buffer[] = [];
       request
         .on('data', chunk => {
+          if (typeof chunk === 'string') {
+            body.push(Buffer.from(chunk));
+            return;
+          }
           body.push(chunk);
         })
         .on('end', async () => {

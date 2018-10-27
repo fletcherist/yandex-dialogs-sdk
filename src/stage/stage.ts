@@ -56,21 +56,26 @@ export class Stage implements IStage {
       const scene = this._scenes.has(sceneName)
         ? this._scenes.get(sceneName)
         : this._scenes.has(Stage.DEFAULT_SCENE_NAME)
-          ? this._scenes.get(sceneName)
+          ? this._scenes.get(Stage.DEFAULT_SCENE_NAME)
           : null;
-      if (scene) {
-        const compere = new StageCompere(context);
-        const stageContext: IStageContext = {
-          ...context,
-          enter: (name: string) => compere.enter(name),
-          leave: () => compere.leave(),
-        };
-        const result = await scene.run(stageContext);
-        return {
-          responseBody: result,
-        };
+      if (!scene) {
+        return next ? next(context) : null;
       }
-      return next ? next(context) : null;
+
+      const compere = new StageCompere(context);
+      const stageContext: IStageContext = {
+        ...context,
+        enter: (name: string) => compere.enter(name),
+        leave: () => compere.leave(),
+      };
+      const result = await scene.run(stageContext);
+      if (!result) {
+        return next ? next(context) : null;
+      }
+
+      return {
+        responseBody: result,
+      };
     };
   }
 }
