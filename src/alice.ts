@@ -7,14 +7,16 @@ import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 import { CommandCallback, CommandDeclaration } from './command/command';
 import { InMemorySessionStorage } from './session/inMemorySessionStorage';
-import { userSessionMiddleware } from './session/userSessionMiddleware';
+import { sessionMiddleware } from './session/sessionMiddleware';
 import debug from './debug';
 
 import { MainStage } from './stage/mainScene';
 import { ISessionStorage } from './session/session';
 import { IScene } from './stage/scene';
 
-export interface IAliceConfig extends IImagesApiConfig {}
+export interface IAliceConfig extends IImagesApiConfig {
+  sessionStorage?: ISessionStorage,
+}
 
 export interface IAlice {
   readonly imagesApi: IImagesApi;
@@ -28,6 +30,7 @@ export class Alice implements IAlice {
   private readonly _middlewares: Middleware[];
   private readonly _imagesApi: IImagesApi;
   private readonly _mainStage: MainStage;
+  private readonly _sessionStorage: ISessionStorage;
 
   constructor(config: IAliceConfig = {}) {
     this._config = config;
@@ -36,7 +39,10 @@ export class Alice implements IAlice {
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
     this._mainStage = new MainStage();
-    this._initMainStage();
+
+    this._sessionStorage =
+        config.sessionStorage || new InMemorySessionStorage();
+    this.use(sessionMiddleware(this._sessionStorage));
   }
 
   private _buildContext(request: IApiRequest): IContext {
@@ -50,12 +56,6 @@ export class Alice implements IAlice {
       payload: request.request.payload,
       nlu: request.request.nlu,
     };
-  }
-
-  private _initMainStage(
-    sessionsStorage: ISessionStorage = new InMemorySessionStorage(),
-  ): void {
-    this.use(userSessionMiddleware(sessionsStorage));
   }
 
   private async _runMiddlewares(
