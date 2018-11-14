@@ -1,4 +1,4 @@
-const { Alice, Reply, Markup } = require('yandex-dialogs-sdk');
+const { Alice, Reply, Markup, Stage, Scene } = require('yandex-dialogs-sdk');
 const alice = new Alice();
 const stage = new Stage();
 const SCENE_AT_BAR = 'SCENE_AT_BAR';
