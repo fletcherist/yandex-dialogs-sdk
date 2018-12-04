@@ -166,7 +166,7 @@ const createMessagesCounterMiddleware = () => {
   return async (ctx, next) => {
     // You can do anything with context here
     count += 1;
-    return next()
+    return next(ctx)
   }
 }
 alice.use(createMessagesCounterMiddleware())
