@@ -19,6 +19,20 @@ Tiny zen library to create skills for Yandex.Alice
 - [Роман Парадеев — Доклад с конференции «В гостях у Алисы»](https://youtu.be/qqHTk2QLyEQ?t=3h13m22s)
 - [Фил Романов — Пишем игру Guess Number за 10 минут](https://youtu.be/exPnIFMa1H8)
 
+
+## 🔨 Built with SDK
+
+- [yandex-dialogs-whatis](https://github.com/popstas/yandex-dialogs-whatis) 
+Smart reminder by **[@popstas](https://github.com/popstas)**
+- [Алиса в стране диез](https://github.com/AntonRzevskiy/Alice-in-the-country-sharp)
+Awesome music game by **[@AntonRzevskiy](https://github.com/AntonRzevskiy)**
+- [Adventure Engine](https://github.com/Teoreez/Adventure-Engine---YandexAlice-MongoDB-JS)
+Adventure quest game by **[@Teoreez](https://github.com/Teoreez)
+- [uraljs-alice-bot](https://github.com/sameoldmadness/uraljs-alice-bot)
+Навык Алисы UralJS
+- [homebot-alisa](https://github.com/homebot/homebot-alisa)
+- Send PR to be here!
+
 #### Getting Started
 
 ```javascript
@@ -229,15 +243,6 @@ M.button({
   hide: boolean;
 })
 ```
-
-
-## 🔨 Built with SDK
-
-- [yandex-dialogs-whatis](https://github.com/popstas/yandex-dialogs-whatis) 
-Бот подскажет, что где находится, если вы перед этим расскажете ему об этом
-- [uraljs-alice-bot](https://github.com/sameoldmadness/uraljs-alice-bot)
-Навык Алисы UralJS
-- Send PR to be here!
 
 ## CONTRIBUTING
 `git clone`
