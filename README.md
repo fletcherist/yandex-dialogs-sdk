@@ -47,6 +47,7 @@ const server = alice.listen(3001, '/');
 #### Hot middlewares from maintainer
 
 - **[yandex-dialogs-sdk-lowdb](https://github.com/fletcherist/yandex-dialogs-sdk-lowdb)** - store your users sessions in file
+- **[yandex-dialogs-sdk-chatbase](https://github.com/popstas/yandex-dialogs-sdk-chatbase)** - send events to Google Chatbase by **[@popstas](https://github.com/popstas)**
 
 #### Handle non-trivial scenarios
 
