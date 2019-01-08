@@ -23,11 +23,11 @@ Tiny zen library to create skills for Yandex.Alice
 ## 🔨 Built with SDK
 
 - [yandex-dialogs-whatis](https://github.com/popstas/yandex-dialogs-whatis) 
-Smart reminder by **[@popstas](https://github.com/popstas)**
+Smart reminder by [@popstas](https://github.com/popstas)
 - [Алиса в стране диез](https://github.com/AntonRzevskiy/Alice-in-the-country-sharp)
-Awesome music game by **[@AntonRzevskiy](https://github.com/AntonRzevskiy)**
+Awesome music game by [@AntonRzevskiy](https://github.com/AntonRzevskiy)
 - [Adventure Engine](https://github.com/Teoreez/Adventure-Engine---YandexAlice-MongoDB-JS)
-Adventure quest game by **[@Teoreez](https://github.com/Teoreez)
+Adventure quest game by [@Teoreez](https://github.com/Teoreez)
 - [uraljs-alice-bot](https://github.com/sameoldmadness/uraljs-alice-bot)
 Навык Алисы UralJS
 - [homebot-alisa](https://github.com/homebot/homebot-alisa)
