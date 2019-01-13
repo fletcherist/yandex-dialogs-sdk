@@ -73,9 +73,7 @@ export class Stage implements IStage {
         return next ? next(context) : null;
       }
 
-      return {
-        responseBody: result,
-      };
+      return result;
     };
   }
 }

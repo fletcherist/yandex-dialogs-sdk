@@ -15,7 +15,7 @@ import { ISessionStorage } from './session/session';
 import { IScene } from './stage/scene';
 
 export interface IAliceConfig extends IImagesApiConfig {
-  sessionStorage?: ISessionStorage,
+  sessionStorage?: ISessionStorage;
 }
 
 export interface IAlice {
@@ -41,7 +41,7 @@ export class Alice implements IAlice {
     this._mainStage = new MainStage();
 
     this._sessionStorage =
-        config.sessionStorage || new InMemorySessionStorage();
+      config.sessionStorage || new InMemorySessionStorage();
     this.use(sessionMiddleware(this._sessionStorage));
   }
 
@@ -101,9 +101,9 @@ export class Alice implements IAlice {
       );
     }
 
-    debug(`outcoming result: ${result.responseBody.text}`);
+    debug(`outcoming result: ${result.text}`);
     return {
-      response: result.responseBody,
+      response: result,
       session: {
         message_id: data.session.message_id,
         session_id: data.session.session_id,
