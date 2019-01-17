@@ -1,6 +1,7 @@
 import { Stage, IStage } from './stage';
 import { Scene, IScene } from './scene';
 import { Middleware } from '../middleware/middleware';
+import { DEFAULT_SCENE_NAME } from './constants';
 
 export class MainStage {
   public scene: IScene;
@@ -9,7 +10,7 @@ export class MainStage {
 
   constructor() {
     this.stage = new Stage();
-    this.scene = new Scene(Stage.DEFAULT_SCENE_NAME);
+    this.scene = new Scene(DEFAULT_SCENE_NAME);
     this.stage.addScene(this.scene);
     this.middleware = this.stage.getMiddleware();
   }

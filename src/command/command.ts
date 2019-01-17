@@ -24,8 +24,8 @@ export interface ICommand<TContext extends IContext = IContext> {
 }
 
 interface ICreateMatcherFromStringParams {
-  relevanceProvider?: ITextRelevanceProvider
-};
+  relevanceProvider?: ITextRelevanceProvider;
+}
 
 export class Command<TContext extends IContext = IContext>
   implements ICommand<TContext> {
@@ -81,7 +81,7 @@ export class Command<TContext extends IContext = IContext>
 
     pattern = pattern ? pattern.toLowerCase() : '';
     const {
-      relevanceProvider = getLevenshteinRelevance
+      relevanceProvider = getLevenshteinRelevance,
     } = params;
     return (context: IContext) => {
       const commandLower = context.data.request.command ?
@@ -92,7 +92,7 @@ export class Command<TContext extends IContext = IContext>
 
   public static createMatcherFromStrings(
     patterns: string[],
-    params: ICreateMatcherFromStringParams = {}
+    params: ICreateMatcherFromStringParams = {},
   ): CommandMatcher {
     if (!patterns || !patterns.length) {
       return () => 0;
@@ -100,7 +100,7 @@ export class Command<TContext extends IContext = IContext>
 
     patterns = patterns.map(s => s.toLowerCase());
     const {
-      relevanceProvider = getLevenshteinRelevance
+      relevanceProvider = getLevenshteinRelevance,
     } = params;
     return (context: IContext) => {
       const commandLower = context.data.request.command ?

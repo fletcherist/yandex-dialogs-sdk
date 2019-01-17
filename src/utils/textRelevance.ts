@@ -1,5 +1,5 @@
 import levenshtein from 'fast-levenshtein';
-import { LEVENSHTEIN_MATCH_THRESHOLD } from '../constants';
+import { LEVENSHTEIN_MATCH_THRESHOLD } from './constants';
 
 export type ITextRelevanceProvider = (
   a: string,
@@ -21,4 +21,4 @@ export function getLevenshteinRelevance(a: string, b: string): number {
   const levenshteinRelevance = 1 - levenshteinValue / maxLength;
   return levenshteinRelevance < LEVENSHTEIN_MATCH_THRESHOLD ?
       0 : Math.max(0, Math.min(levenshteinRelevance, 1));
-};
+}

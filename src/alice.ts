@@ -15,7 +15,7 @@ import { ISessionStorage } from './session/session';
 import { IScene } from './stage/scene';
 
 export interface IAliceConfig extends IImagesApiConfig {
-  sessionStorage?: ISessionStorage,
+  sessionStorage?: ISessionStorage;
 }
 
 export interface IAlice {

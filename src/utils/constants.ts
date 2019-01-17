@@ -1,0 +1,1 @@
+export const LEVENSHTEIN_MATCH_THRESHOLD = 0.7;

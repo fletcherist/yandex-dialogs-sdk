@@ -1,4 +1,4 @@
-import { IApiRequestNlu } from './nlu'
+import { IApiRequestNlu } from './nlu';
 
 export interface IApiRequestMeta {
   locale: string;
@@ -14,7 +14,7 @@ export interface IApiRequestBody {
     dangerous_context?: true;
   };
   payload?: object;
-  nlu: IApiRequestNlu
+  nlu?: IApiRequestNlu;
 }
 
 export interface IApiRequesSession {
