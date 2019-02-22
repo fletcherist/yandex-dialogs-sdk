@@ -1,9 +1,9 @@
 import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
 import { WebhookServer, IWebhookServer } from './server/webhookServer';
-import { Middleware, IMiddlewareResult } from './middleware/middleware';
+import { Middleware } from './middleware/middleware';
 import { IApiRequest } from './api/request';
 import { IContext } from './context';
-import { IApiResponse } from './api/response';
+import { IApiResponse, IApiResponseBody } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 import { CommandCallback, CommandDeclaration } from './command/command';
 import { InMemorySessionStorage } from './session/inMemorySessionStorage';
@@ -41,7 +41,7 @@ export class Alice implements IAlice {
     this._mainStage = new MainStage();
 
     this._sessionStorage =
-        config.sessionStorage || new InMemorySessionStorage();
+      config.sessionStorage || new InMemorySessionStorage();
     this.use(sessionMiddleware(this._sessionStorage));
   }
 
@@ -60,7 +60,7 @@ export class Alice implements IAlice {
 
   private async _runMiddlewares(
     context: IContext,
-  ): Promise<IMiddlewareResult | null> {
+  ): Promise<IApiResponseBody | null> {
     const middlewares = Array.from(this._middlewares);
     // mainStage middleware should always be the latest one
     middlewares.push(this._mainStage.middleware);
@@ -71,7 +71,7 @@ export class Alice implements IAlice {
     let index = 0;
     const next = async (
       middlewareContext: IContext,
-    ): Promise<IMiddlewareResult | null> => {
+    ): Promise<IApiResponseBody | null> => {
       const middleware = middlewares[index];
       index++;
       return middleware(
@@ -101,9 +101,9 @@ export class Alice implements IAlice {
       );
     }
 
-    debug(`outcoming result: ${result.responseBody.text}`);
+    debug(`outcoming result: ${result.text}`);
     return {
-      response: result.responseBody,
+      response: result,
       session: {
         message_id: data.session.message_id,
         session_id: data.session.session_id,

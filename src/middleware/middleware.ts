@@ -1,13 +1,10 @@
 import { IContext } from '../context';
 import { IApiResponseBody } from '../api/response';
 
-export interface IMiddlewareResult {
-  responseBody: IApiResponseBody;
-}
 
 export type MiddlewareNext<TContext extends IContext = IContext> = (
   context: TContext,
-) => Promise<IMiddlewareResult | null>;
+) => Promise<IApiResponseBody | null>;
 
 export type Middleware<
   TContextFrom extends IContext = IContext,
@@ -15,4 +12,4 @@ export type Middleware<
 > = (
   context: TContextFrom,
   next: MiddlewareNext<TContextTo> | null,
-) => IMiddlewareResult | Promise<IMiddlewareResult | null>;
+) => IApiResponseBody | Promise<IApiResponseBody | null>;

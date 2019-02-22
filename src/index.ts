@@ -26,7 +26,6 @@ export { IStage, Stage } from './stage/stage';
 export { IStageContext } from './stage/stageContext';
 
 export {
-  IMiddlewareResult,
   Middleware,
   MiddlewareNext,
 } from './middleware/middleware';
