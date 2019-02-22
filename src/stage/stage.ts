@@ -1,5 +1,6 @@
 import { IScene, Scene } from './scene';
-import { Middleware, IMiddlewareResult } from '../middleware/middleware';
+import { Middleware } from '../middleware/middleware';
+import { IApiResponseBody } from '../api/response'
 import { ISessionContext } from '../session/sessionContext';
 import { IStageContext } from './stageContext';
 import { StageCompere } from './compere';
@@ -44,7 +45,7 @@ export class Stage implements IStage {
   }
 
   public getMiddleware(): Middleware<ISessionContext> {
-    return async (context, next): Promise<IMiddlewareResult | null> => {
+    return async (context, next): Promise<IApiResponseBody | null> => {
       if (!context.session) {
         throw new Error(
           'You have to add some session middelware to use scenes',
