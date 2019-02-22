@@ -114,6 +114,12 @@ alice.command(['array', 'of', 'strings'], ctx => null)
 alice.command(ctx => true || false, ctx => null)
 
 alice.any('text', ctx => null)
+
+// create event listener
+// triggers when request processing is finished
+alice.on('response', ctx => {
+  console.log(ctx.response)
+})
 ```
 
 ###### Images Api
@@ -148,8 +154,9 @@ await alice.imagesApi.deleteImage('IMAGE_ID')
 - `[ctx.userId]` — shortcut for `ctx.data.session.user_id`
 - `[ctx.payload]` — shortcut for `ctx.data.request.payload`
 - `[ctx.nlu]` - shortcut for `ctx.data.request.nlu` [(see more)](https://tech.yandex.ru/dialogs/alice/doc/nlu-docpage/)
-- `[ctx.enter]` - enters session
-- `[ctx.leave]` - goes to main dialog
+- `[ctx.response]` - available only in listeners. appears just before sending a response
+- `[ctx.enter()]` - enters session
+- `[ctx.leave()]` - goes to main dialog
 - `ctx.session.set` - set session value. Session is attached to `user_id`
 - `ctx.session.get` - get session value.
 ```javascript
@@ -225,6 +232,15 @@ Reply.itemsListCard('test', {
       { image_id: IMAGE_ID, title: 'title', description: 'description' },
     ],
   });
+```
+
+###### Events
+```javascript
+// create event listener
+// triggers when request processing is finished
+alice.on('response', ctx => {
+  console.log(ctx.response)
+})
 ```
 
 
