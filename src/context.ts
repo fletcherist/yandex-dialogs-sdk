@@ -1,5 +1,6 @@
 import { IApiRequest } from './api/request';
 import { IApiRequestNlu } from './api/nlu';
+import { IApiResponseBody } from './api/response';
 
 export interface IContext {
   readonly data: IApiRequest;
@@ -10,4 +11,7 @@ export interface IContext {
   readonly userId: string;
   readonly payload?: object;
   readonly nlu?: IApiRequestNlu;
+  // param response appears in context when all
+  // middlewares have been done and we got some response
+  response?: IApiResponseBody;
 }

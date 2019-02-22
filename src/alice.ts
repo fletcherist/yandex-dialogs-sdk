@@ -1,3 +1,5 @@
+import { EventEmitter } from 'events';
+
 import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
 import { WebhookServer, IWebhookServer } from './server/webhookServer';
 import { Middleware } from './middleware/middleware';
@@ -31,8 +33,10 @@ export class Alice implements IAlice {
   private readonly _imagesApi: IImagesApi;
   private readonly _mainStage: MainStage;
   private readonly _sessionStorage: ISessionStorage;
+  private _eventEmitter: EventEmitter;
 
   constructor(config: IAliceConfig = {}) {
+    this._eventEmitter = new EventEmitter();
     this._config = config;
     this.handleRequest = this.handleRequest.bind(this);
 
@@ -101,6 +105,10 @@ export class Alice implements IAlice {
       );
     }
 
+    context.response = result;
+    // trigger response event
+    this._eventEmitter.emit('response', context);
+
     debug(`outcoming result: ${result.text}`);
     return {
       response: result,
@@ -145,5 +153,9 @@ export class Alice implements IAlice {
 
   public registerScene(scene: IScene): void {
     this._mainStage.stage.addScene(scene);
+  }
+
+  public on(type: 'response', callback: (context: IContext) => any): void {
+    this._eventEmitter.addListener(type, callback);
   }
 }
