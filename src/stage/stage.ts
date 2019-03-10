@@ -1,6 +1,5 @@
 import { IScene, Scene } from './scene';
 import { Middleware } from '../middleware/middleware';
-import { IApiResponseBody } from '../api/response'
 import { ISessionContext } from '../session/sessionContext';
 import { IStageContext } from './stageContext';
 import { StageCompere } from './compere';
@@ -15,7 +14,6 @@ export interface IStage {
 }
 
 export class Stage implements IStage {
-
   private readonly _scenes: Map<string, IScene>;
 
   constructor() {
@@ -44,7 +42,7 @@ export class Stage implements IStage {
   }
 
   public getMiddleware(): Middleware<ISessionContext> {
-    return async (context, next): Promise<IApiResponseBody | null> => {
+    return async (context, next): Promise<ISessionContext> => {
       if (!context.session) {
         throw new Error(
           'You have to add some session middelware to use scenes',
@@ -56,10 +54,10 @@ export class Stage implements IStage {
       const scene = this._scenes.has(sceneName)
         ? this._scenes.get(sceneName)
         : this._scenes.has(DEFAULT_SCENE_NAME)
-          ? this._scenes.get(DEFAULT_SCENE_NAME)
-          : null;
+        ? this._scenes.get(DEFAULT_SCENE_NAME)
+        : null;
       if (!scene) {
-        return next ? next(context) : null;
+        return next ? next(context) : context;
       }
 
       const compere = new StageCompere(context);
@@ -70,10 +68,11 @@ export class Stage implements IStage {
       };
       const result = await scene.run(stageContext);
       if (!result) {
-        return next ? next(context) : null;
+        return next ? next(stageContext) : stageContext;
       }
 
-      return result;
+      stageContext.response = result;
+      return stageContext;
     };
   }
 }
