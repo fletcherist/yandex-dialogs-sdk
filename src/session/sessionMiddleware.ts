@@ -2,7 +2,6 @@ import { Middleware } from '../middleware/middleware';
 import { ISessionStorage } from './session';
 import { IContext } from '../context';
 import { ISessionContext } from './sessionContext';
-import { IApiResponseBody } from '../api/response'
 import {
   ISessionKeyProvider,
   sessionKeyUserIdProvider,
@@ -18,17 +17,15 @@ interface ISessionMiddlewareParams {
  */
 export function sessionMiddleware(
   storage: ISessionStorage,
-  {
-    keyProvider = sessionKeyUserIdProvider,
-  }: ISessionMiddlewareParams = {},
+  { keyProvider = sessionKeyUserIdProvider }: ISessionMiddlewareParams = {},
 ): Middleware<ISessionContext, IContext> {
-  return async (context, next): Promise<IApiResponseBody | null> => {
+  return async (context, next): Promise<IContext> => {
     const id = await keyProvider(context);
     const session = await storage.getOrCreate(id);
     const sessionContext: ISessionContext = {
       ...context,
       session,
     };
-    return next ? next(sessionContext) : null;
+    return next ? next(sessionContext) : sessionContext;
   };
 }

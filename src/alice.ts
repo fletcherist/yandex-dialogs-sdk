@@ -5,7 +5,7 @@ import { WebhookServer, IWebhookServer } from './server/webhookServer';
 import { Middleware } from './middleware/middleware';
 import { IApiRequest } from './api/request';
 import { IContext } from './context';
-import { IApiResponse, IApiResponseBody } from './api/response';
+import { IApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 import { CommandCallback, CommandDeclaration } from './command/command';
 import { InMemorySessionStorage } from './session/inMemorySessionStorage';
@@ -62,20 +62,16 @@ export class Alice implements IAlice {
     };
   }
 
-  private async _runMiddlewares(
-    context: IContext,
-  ): Promise<IApiResponseBody | null> {
+  private async _runMiddlewares(context: IContext): Promise<IContext> {
     const middlewares = Array.from(this._middlewares);
     // mainStage middleware should always be the latest one
     middlewares.push(this._mainStage.middleware);
     if (middlewares.length === 0) {
-      return null;
+      return context;
     }
 
     let index = 0;
-    const next = async (
-      middlewareContext: IContext,
-    ): Promise<IApiResponseBody | null> => {
+    const next = async (middlewareContext: IContext): Promise<IContext> => {
       const middleware = middlewares[index];
       index++;
       return middleware(
@@ -96,22 +92,25 @@ export class Alice implements IAlice {
     }
     debug(`incoming request: ${data.request.command}`);
     const context = this._buildContext(data);
-    const result = await this._runMiddlewares(context);
-    if (!result) {
+    // trigger request event
+    this._eventEmitter.emit('request', context);
+
+    const newContext = await this._runMiddlewares(context);
+    if (!newContext.response) {
       throw new Error(
         'No response for request ' +
           `"${context.data.request.command}"` +
-          '. Try add command for it or add default command.',
+          '. Try add command for it or add default command.' +
+          '${context.response} not found. Check out your middlewares',
       );
     }
 
-    context.response = result;
     // trigger response event
-    this._eventEmitter.emit('response', context);
+    this._eventEmitter.emit('response', newContext);
 
-    debug(`outcoming result: ${result.text}`);
+    debug(`outcoming result: ${newContext.response.text}`);
     return {
-      response: result,
+      response: newContext.response,
       session: {
         message_id: data.session.message_id,
         session_id: data.session.session_id,
@@ -155,7 +154,10 @@ export class Alice implements IAlice {
     this._mainStage.stage.addScene(scene);
   }
 
-  public on(type: 'response', callback: (context: IContext) => any): void {
+  public on(
+    type: 'response' | 'request',
+    callback: (context: IContext) => any,
+  ): void {
     this._eventEmitter.addListener(type, callback);
   }
 }
