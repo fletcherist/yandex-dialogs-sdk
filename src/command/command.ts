@@ -86,6 +86,9 @@ export class Command<TContext extends IContext = IContext>
     return (context: IContext) => {
       const commandLower = context.data.request.command ?
           context.data.request.command.toLowerCase() : '';
+      if (commandLower === pattern) {
+        return 1;
+      }
       return relevanceProvider(pattern, commandLower);
     };
   }

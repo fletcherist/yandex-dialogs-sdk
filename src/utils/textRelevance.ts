@@ -12,9 +12,7 @@ export type ITextRelevanceProvider = (
  */
 export function getLevenshteinRelevance(a: string, b: string): number {
   if (!a || a.length === 0 || !b || b.length === 0) {
-    return a ? a.length :
-           b ? b.length :
-           0;
+    return 0;
   }
   const maxLength = Math.max(a.length, b.length);
   const levenshteinValue = levenshtein.get(a, b);
