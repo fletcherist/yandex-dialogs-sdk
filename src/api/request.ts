@@ -1,12 +1,12 @@
-import { IApiRequestNlu } from './nlu';
+import { ApiRequestNlu } from './nlu';
 
-export interface IApiRequestMeta {
+export interface ApiRequestMeta {
   locale: string;
   timezone: string;
   client_id: string;
 }
 
-export interface IApiRequestBody {
+export interface ApiRequestBody {
   command: string;
   original_utterance: string;
   type: 'SimpleUtterance' | 'ButtonPressed';
@@ -14,10 +14,10 @@ export interface IApiRequestBody {
     dangerous_context?: true;
   };
   payload?: object;
-  nlu?: IApiRequestNlu;
+  nlu?: ApiRequestNlu;
 }
 
-export interface IApiRequesSession {
+export interface ApiRequestSession {
   new: boolean;
   message_id: number;
   session_id: string;
@@ -25,9 +25,9 @@ export interface IApiRequesSession {
   user_id: string;
 }
 
-export interface IApiRequest {
-  meta: IApiRequestMeta;
-  request: IApiRequestBody;
-  session: IApiRequesSession;
+export interface ApiRequest {
+  meta: ApiRequestMeta;
+  request: ApiRequestBody;
+  session: ApiRequestSession;
   version: string;
 }

@@ -1,11 +1,11 @@
 import { EventEmitter } from 'events';
 
-import { IImagesApiConfig, IImagesApi, ImagesApi } from './imagesApi';
-import { WebhookServer, IWebhookServer } from './server/webhookServer';
+import { ImagesApiConfig, ImagesApi } from './imagesApi';
+import { WebhookServer } from './server/webhookServer';
 import { Middleware } from './middleware/middleware';
-import { IApiRequest } from './api/request';
-import { IContext } from './context';
-import { IApiResponse } from './api/response';
+import { ApiRequest } from './api/request';
+import { Context } from './context';
+import { ApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 import { CommandCallback, CommandDeclaration } from './command/command';
 import { InMemorySessionStorage } from './session/inMemorySessionStorage';
@@ -13,29 +13,22 @@ import { sessionMiddleware } from './session/sessionMiddleware';
 import debug from './debug';
 
 import { MainStage } from './stage/mainScene';
-import { ISessionStorage } from './session/session';
-import { IScene } from './stage/scene';
+import { SessionStorage } from './session/session';
+import { Scene } from './stage/scene';
 
-export interface IAliceConfig extends IImagesApiConfig {
-  sessionStorage?: ISessionStorage;
+export interface AliceConfig extends ImagesApiConfig {
+  sessionStorage?: SessionStorage;
 }
 
-export interface IAlice {
-  readonly imagesApi: IImagesApi;
-  handleRequest(data: IApiRequest): Promise<IApiResponse>;
-  use(middleware: Middleware): void;
-  listen(port: number, webhookUrl: string, options: object): IWebhookServer;
-}
-
-export class Alice implements IAlice {
-  private readonly _config: IAliceConfig;
+export class Alice {
+  private readonly _config: AliceConfig;
   private readonly _middlewares: Middleware[];
-  private readonly _imagesApi: IImagesApi;
+  private readonly _imagesApi: ImagesApi;
   private readonly _mainStage: MainStage;
-  private readonly _sessionStorage: ISessionStorage;
+  private readonly _sessionStorage: SessionStorage;
   private _eventEmitter: EventEmitter;
 
-  constructor(config: IAliceConfig = {}) {
+  constructor(config: AliceConfig = {}) {
     this._eventEmitter = new EventEmitter();
     this._config = config;
     this.handleRequest = this.handleRequest.bind(this);
@@ -49,7 +42,7 @@ export class Alice implements IAlice {
     this.use(sessionMiddleware(this._sessionStorage));
   }
 
-  private _buildContext(request: IApiRequest): IContext {
+  private _buildContext(request: ApiRequest): Context {
     return {
       data: request,
       message: request.request.command,
@@ -62,7 +55,7 @@ export class Alice implements IAlice {
     };
   }
 
-  private async _runMiddlewares(context: IContext): Promise<IContext> {
+  private async _runMiddlewares(context: Context): Promise<Context> {
     const middlewares = Array.from(this._middlewares);
     // mainStage middleware should always be the latest one
     middlewares.push(this._mainStage.middleware);
@@ -71,7 +64,7 @@ export class Alice implements IAlice {
     }
 
     let index = 0;
-    const next = async (middlewareContext: IContext): Promise<IContext> => {
+    const next = async (middlewareContext: Context): Promise<Context> => {
       const middleware = middlewares[index];
       index++;
       return middleware(
@@ -82,11 +75,11 @@ export class Alice implements IAlice {
     return next(context);
   }
 
-  get imagesApi(): IImagesApi {
+  get imagesApi(): ImagesApi {
     return this._imagesApi;
   }
 
-  public async handleRequest(data: IApiRequest): Promise<IApiResponse> {
+  public async handleRequest(data: ApiRequest): Promise<ApiResponse> {
     if (data.version !== ALICE_PROTOCOL_VERSION) {
       throw new Error('Unknown protocol version');
     }
@@ -140,23 +133,23 @@ export class Alice implements IAlice {
   }
 
   public command(
-    declaration: CommandDeclaration<IContext>,
-    callback: CommandCallback<IContext>,
+    declaration: CommandDeclaration,
+    callback: CommandCallback,
   ): void {
     this._mainStage.scene.command(declaration, callback);
   }
 
-  public any(callback: CommandCallback<IContext>): void {
+  public any(callback: CommandCallback): void {
     this._mainStage.scene.any(callback);
   }
 
-  public registerScene(scene: IScene): void {
+  public registerScene(scene: Scene): void {
     this._mainStage.stage.addScene(scene);
   }
 
   public on(
     type: 'response' | 'request',
-    callback: (context: IContext) => any,
+    callback: (context: Context) => any,
   ): void {
     this._eventEmitter.addListener(type, callback);
   }

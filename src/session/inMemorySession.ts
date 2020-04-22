@@ -1,6 +1,6 @@
-import { ISession } from './session';
+import { Session } from './session';
 
-export class InMemorySession implements ISession {
+export class InMemorySession implements Session {
   public readonly id: string;
   private readonly _data: Map<string, any>;
 

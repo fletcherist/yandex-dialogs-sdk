@@ -1,12 +1,12 @@
-import { IContext } from '../context';
+import { Context } from '../context';
 
-export type MiddlewareNext<TContext extends IContext = IContext> = (
+export type MiddlewareNext<TContext extends Context = Context> = (
   context: TContext,
 ) => Promise<TContext>;
 
 export type Middleware<
-  TContextFrom extends IContext = IContext,
-  TContextTo extends IContext = TContextFrom
+  TContextFrom extends Context = Context,
+  TContextTo extends Context = TContextFrom
 > = (
   context: TContextFrom,
   next: MiddlewareNext<TContextTo> | null,

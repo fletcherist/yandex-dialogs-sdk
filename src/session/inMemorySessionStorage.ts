@@ -1,16 +1,16 @@
-import { ISessionStorage, ISession } from './session';
+import { SessionStorage, Session } from './session';
 import { InMemorySession } from './inMemorySession';
 
 interface IInMemorySessionsStorageItem {
   readonly creationTime: number;
-  readonly session: ISession;
+  readonly session: Session;
 }
 
 export interface IInMemorySessionsStorageParams {
   ttl?: number;
 }
 
-export class InMemorySessionStorage implements ISessionStorage {
+export class InMemorySessionStorage implements SessionStorage {
   private readonly _ttl: number;
   private readonly _sessions: Map<string, IInMemorySessionsStorageItem>;
 
@@ -29,7 +29,7 @@ export class InMemorySessionStorage implements ISessionStorage {
     }
   }
 
-  public async getOrCreate(id: string): Promise<ISession> {
+  public async getOrCreate(id: string): Promise<Session> {
     this._flushOutdatedSessions();
 
     let sessionItem = this._sessions.get(id);

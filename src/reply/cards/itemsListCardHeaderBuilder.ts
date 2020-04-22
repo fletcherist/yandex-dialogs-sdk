@@ -1,4 +1,4 @@
-import { IApiResponseItemsListCardHeader } from '../../api/response';
+import { ApiResponseItemsListCardHeader } from '../../api/response';
 
 export interface IItemsListCardHeaderReply {
   text: string;
@@ -9,7 +9,7 @@ export type ItemsListCardHeaderDeclaration = IItemsListCardHeaderReply | string;
 export class ItemsListCardHeaderBuilder {
   public static createItemsListCardHeader(
     declaration: ItemsListCardHeaderDeclaration,
-  ): IApiResponseItemsListCardHeader {
+  ): ApiResponseItemsListCardHeader {
     if (typeof declaration === 'object') {
       return declaration;
     }

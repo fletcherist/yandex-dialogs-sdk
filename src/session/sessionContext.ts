@@ -1,6 +1,6 @@
-import { IContext } from '../context';
-import { ISession } from './session';
+import { Context } from '../context';
+import { Session } from './session';
 
-export interface ISessionContext extends IContext {
-  readonly session: ISession;
+export interface SessionContext extends Context {
+  readonly session: Session;
 }

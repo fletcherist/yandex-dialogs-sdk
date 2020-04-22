@@ -1,19 +1,15 @@
 import * as http from 'http';
 import debug from '../debug';
-import { IApiRequest } from '../api/request';
-import { IApiResponse } from '../api/response';
+import { ApiRequest } from '../api/request';
+import { ApiResponse } from '../api/response';
 
-type HandleAliceRequestType = (request: IApiRequest) => Promise<IApiResponse>;
+type HandleAliceRequestType = (request: ApiRequest) => Promise<ApiResponse>;
 
-export interface IWebhookServerConfig {
+export interface WebhookServerConfig {
   port: number;
   webhookUrl: string;
   options: object;
   handleRequest: HandleAliceRequestType;
-}
-export interface IWebhookServer {
-  start(): void;
-  stop(): void;
 }
 
 function isAvailableMethod(method: string | undefined): boolean {
@@ -37,7 +33,7 @@ export class WebhookServer {
   private _isStarted: boolean;
   private _handleAliceRequest: HandleAliceRequestType;
 
-  constructor(config: IWebhookServerConfig) {
+  constructor(config: WebhookServerConfig) {
     this._port = config.port;
     this._webhookUrl = formatWebhookUrl(config.webhookUrl);
     this._handleAliceRequest = config.handleRequest;
@@ -53,8 +49,10 @@ export class WebhookServer {
     request: http.IncomingMessage,
     response: http.ServerResponse,
   ): Promise<void> {
-    if (!isAvailableMethod(request.method) ||
-        request.url !== this._webhookUrl) {
+    if (
+      !isAvailableMethod(request.method) ||
+      request.url !== this._webhookUrl
+    ) {
       response.statusCode = 400;
       return response.end();
     }
@@ -66,7 +64,7 @@ export class WebhookServer {
 
   private static _readRequest(
     request: http.IncomingMessage,
-  ): Promise<IApiRequest> {
+  ): Promise<ApiRequest> {
     return new Promise((resolve, reject) => {
       const body: Buffer[] = [];
       request
@@ -86,7 +84,7 @@ export class WebhookServer {
   }
   private static async _sendResponse(
     response: http.ServerResponse,
-    responseBody: IApiResponse,
+    responseBody: ApiResponse,
   ) {
     response.statusCode = 200;
     response.setHeader('Content-Type', 'application/json');

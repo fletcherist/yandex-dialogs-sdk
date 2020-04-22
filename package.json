@@ -57,7 +57,8 @@
     "@types/node-fetch": "^2.1.2",
     "fast-levenshtein": "^2.0.6",
     "node-fetch": "^2.1.2",
-    "debug": "^4.1.0"
+    "debug": "^4.1.0",
+    "alice-renderer": "1.0.0"
   },
   "devDependencies": {
     "@types/debug": "0.0.31",

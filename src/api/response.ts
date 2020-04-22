@@ -1,63 +1,63 @@
-export interface IApiResponseCardButton {
+export interface ApiResponseCardButton {
   text: string;
   url?: string;
   payload?: object;
 }
 
-export interface IApiResponseCardFooter {
+export interface ApiResponseCardFooter {
   text: string;
-  button?: IApiResponseCardButton;
+  button?: ApiResponseCardButton;
 }
 
 export type ApiResponseCardType = 'BigImage' | 'ItemsList';
 
-export interface IApiResponseCardBase {
+export interface ApiResponseCardBase {
   type: ApiResponseCardType;
 }
 
-export interface IApiResponseBigImageCard extends IApiResponseCardBase {
+export interface ApiResponseBigImageCard extends ApiResponseCardBase {
   type: 'BigImage';
   image_id: string;
   title?: string;
   description?: string;
-  button?: IApiResponseCardButton;
-  footer?: IApiResponseCardFooter;
+  button?: ApiResponseCardButton;
+  footer?: ApiResponseCardFooter;
 }
 
-export interface IApiResponseItemsListCardHeader {
+export interface ApiResponseItemsListCardHeader {
   text: string;
 }
 
-export interface IApiResponseItemsListCardImage {
+export interface ApiResponseItemsListCardImage {
   image_id: string;
   title?: string;
   description?: string;
-  button?: IApiResponseCardButton;
+  button?: ApiResponseCardButton;
 }
 
-export interface IApiResponseItemsListCard extends IApiResponseCardBase {
+export interface ApiResponseItemsListCard extends ApiResponseCardBase {
   type: 'ItemsList';
-  header?: IApiResponseItemsListCardHeader;
-  items: IApiResponseItemsListCardImage[];
-  footer?: IApiResponseCardFooter;
+  header?: ApiResponseItemsListCardHeader;
+  items: ApiResponseItemsListCardImage[];
+  footer?: ApiResponseCardFooter;
 }
 
 export type IApiResponseCard =
-  | IApiResponseBigImageCard
-  | IApiResponseItemsListCard;
+  | ApiResponseBigImageCard
+  | ApiResponseItemsListCard;
 
-export interface IApiResponseBodyButton {
+export interface ApiResponseBodyButton {
   title: string;
   url?: string;
   payload?: object;
   hide?: boolean;
 }
 
-export interface IApiResponseBody {
+export interface ApiResponseBody {
   text: string;
   tts?: string;
   card?: IApiResponseCard;
-  buttons?: IApiResponseBodyButton[];
+  buttons?: ApiResponseBodyButton[];
   end_session: boolean;
 }
 
@@ -67,8 +67,8 @@ export interface IApiResponseSession {
   user_id: string;
 }
 
-export interface IApiResponse {
-  response: IApiResponseBody;
+export interface ApiResponse {
+  response: ApiResponseBody;
   session?: IApiResponseSession;
   version: string;
 }

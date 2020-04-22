@@ -1,14 +1,14 @@
-export interface IApiImageItem {
+export interface ApiImageItem {
   id: string;
   origUrl?: string;
 }
 
-export interface IApiImageUploadResponse {
-  image: IApiImageItem;
+export interface ApiImageUploadResponse {
+  image: ApiImageItem;
 }
 
 export interface IApiImageListResponse {
-  images: IApiImageItem[];
+  images: ApiImageItem[];
 }
 
 export interface IApiImageQuotaResponse {

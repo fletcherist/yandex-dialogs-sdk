@@ -1,45 +1,37 @@
 import fetch from 'node-fetch';
 import { ALICE_API_URL } from './constants';
 import {
-  IApiImageUploadResponse,
-  IApiImageItem,
+  ApiImageUploadResponse,
+  ApiImageItem,
   IApiImageListResponse,
   IApiImageQuota,
   IApiImageQuotaResponse,
   IApiImageDeleteResponse,
 } from './api/image';
 
-export interface IImagesApiConfig {
+export interface ImagesApiConfig {
   oAuthToken?: string;
   skillId?: string;
 }
 
-interface IImagesApiRequestParams {
+interface ImagesApiRequestParams {
   path?: string;
   url?: string;
   method?: 'GET' | 'POST' | 'DELETE';
   body?: object;
 }
 
-export interface IImagesApi {
-  uploadImageByUrl(url: string): Promise<IApiImageItem>;
-  uploadImageFile(): Promise<IApiImageItem>;
-  getImages(): Promise<IApiImageItem[]>;
-  getImagesQuota(): Promise<IApiImageQuota>;
-  deleteImage(imageId: string): Promise<IApiImageDeleteResponse>;
-}
-
-export class ImagesApi implements IImagesApi {
+export class ImagesApi {
   private readonly _skillId: string | undefined;
   private readonly _oAuthToken: string | undefined;
 
-  constructor(params: IImagesApiConfig) {
+  constructor(params: ImagesApiConfig) {
     this._skillId = params.skillId;
     this._oAuthToken = params.oAuthToken;
   }
 
-  public async uploadImageByUrl(url: string): Promise<IApiImageItem> {
-    const response = await this._makeRequest<IApiImageUploadResponse>({
+  public async uploadImageByUrl(url: string): Promise<ApiImageItem> {
+    const response = await this._makeRequest<ApiImageUploadResponse>({
       path: 'images',
       method: 'POST',
       body: { url },
@@ -47,11 +39,11 @@ export class ImagesApi implements IImagesApi {
     return response.image;
   }
 
-  public async uploadImageFile(): Promise<IApiImageItem> {
+  public async uploadImageFile(): Promise<ApiImageItem> {
     throw new Error('Not implemented');
   }
 
-  public async getImages(): Promise<IApiImageItem[]> {
+  public async getImages(): Promise<ApiImageItem[]> {
     const response = await this._makeRequest<IApiImageListResponse>({
       path: 'images',
       method: 'GET',
@@ -76,7 +68,7 @@ export class ImagesApi implements IImagesApi {
   }
 
   private async _makeRequest<TResult>(
-    params: IImagesApiRequestParams,
+    params: ImagesApiRequestParams,
   ): Promise<TResult> {
     if (!this._oAuthToken) {
       throw new Error(
@@ -90,11 +82,11 @@ export class ImagesApi implements IImagesApi {
     const response = await fetch(url, {
       method: method,
       headers: {
-        'Authorization': `OAuth ${this._oAuthToken}`,
+        Authorization: `OAuth ${this._oAuthToken}`,
         'Content-type': 'application/json',
       },
       body: body,
     });
-    return await response.json() as TResult;
+    return (await response.json()) as TResult;
   }
 }

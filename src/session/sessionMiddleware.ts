@@ -1,7 +1,7 @@
 import { Middleware } from '../middleware/middleware';
-import { ISessionStorage } from './session';
-import { IContext } from '../context';
-import { ISessionContext } from './sessionContext';
+import { SessionStorage } from './session';
+import { Context } from '../context';
+import { SessionContext } from './sessionContext';
 import {
   ISessionKeyProvider,
   sessionKeyUserIdProvider,
@@ -16,13 +16,13 @@ interface ISessionMiddlewareParams {
  * to store user sessions
  */
 export function sessionMiddleware(
-  storage: ISessionStorage,
+  storage: SessionStorage,
   { keyProvider = sessionKeyUserIdProvider }: ISessionMiddlewareParams = {},
-): Middleware<ISessionContext, IContext> {
-  return async (context, next): Promise<IContext> => {
+): Middleware<SessionContext, Context> {
+  return async (context, next): Promise<Context> => {
     const id = await keyProvider(context);
     const session = await storage.getOrCreate(id);
-    const sessionContext: ISessionContext = {
+    const sessionContext: SessionContext = {
       ...context,
       session,
     };

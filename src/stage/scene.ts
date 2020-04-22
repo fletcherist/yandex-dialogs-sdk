@@ -4,25 +4,13 @@ import {
   CommandDeclaration,
   CommandCallbackResult,
 } from '../command/command';
-import { ICommandsGroup, CommandsGroup } from '../command/commandsGroup';
+import { CommandsGroup } from '../command/commandsGroup';
+import { Context } from '../context';
 
-import { IStageContext } from './stageContext';
-
-export interface IScene<TContext extends IStageContext = IStageContext> {
-  readonly name: string;
-  command(
-    declaration: CommandDeclaration<TContext>,
-    callback: CommandCallback<TContext>,
-  ): void;
-  any(callback: CommandCallback<TContext>): void;
-  run(context: TContext): Promise<CommandCallbackResult | null>;
-}
-
-export class Scene<TContext extends IStageContext = IStageContext>
-  implements IScene<TContext> {
+export class Scene {
   public readonly name: string;
-  private readonly _commands: ICommandsGroup<TContext>;
-  private _anyCommand: Command<TContext> | null;
+  private readonly _commands: CommandsGroup;
+  private _anyCommand: Command | null;
 
   constructor(name: string) {
     this.name = name;
@@ -31,17 +19,17 @@ export class Scene<TContext extends IStageContext = IStageContext>
   }
 
   public command(
-    declaration: CommandDeclaration<TContext>,
-    callback: CommandCallback<TContext>,
+    declaration: CommandDeclaration,
+    callback: CommandCallback,
   ): void {
     this._commands.add(Command.createCommand(declaration, callback));
   }
 
-  public any(callback: CommandCallback<TContext>): void {
+  public any(callback: CommandCallback): void {
     this._anyCommand = new Command(Command.createMatcherAlways(), callback);
   }
 
-  public async run(context: TContext): Promise<CommandCallbackResult | null> {
+  public async run(context: Context): Promise<CommandCallbackResult | null> {
     const command = await this._commands.getMostRelevant(context);
     if (command) {
       return command.run(context);

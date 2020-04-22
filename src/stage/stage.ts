@@ -1,26 +1,19 @@
-import { IScene, Scene } from './scene';
+import { Scene } from './scene';
 import { Middleware } from '../middleware/middleware';
-import { ISessionContext } from '../session/sessionContext';
-import { IStageContext } from './stageContext';
+import { SessionContext } from '../session/sessionContext';
+import { StageContext } from './stageContext';
 import { StageCompere } from './compere';
 import { CURRENT_SCENE_SESSION_KEY, DEFAULT_SCENE_NAME } from './constants';
 import debug from '../debug';
 
-export interface IStage {
-  addScene(scene: IScene): void;
-  removeScene(name: string): void;
-
-  getMiddleware(): Middleware;
-}
-
-export class Stage implements IStage {
-  private readonly _scenes: Map<string, IScene>;
+export class Stage implements Stage {
+  private readonly _scenes: Map<string, Scene>;
 
   constructor() {
-    this._scenes = new Map<string, IScene>();
+    this._scenes = new Map<string, Scene>();
   }
 
-  public addScene(scene: IScene): void {
+  public addScene(scene: Scene): void {
     if (!(scene instanceof Scene)) {
       throw new Error(
         'Incorrect argument scene. Please provide Scene instance',
@@ -41,8 +34,8 @@ export class Stage implements IStage {
     debug(`scene removed "${name}"`);
   }
 
-  public getMiddleware(): Middleware<ISessionContext> {
-    return async (context, next): Promise<ISessionContext> => {
+  public getMiddleware(): Middleware<SessionContext> {
+    return async (context, next): Promise<SessionContext> => {
       if (!context.session) {
         throw new Error(
           'You have to add some session middelware to use scenes',
@@ -61,7 +54,7 @@ export class Stage implements IStage {
       }
 
       const compere = new StageCompere(context);
-      const stageContext: IStageContext = {
+      const stageContext: StageContext = {
         ...context,
         enter: (name: string) => compere.enter(name),
         leave: () => compere.leave(),

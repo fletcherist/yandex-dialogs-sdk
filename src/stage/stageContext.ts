@@ -1,7 +1,7 @@
 import { IStageCompere } from './compere';
-import { ISessionContext } from '../session/sessionContext';
+import { SessionContext } from '../session/sessionContext';
 
-export interface IStageContext extends ISessionContext {
+export interface StageContext extends SessionContext {
   readonly enter: IStageCompere['enter'];
   readonly leave: IStageCompere['leave'];
 }

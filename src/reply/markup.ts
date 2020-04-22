@@ -1,10 +1,10 @@
 import { BodyButtonBuilder, BodyButtonDeclaration } from './bodyButtonBuilder';
-import { IApiResponseBodyButton } from '../api/response';
+import { ApiResponseBodyButton } from '../api/response';
 
 export class Markup {
   public static button(
     declaration: BodyButtonDeclaration,
-  ): IApiResponseBodyButton {
+  ): ApiResponseBodyButton {
     return BodyButtonBuilder.createBodyButton(declaration);
   }
 }

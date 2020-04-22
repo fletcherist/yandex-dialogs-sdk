@@ -1,4 +1,4 @@
-import { IApiResponseBodyButton } from '../api/response';
+import { ApiResponseBodyButton } from '../api/response';
 
 export interface IBodyButtonReply {
   title: string;
@@ -12,7 +12,7 @@ export type BodyButtonDeclaration = IBodyButtonReply | string;
 export class BodyButtonBuilder {
   public static createBodyButton(
     declaration: BodyButtonDeclaration,
-  ): IApiResponseBodyButton {
+  ): ApiResponseBodyButton {
     if (typeof declaration === 'object') {
       return declaration;
     }

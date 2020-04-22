@@ -1,4 +1,4 @@
-import { IApiResponseCardFooter } from '../../api/response';
+import { ApiResponseCardFooter } from '../../api/response';
 import { CardButtonDeclaration, CardButtonBuilder } from './cardButtonBuilder';
 
 export interface ICardFooterReply {
@@ -11,9 +11,9 @@ export type CardFooterDeclaration = ICardFooterReply | string;
 export class CardFooterBuilder {
   public static createCardFooter(
     declaration: CardFooterDeclaration,
-  ): IApiResponseCardFooter {
+  ): ApiResponseCardFooter {
     if (typeof declaration === 'object') {
-      const result: IApiResponseCardFooter = {
+      const result: ApiResponseCardFooter = {
         text: declaration.text,
       };
       if (declaration.button) {

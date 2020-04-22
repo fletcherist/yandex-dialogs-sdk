@@ -1,4 +1,4 @@
-import { IApiResponseBody } from '../api/response';
+import { ApiResponseBody } from '../api/response';
 import { TextReplyDeclaration, TextReplyBuilder } from './textReplyBuilder';
 import {
   ExtraParamsDeclaration,
@@ -17,9 +17,9 @@ export class Reply {
   public static text(
     textDeclaration: TextReplyDeclaration,
     extraParamsDeclaration?: ExtraParamsDeclaration,
-  ): IApiResponseBody {
+  ): ApiResponseBody {
     const textReply = TextReplyBuilder.createTextReply(textDeclaration);
-    const result: IApiResponseBody = {
+    const result: ApiResponseBody = {
       text: textReply.text,
       tts: textReply.tts,
       end_session: false,
@@ -45,10 +45,10 @@ export class Reply {
     textDeclaration: TextReplyDeclaration,
     cardDeclaration: BigImageCardDeclaration,
     extraParamsDeclaration?: ExtraParamsDeclaration,
-  ): IApiResponseBody {
+  ): ApiResponseBody {
     const textReply = TextReplyBuilder.createTextReply(textDeclaration);
     const card = BigImageCardBuilder.createBigImageCard(cardDeclaration);
-    const result: IApiResponseBody = {
+    const result: ApiResponseBody = {
       text: textReply.text,
       tts: textReply.tts,
       card: card,
@@ -72,10 +72,10 @@ export class Reply {
     textDeclaration: TextReplyDeclaration,
     cardDeclaration: ItemsListCardDeclaration,
     extraParamsDeclaration?: ExtraParamsDeclaration,
-  ): IApiResponseBody {
+  ): ApiResponseBody {
     const textReply = TextReplyBuilder.createTextReply(textDeclaration);
     const card = ItemsListCardBuilder.createItemsListCard(cardDeclaration);
-    const result: IApiResponseBody = {
+    const result: ApiResponseBody = {
       text: textReply.text,
       tts: textReply.tts,
       card: card,

@@ -1,4 +1,4 @@
-import { ISessionContext } from '../session/sessionContext';
+import { SessionContext } from '../session/sessionContext';
 import { CURRENT_SCENE_SESSION_KEY, DEFAULT_SCENE_NAME } from './constants';
 import debug from '../debug';
 
@@ -8,9 +8,9 @@ export interface IStageCompere {
 }
 
 export class StageCompere implements IStageCompere {
-  private readonly _context: ISessionContext;
+  private readonly _context: SessionContext;
 
-  constructor(context: ISessionContext) {
+  constructor(context: SessionContext) {
     this._context = context;
   }
 

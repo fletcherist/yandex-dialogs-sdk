@@ -1,31 +1,21 @@
-import { ICommand } from './command';
+import { Command } from './command';
+import { Context } from '../context';
 
-import { IContext } from '../context';
-
-export interface ICommandRelevance<TContext extends IContext = IContext> {
-  readonly command: ICommand<TContext>;
+export interface CommandRelevance {
+  readonly command: Command;
   readonly relevance: number;
 }
 
-export interface ICommandsGroup<TContext extends IContext = IContext> {
-  add(command: ICommand): void;
-  getRelevance(
-    context: TContext,
-  ): Promise<Array<ICommandRelevance<TContext>> | null>;
-  getMostRelevant(context: TContext): Promise<ICommand<TContext> | null>;
-}
-
-export class CommandsGroup<TContext extends IContext = IContext>
-  implements ICommandsGroup<TContext> {
-  private readonly _commands: Array<ICommand<TContext>>;
+export class CommandsGroup {
+  private readonly _commands: Command[];
 
   constructor() {
     this._commands = [];
   }
 
   public async getRelevance(
-    context: TContext,
-  ): Promise<ICommandRelevance[] | null> {
+    context: Context,
+  ): Promise<CommandRelevance[] | null> {
     return Promise.all(
       this._commands.map(async command => {
         return { command, relevance: await command.getRelevance(context) };
@@ -33,22 +23,20 @@ export class CommandsGroup<TContext extends IContext = IContext>
     );
   }
 
-  public async getMostRelevant(
-    context: TContext,
-  ): Promise<ICommand<TContext> | null> {
+  public async getMostRelevant(context: Context): Promise<Command | null> {
     const relevances = await this.getRelevance(context);
     if (!relevances || !relevances.length) {
       return null;
     }
 
-    const mostRelevant = relevances.reduce<ICommandRelevance<TContext>>(
+    const mostRelevant = relevances.reduce<CommandRelevance>(
       (last, current) => (current.relevance > last.relevance ? current : last),
       relevances[0],
     );
     return mostRelevant.relevance > 0 ? mostRelevant.command : null;
   }
 
-  public add(command: ICommand<TContext>): void {
+  public add(command: Command): void {
     this._commands.push(command);
   }
 }

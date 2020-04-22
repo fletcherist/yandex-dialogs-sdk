@@ -1,4 +1,4 @@
-import { IApiResponseCardButton } from '../../api/response';
+import { ApiResponseCardButton } from '../../api/response';
 
 export interface ICardButtonReply {
   text: string;
@@ -11,7 +11,7 @@ export type CardButtonDeclaration = ICardButtonReply | string;
 export class CardButtonBuilder {
   public static createCardButton(
     declaration: CardButtonDeclaration,
-  ): IApiResponseCardButton {
+  ): ApiResponseCardButton {
     if (typeof declaration === 'object') {
       return declaration;
     }

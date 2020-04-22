@@ -1,4 +1,4 @@
-import { IApiResponseItemsListCardImage } from '../../api/response';
+import { ApiResponseItemsListCardImage } from '../../api/response';
 import { CardButtonDeclaration, CardButtonBuilder } from './cardButtonBuilder';
 
 export interface IItemsListCardImageReply {
@@ -13,9 +13,9 @@ export type ItemsListCardImageDeclaration = IItemsListCardImageReply | string;
 export class ItemsListCardImageBuilder {
   public static createItemsListCardImage(
     declaration: ItemsListCardImageDeclaration,
-  ): IApiResponseItemsListCardImage {
+  ): ApiResponseItemsListCardImage {
     if (typeof declaration === 'object') {
-      const result: IApiResponseItemsListCardImage = {
+      const result: ApiResponseItemsListCardImage = {
         image_id: declaration.image_id,
         title: declaration.title,
         description: declaration.description,

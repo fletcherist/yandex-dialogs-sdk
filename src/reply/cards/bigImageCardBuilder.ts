@@ -1,4 +1,4 @@
-import { IApiResponseBigImageCard } from '../../api/response';
+import { ApiResponseBigImageCard } from '../../api/response';
 import { CardFooterDeclaration, CardFooterBuilder } from './cardFooterBuilder';
 import { CardButtonDeclaration, CardButtonBuilder } from './cardButtonBuilder';
 
@@ -15,9 +15,9 @@ export type BigImageCardDeclaration = IBigImageCardReply | string;
 export class BigImageCardBuilder {
   public static createBigImageCard(
     declaration: BigImageCardDeclaration,
-  ): IApiResponseBigImageCard {
+  ): ApiResponseBigImageCard {
     if (typeof declaration === 'object') {
-      const result: IApiResponseBigImageCard = {
+      const result: ApiResponseBigImageCard = {
         type: 'BigImage',
         image_id: declaration.image_id,
         title: declaration.title,

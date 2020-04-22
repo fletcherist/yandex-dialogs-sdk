@@ -1,4 +1,4 @@
-import { IApiResponseItemsListCard } from '../../api/response';
+import { ApiResponseItemsListCard } from '../../api/response';
 import { CardFooterDeclaration, CardFooterBuilder } from './cardFooterBuilder';
 import {
   ItemsListCardHeaderDeclaration,
@@ -34,7 +34,7 @@ function isItemsListImageArray(
 export class ItemsListCardBuilder {
   public static createItemsListCard(
     declaration: ItemsListCardDeclaration,
-  ): IApiResponseItemsListCard {
+  ): ApiResponseItemsListCard {
     if (isItemsListImageArray(declaration)) {
       return {
         type: 'ItemsList',
@@ -45,7 +45,7 @@ export class ItemsListCardBuilder {
     }
 
     if (isItemsListCard(declaration)) {
-      const result: IApiResponseItemsListCard = {
+      const result: ApiResponseItemsListCard = {
         type: 'ItemsList',
         items: declaration.items.map(item =>
           ItemsListCardImageBuilder.createItemsListCardImage(item),

@@ -1,10 +1,10 @@
-export interface IApiEntityYandexFioValue {
+export interface ApiEntityYandexFioValue {
   first_name?: string;
   patronymic_name?: string;
   last_name?: string;
 }
 
-export interface IApiEntityYandexGeoValue {
+export interface ApiEntityYandexGeoValue {
   country?: string;
   city?: string;
   street?: string;
@@ -12,7 +12,7 @@ export interface IApiEntityYandexGeoValue {
   airport?: string;
 }
 
-export interface IApiEntityYandexDateTimeValue {
+export interface ApiEntityYandexDateTimeValue {
   year?: number;
   month?: number;
   day?: number;
@@ -24,45 +24,45 @@ export interface IApiEntityYandexDateTimeValue {
   minute_is_relative?: boolean;
 }
 
-export type IApiEntityYandexNumberValue = number;
+export type ApiEntityYandexNumberValue = number;
 
-export type IApiEntityType =
+export type ApiEntityType =
   | 'YANDEX.FIO'
   | 'YANDEX.GEO'
   | 'YANDEX.DATETIME'
   | 'YANDEX.NUMBER';
 
-export interface IApiEntityBase {
-  type: IApiEntityType;
+export interface ApiEntityBase {
+  type: ApiEntityType;
 }
 
-export interface IApiEntityYandexFio extends IApiEntityBase {
+export interface ApiEntityYandexFio extends ApiEntityBase {
   type: 'YANDEX.FIO';
-  value: IApiEntityYandexFioValue;
+  value: ApiEntityYandexFioValue;
 }
 
-export interface IApiEntityYandexGeo extends IApiEntityBase {
+export interface ApiEntityYandexGeo extends ApiEntityBase {
   type: 'YANDEX.GEO';
-  value: IApiEntityYandexGeoValue;
+  value: ApiEntityYandexGeoValue;
 }
 
-export interface IApiEntityYandexDateTime extends IApiEntityBase {
+export interface IApiEntityYandexDateTime extends ApiEntityBase {
   type: 'YANDEX.DATETIME';
-  value: IApiEntityYandexDateTimeValue;
+  value: ApiEntityYandexDateTimeValue;
 }
 
-export interface IApiEntityYandexNumber extends IApiEntityBase {
+export interface IApiEntityYandexNumber extends ApiEntityBase {
   type: 'YANDEX.NUMBER';
-  value: IApiEntityYandexNumberValue;
+  value: ApiEntityYandexNumberValue;
 }
 
-export type IApiEntity =
-  | IApiEntityYandexFio
-  | IApiEntityYandexGeo
+export type ApiEntity =
+  | ApiEntityYandexFio
+  | ApiEntityYandexGeo
   | IApiEntityYandexDateTime
   | IApiEntityYandexNumber;
 
-export interface IApiRequestNlu {
-  entities: IApiEntity[];
+export interface ApiRequestNlu {
+  entities: ApiEntity[];
   tokens: string[];
 }

@@ -1,11 +1,11 @@
-import { Stage, IStage } from './stage';
-import { Scene, IScene } from './scene';
+import { Stage } from './stage';
+import { Scene } from './scene';
 import { Middleware } from '../middleware/middleware';
 import { DEFAULT_SCENE_NAME } from './constants';
 
 export class MainStage {
-  public scene: IScene;
-  public stage: IStage;
+  public scene: Scene;
+  public stage: Stage;
   public middleware: Middleware;
 
   constructor() {

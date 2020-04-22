@@ -1,4 +1,4 @@
-export interface ISession {
+export interface Session {
   readonly id: string;
   has(key: string): boolean;
   delete<TValue = any>(key: string): void;
@@ -6,6 +6,6 @@ export interface ISession {
   set<TValue = any>(key: string, value: TValue): void;
 }
 
-export interface ISessionStorage {
-  getOrCreate(id: string): Promise<ISession>;
+export interface SessionStorage {
+  getOrCreate(id: string): Promise<Session>;
 }

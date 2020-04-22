@@ -1,10 +1,10 @@
-import { IApiResponseBodyButton } from '../api/response';
+import { ApiResponseBodyButton } from '../api/response';
 import { BodyButtonDeclaration } from './bodyButtonBuilder';
 import { BodyButtonBuilder } from './bodyButtonBuilder';
 
 export interface IExtraParams {
   tts?: string;
-  buttons?: IApiResponseBodyButton[];
+  buttons?: ApiResponseBodyButton[];
   end_session: boolean;
 }
 
