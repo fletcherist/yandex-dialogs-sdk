@@ -20,7 +20,6 @@ export { Session, SessionStorage } from './session/session';
 export { SessionContext } from './session/sessionContext';
 export { sessionMiddleware } from './session/sessionMiddleware';
 
-export { IStageCompere } from './stage/compere';
 export { Scene } from './stage/scene';
 export { Stage } from './stage/stage';
 export { StageContext } from './stage/stageContext';

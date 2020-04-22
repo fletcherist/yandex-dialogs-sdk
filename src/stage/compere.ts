@@ -2,12 +2,7 @@ import { SessionContext } from '../session/sessionContext';
 import { CURRENT_SCENE_SESSION_KEY, DEFAULT_SCENE_NAME } from './constants';
 import debug from '../debug';
 
-export interface IStageCompere {
-  enter(name: string): Promise<void>;
-  leave(): Promise<void>;
-}
-
-export class StageCompere implements IStageCompere {
+export class StageCompere {
   private readonly _context: SessionContext;
 
   constructor(context: SessionContext) {
