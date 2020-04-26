@@ -11,43 +11,8 @@ export {
 
 import { Alice } from './alice';
 
-import {
-  reply,
-  audio,
-  br,
-  buttons,
-  effect,
-  configure,
-  image,
-  enumerate,
-  once,
-  pause,
-  plural,
-  select,
-  text,
-  textTts,
-  tts,
-  userify,
-} from 'alice-renderer';
-
-export {
-  reply,
-  audio,
-  br,
-  buttons,
-  effect,
-  configure,
-  image,
-  enumerate,
-  once,
-  pause,
-  plural,
-  select,
-  text,
-  textTts,
-  tts,
-  userify,
-};
+import * as render from 'alice-renderer'
+export { render }
 
 export { Scene } from './stage/scene';
 export { Stage } from './stage/stage';

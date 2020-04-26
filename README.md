@@ -35,15 +35,21 @@ Adventure quest game by [@Teoreez](https://github.com/Teoreez)
 
 #### Getting Started
 
-```javascript
-const { Alice, Reply, Markup } = require('yandex-dialogs-sdk')
+```js
+const { Alice, render } = require('yandex-dialogs-sdk')
 const alice = new Alice();
 
-const M = Markup;
-alice.command('', async ctx => Reply.text('Look, what i can!'));
-alice.command('Give a piece of advice', async ctx =>
-  Reply.text('Make const not var'),
-);
+const { reply, pause, buttons } = render
+
+alice.command('', async ctx => {
+  return reply`
+    ${['Здравствуйте', 'Добрый день']}! ${pause(500)} Как дел+а?
+    ${buttons(['Отлично', 'Супер'])}
+  `
+});
+alice.command('Give a piece of advice', async ctx => {
+  return reply`Make const not var`
+});
 alice.command(
   ['What is trending now?', 'Watch films', 'Whats in the theatre?'],
   ctx => {
@@ -53,15 +59,19 @@ alice.command(
     };
   },
 );
-alice.command(/(https?:\/\/[^\s]+)/g, ctx => Reply.text('Matched a link!'));
-alice.any(async ctx => Reply.text(`I don't understand`));
+alice.command(/(https?:\/\/[^\s]+)/g, ctx => reply`Matched a link!`));
+alice.any(async ctx => {
+  return reply`I don't understand`
+});
 const server = alice.listen(3001, '/');
 ```
 
-#### Hot middlewares from maintainer
+```js
+const { reply, pause, buttons } = render
+```
+This library uses [https://github.com/vitalets/alice-renderer](https://github.com/vitalets/alice-renderer) for rendering.
+Full documentation is [here](https://github.com/vitalets/alice-renderer)
 
-- **[yandex-dialogs-sdk-lowdb](https://github.com/fletcherist/yandex-dialogs-sdk-lowdb)** - store your users sessions in file
-- **[yandex-dialogs-sdk-chatbase](https://github.com/popstas/yandex-dialogs-sdk-chatbase)** - send events to Google Chatbase by **[@popstas](https://github.com/popstas)**
 
 #### Handle non-trivial scenarios
 
@@ -194,45 +204,11 @@ const createMessagesCounterMiddleware = () => {
 alice.use(createMessagesCounterMiddleware())
 ```
 
-###### Reply
-```javascript
-const { Reply } = require('yandex-dialogs-sdk')
-IMAGE_ID = '213044/d13b0d86a41daf9de232'
-EXTRA_PARAMS = { // Extra params are optional
-  tts: 'Hi the+re',
-  buttons: ['one', Markup.button('two')],
-  end_session: true
-}
-```
-- `Reply.text` 
-```javascript
-// Second argument is optional
-alice.any(ctx => Reply.text('text'), EXTRA_PARAMS)
-```
-- `Reply.bigImageCard` - One big image
-```javascript
-Reply.bigImageCard('text', {
-  image_id: IMAGE_ID,
-  title: string, // optional
-  description: string, // optional
-  button: M.button('click'), // optional
-}, EXTRA_PARAMS)
-```
-- `Reply.itemsListCard` - Gallery
-```javascript
-Reply.itemsListCard('text', [IMAGE_ID, IMAGE_ID], EXTRA_PARAMS);
-Reply.itemsListCard('test', {
-    header: 'header',
-    footer: {
-      text: 'test',
-      button: Markup.button('button'),
-    },
-    items: [
-      IMAGE_ID, 
-      { image_id: IMAGE_ID, title: 'title', description: 'description' },
-    ],
-  });
-```
+#### Hot middlewares
+
+- **[yandex-dialogs-sdk-lowdb](https://github.com/fletcherist/yandex-dialogs-sdk-lowdb)** - store your users sessions in file
+- **[yandex-dialogs-sdk-chatbase](https://github.com/popstas/yandex-dialogs-sdk-chatbase)** - send events to Google Chatbase by **[@popstas](https://github.com/popstas)**
+
 
 ###### Events
 ```javascript
@@ -244,21 +220,6 @@ alice.on('response', ctx => {
 ```
 
 
-###### Markup
-```javascript
-const { Markup } = require('yandex-dialogs-sdk')
-```
-- `Markup.button`
-```javascript
-const M = Markup
-M.button('string')
-M.button({
-  title: string;
-  url: string;
-  payload: object;
-  hide: boolean;
-})
-```
 
 ## CONTRIBUTING
 `git clone`
