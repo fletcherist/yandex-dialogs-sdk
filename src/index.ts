@@ -11,14 +11,43 @@ export {
 
 import { Alice } from './alice';
 
-export { Reply } from './reply/reply';
-export { Markup } from './reply/markup';
+import {
+  reply,
+  audio,
+  br,
+  buttons,
+  effect,
+  configure,
+  image,
+  enumerate,
+  once,
+  pause,
+  plural,
+  select,
+  text,
+  textTts,
+  tts,
+  userify,
+} from 'alice-renderer';
 
-export { InMemorySession } from './session/inMemorySession';
-export { InMemorySessionStorage } from './session/inMemorySessionStorage';
-export { Session, SessionStorage } from './session/session';
-export { SessionContext } from './session/sessionContext';
-export { sessionMiddleware } from './session/sessionMiddleware';
+export {
+  reply,
+  audio,
+  br,
+  buttons,
+  effect,
+  configure,
+  image,
+  enumerate,
+  once,
+  pause,
+  plural,
+  select,
+  text,
+  textTts,
+  tts,
+  userify,
+};
 
 export { Scene } from './stage/scene';
 export { Stage } from './stage/stage';

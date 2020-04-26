@@ -1,22 +1,22 @@
 import { SessionStorage, Session } from './session';
 import { InMemorySession } from './inMemorySession';
 
-interface IInMemorySessionsStorageItem {
+interface InMemorySessionsStorageItem {
   readonly creationTime: number;
   readonly session: Session;
 }
 
-export interface IInMemorySessionsStorageParams {
+export interface InMemorySessionsStorageParams {
   ttl?: number;
 }
 
 export class InMemorySessionStorage implements SessionStorage {
   private readonly _ttl: number;
-  private readonly _sessions: Map<string, IInMemorySessionsStorageItem>;
+  private readonly _sessions: Map<string, InMemorySessionsStorageItem>;
 
-  constructor(params?: IInMemorySessionsStorageParams) {
+  constructor(params?: InMemorySessionsStorageParams) {
     this._ttl = (params && params.ttl) || Infinity;
-    this._sessions = new Map<string, IInMemorySessionsStorageItem>();
+    this._sessions = new Map<string, InMemorySessionsStorageItem>();
   }
 
   private _flushOutdatedSessions(): void {

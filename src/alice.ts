@@ -8,24 +8,18 @@ import { Context } from './context';
 import { ApiResponse } from './api/response';
 import { ALICE_PROTOCOL_VERSION } from './constants';
 import { CommandCallback, CommandDeclaration } from './command/command';
-import { InMemorySessionStorage } from './session/inMemorySessionStorage';
-import { sessionMiddleware } from './session/sessionMiddleware';
 import debug from './debug';
 
 import { MainStage } from './stage/mainScene';
-import { SessionStorage } from './session/session';
 import { Scene } from './stage/scene';
 
-export interface AliceConfig extends ImagesApiConfig {
-  sessionStorage?: SessionStorage;
-}
+export type AliceConfig = ImagesApiConfig
 
 export class Alice {
   private readonly _config: AliceConfig;
   private readonly _middlewares: Middleware[];
   private readonly _imagesApi: ImagesApi;
   private readonly _mainStage: MainStage;
-  private readonly _sessionStorage: SessionStorage;
   private _eventEmitter: EventEmitter;
 
   constructor(config: AliceConfig = {}) {
@@ -36,10 +30,6 @@ export class Alice {
     this._middlewares = [];
     this._imagesApi = new ImagesApi(this._config);
     this._mainStage = new MainStage();
-
-    this._sessionStorage =
-      config.sessionStorage || new InMemorySessionStorage();
-    this.use(sessionMiddleware(this._sessionStorage));
   }
 
   private _buildContext(request: ApiRequest): Context {
