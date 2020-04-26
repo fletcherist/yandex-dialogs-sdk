@@ -19,6 +19,7 @@ export { Stage } from './stage/stage';
 export { StageContext } from './stage/stageContext';
 
 export { Middleware, MiddlewareNext } from './middleware/middleware';
+export { sessionMiddleware } from './session/sessionMiddleware';
 
 export { Alice } from './alice';
 export { Context } from './context';

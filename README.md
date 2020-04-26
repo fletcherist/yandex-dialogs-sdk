@@ -37,8 +37,8 @@ Adventure quest game by [@Teoreez](https://github.com/Teoreez)
 
 ```js
 const { Alice, render } = require('yandex-dialogs-sdk')
-const alice = new Alice();
 
+const alice = new Alice();
 const { reply, pause, buttons } = render
 
 alice.command('', async ctx => {
@@ -67,9 +67,11 @@ const server = alice.listen(3001, '/');
 ```
 
 ```js
+const { render } = require('yandex-dialogs-sdk')
 const { reply, pause, buttons } = render
 ```
 This library uses [https://github.com/vitalets/alice-renderer](https://github.com/vitalets/alice-renderer) for rendering.
+
 Full documentation is [here](https://github.com/vitalets/alice-renderer)
 
 
@@ -82,11 +84,11 @@ const alice = new Alice();
 const SCENE_AT_BAR = 'SCENE_AT_BAR';
 const atBar = new Scene(SCENE_AT_BAR);
 
-atBar.command('show menu', ctx =>
-  Reply.text('only vodka here', {
+atBar.command('show menu', ctx => {
+  return Reply.text('only vodka here', {
     buttons: ['buy vodka', 'go away'],
-  }),
-);
+  }), 
+});
 atBar.command('buy vodka', ctx => Reply.text(`you're dead`));
 atBar.command('go away', ctx => {
   ctx.leave();
