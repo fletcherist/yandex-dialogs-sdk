@@ -18,7 +18,9 @@ export { Scene } from './stage/scene';
 export { Stage } from './stage/stage';
 export { StageContext } from './stage/stageContext';
 
+
 export { Middleware, MiddlewareNext } from './middleware/middleware';
+export { Session, SessionStorage } from './session/session'
 export { sessionMiddleware } from './session/sessionMiddleware';
 
 export { Alice } from './alice';
